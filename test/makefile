@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -g -framework OpenGL
+CFLAGS=-Wall -g
 INCLUDES=../include/
 
 SRCS = $(wildcard *.c)
