@@ -10,7 +10,7 @@
  */
 
 #include <stdbool.h>
-#include "R_MutableString.h"
+#include "R_String.h"
 
 
 typedef struct R_Dictionary R_Dictionary;
@@ -35,7 +35,7 @@ R_Dictionary* R_Dictionary_addToArray(R_Dictionary* self, const char* key);
 int R_Dictionary_getArraySize(R_Dictionary* self, const char* key);
 R_Dictionary* R_Dictionary_getArrayIndex(R_Dictionary* self, const char* key, int index);
 
-R_MutableString* R_Dictionary_serialize(R_Dictionary* self, R_MutableString* stringToAppendTo);
-R_Dictionary* R_MutableString_objectize(R_Dictionary* self, R_MutableString* string);
+R_String* R_Dictionary_serialize(R_Dictionary* self, R_String* stringToAppendTo);
+R_Dictionary* R_String_objectize(R_Dictionary* self, R_String* string);
 
 #endif /* R_Dictionary_h */
