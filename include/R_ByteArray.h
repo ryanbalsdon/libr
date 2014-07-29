@@ -27,4 +27,6 @@ uint8_t R_ByteArray_pop(R_ByteArray* self);
 void    R_ByteArray_shift(R_ByteArray* self, uint8_t byte);
 uint8_t R_ByteArray_unshift(R_ByteArray* self);
 
+size_t R_ByteArray_appendSubArray(R_ByteArray* self, R_ByteArray* array, size_t start, size_t end);
+
 #endif /* R_ByteArray_h */

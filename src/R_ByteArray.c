@@ -95,3 +95,11 @@ uint8_t R_ByteArray_unshift(R_ByteArray* self) {
 	self->arraySize--;
 	return returnVal;
 }
+
+size_t R_ByteArray_appendSubArray(R_ByteArray* self, R_ByteArray* array, size_t start, size_t end) {
+	if (start > end) return 0;
+	if (start >= R_ByteArray_size(array)) return 0;
+	size_t usableEnd = (end >= R_ByteArray_size(array))?R_ByteArray_size(array):end;
+	R_ByteArray_appendCArray(self, R_ByteArray_bytes(array)+start, usableEnd-start);
+	return usableEnd-start;
+}
