@@ -72,15 +72,19 @@ int main(void) {
 	assert(R_ByteArray_size(array) == 0);
 
 	R_ByteArray_reset(array);
-	R_ByteArray_appendCArray(array, bytes, sizeof(bytes));
 	R_ByteArray_reset(array2);
-	assert(R_ByteArray_appendSubArray(array2, array, 0, 4) == 4);
+	R_ByteArray_appendCArray(array, bytes, sizeof(bytes));
+	assert(R_ByteArray_size(array)  == 4);
+	assert(R_ByteArray_size(array2) == 0);
+	assert(R_ByteArray_moveSubArray(array2, array, 0, 4) == 4);
+	assert(R_ByteArray_size(array)  == 0);
 	assert(R_ByteArray_size(array2) == 4);
 	assert(R_ByteArray_bytes(array2)[0] == 0x00);
 	assert(R_ByteArray_bytes(array2)[1] == 0x01);
 	assert(R_ByteArray_bytes(array2)[2] == 0x02);
 	assert(R_ByteArray_bytes(array2)[3] == 0x03);
-	assert(R_ByteArray_appendSubArray(array2, array, 1, 3) == 2);
+	R_ByteArray_appendCArray(array, bytes, sizeof(bytes));
+	assert(R_ByteArray_moveSubArray(array2, array, 1, 3) == 2);
 	assert(R_ByteArray_size(array2) == 6);
 	assert(R_ByteArray_bytes(array2)[0] == 0x00);
 	assert(R_ByteArray_bytes(array2)[1] == 0x01);
@@ -88,6 +92,9 @@ int main(void) {
 	assert(R_ByteArray_bytes(array2)[3] == 0x03);
 	assert(R_ByteArray_bytes(array2)[4] == 0x01);
 	assert(R_ByteArray_bytes(array2)[5] == 0x02);
+	assert(R_ByteArray_size(array) == 2);
+	assert(R_ByteArray_bytes(array)[0] == 0x00);
+	assert(R_ByteArray_bytes(array)[1] == 0x03);
 
 
 	array = R_ByteArray_free(array);
