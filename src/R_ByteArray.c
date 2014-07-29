@@ -72,3 +72,26 @@ size_t R_ByteArray_size(R_ByteArray* self) {
 const uint8_t* R_ByteArray_bytes(R_ByteArray* self) {
 	return self->array;
 }
+
+void    R_ByteArray_push(R_ByteArray* self, uint8_t byte) {
+	R_ByteArray_appendByte(self, byte);
+}
+uint8_t R_ByteArray_pop(R_ByteArray* self) {
+	return self->array[--self->arraySize];
+}
+void    R_ByteArray_shift(R_ByteArray* self, uint8_t byte) {
+	R_ByteArray_increaseAllocationIfNeeded(self, sizeof(uint8_t));
+	for (int i=self->arraySize; i>0; i--) {
+		self->array[i] = self->array[i-1];
+	}
+	self->array[0] = byte;
+	self->arraySize++;
+}
+uint8_t R_ByteArray_unshift(R_ByteArray* self) {
+	uint8_t returnVal = (self->arraySize>0)?self->array[0]:0x00;
+	for (int i=0; i<self->arraySize-1; i++) {
+		self->array[i] = self->array[i+1];
+	}
+	self->arraySize--;
+	return returnVal;
+}

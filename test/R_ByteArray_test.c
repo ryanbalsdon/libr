@@ -47,6 +47,30 @@ int main(void) {
 	assert(R_ByteArray_size(array2) == sizeof(bytes));
 	assert(memcmp(bytes, R_ByteArray_bytes(array2), sizeof(bytes)) == 0);
 
+	array = R_ByteArray_reset(array);
+	R_ByteArray_appendByte(array, 0x01);
+	R_ByteArray_appendByte(array, 0x02);
+	assert(R_ByteArray_size(array) == 2);
+	R_ByteArray_push(array, 0x03);
+	assert(R_ByteArray_size(array) == 3);
+	assert(R_ByteArray_bytes(array)[0] == 0x01);
+	assert(R_ByteArray_bytes(array)[1] == 0x02);
+	assert(R_ByteArray_bytes(array)[2] == 0x03);
+	R_ByteArray_shift(array, 0x00);
+	assert(R_ByteArray_size(array) == 4);
+	assert(R_ByteArray_bytes(array)[0] == 0x00);
+	assert(R_ByteArray_bytes(array)[1] == 0x01);
+	assert(R_ByteArray_bytes(array)[2] == 0x02);
+	assert(R_ByteArray_bytes(array)[3] == 0x03);
+	assert(R_ByteArray_pop(array) == 0x03);
+	assert(R_ByteArray_size(array) == 3);
+	assert(R_ByteArray_unshift(array) == 0x00);
+	assert(R_ByteArray_size(array) == 2);
+	assert(R_ByteArray_pop(array) == 0x02);
+	assert(R_ByteArray_size(array) == 1);
+	assert(R_ByteArray_unshift(array) == 0x01);
+	assert(R_ByteArray_size(array) == 0);
+
 
 	array = R_ByteArray_free(array);
 	array2 = R_ByteArray_free(array2);
