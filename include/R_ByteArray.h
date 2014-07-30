@@ -21,6 +21,7 @@ R_ByteArray* R_ByteArray_appendArray(R_ByteArray* self, R_ByteArray* array);
 
 size_t R_ByteArray_size(R_ByteArray* self);
 const uint8_t* R_ByteArray_bytes(R_ByteArray* self);
+uint8_t R_ByteArray_byte(R_ByteArray* self, size_t index);
 
 void    R_ByteArray_push(R_ByteArray* self, uint8_t byte);
 uint8_t R_ByteArray_pop(R_ByteArray* self);

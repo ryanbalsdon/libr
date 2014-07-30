@@ -62,6 +62,10 @@ int main(void) {
 	assert(R_ByteArray_bytes(array)[1] == 0x01);
 	assert(R_ByteArray_bytes(array)[2] == 0x02);
 	assert(R_ByteArray_bytes(array)[3] == 0x03);
+	assert(R_ByteArray_byte(array, 0) == 0x00);
+	assert(R_ByteArray_byte(array, 1) == 0x01);
+	assert(R_ByteArray_byte(array, 2) == 0x02);
+	assert(R_ByteArray_byte(array, 3) == 0x03);
 	assert(R_ByteArray_pop(array) == 0x03);
 	assert(R_ByteArray_size(array) == 3);
 	assert(R_ByteArray_unshift(array) == 0x00);

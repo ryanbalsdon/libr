@@ -111,3 +111,8 @@ size_t R_ByteArray_moveSubArray(R_ByteArray* self, R_ByteArray* array, size_t st
 
 	return subarrayLength;
 }
+
+uint8_t R_ByteArray_byte(R_ByteArray* self, size_t index) {
+	if (index >= self->arraySize) return 0;
+	return self->array[index];
+}

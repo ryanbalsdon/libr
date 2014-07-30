@@ -13,13 +13,13 @@
 
 struct R_String {
     char* string;           //The allocated buffer
-    int stringAllocationSize;//How large the internal buffer is. This is always as-large or larger than stringSize.
-    int stringSize;          //How many objects the user has added to the array.
+    size_t stringAllocationSize;//How large the internal buffer is. This is always as-large or larger than stringSize.
+    size_t stringSize;          //How many objects the user has added to the array.
 };
 
-void R_String_increaseAllocationSize(R_String* self, int spaceNeeded);
+void R_String_increaseAllocationSize(R_String* self, size_t spaceNeeded);
 char* R_String_Strcpy(char* dest, const char* source);
-char* R_String_Strncpy(char* dest, const char* source, int num);
+char* R_String_Strncpy(char* dest, const char* source, size_t num);
 char* R_String_Strcat(char* dest, const char* source);
 
 R_String* R_String_alloc(void) {
@@ -51,34 +51,34 @@ const char* R_String_getString(R_String* self) {
 }
 
 R_String* R_String_appendCString(R_String* self, const char* string) {
-	int length = strlen(string);
+	size_t length = strlen(string);
 	R_String_increaseAllocationSize(self, self->stringSize+length);
 	R_String_Strcat(self->string, string);
 	self->stringSize += length;
 	return self;
 }
 
-void R_String_increaseAllocationSize(R_String* self, int spaceNeeded) {
-	int allocationNeeded = spaceNeeded + 1;
+void R_String_increaseAllocationSize(R_String* self, size_t spaceNeeded) {
+	size_t allocationNeeded = spaceNeeded + 1;
 	if (allocationNeeded < self->stringAllocationSize)
 		return;
 
-	int newSize = (self->stringAllocationSize == 0)?1:self->stringAllocationSize;
+	size_t newSize = (self->stringAllocationSize == 0)?1:self->stringAllocationSize;
 	do {newSize*=2;} while (allocationNeeded > newSize);
 	self->string = (char*)realloc(self->string, newSize);
 	self->stringAllocationSize = newSize;
 }
 
 R_String* R_String_setString(R_String* self, const char* string) {
-	int length = strlen(string);
+	size_t length = strlen(string);
 	R_String_increaseAllocationSize(self, length);
 	R_String_Strcpy(self->string, string);
 	self->stringSize = length;
 	return self;
 }
 
-R_String* R_String_setSizedString(R_String* self, const char* string, int stringLength) {
-	int length = strlen(string);
+R_String* R_String_setSizedString(R_String* self, const char* string, size_t stringLength) {
+	size_t length = strlen(string);
 	if (length > stringLength) length = stringLength;
 	R_String_increaseAllocationSize(self, length);
 	R_String_Strncpy(self->string, string, length);
@@ -207,7 +207,7 @@ char* R_String_Strcpy(char* dest, const char* source) {
 	
 	//return strcpy(dest, source);
 }
-char* R_String_Strncpy(char* dest, const char* source, int num) {
+char* R_String_Strncpy(char* dest, const char* source, size_t num) {
 	
 	for (int i=0; i<num; i++) {
 		dest[i] = source[i];
