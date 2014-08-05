@@ -100,6 +100,14 @@ int main(void) {
 	assert(R_ByteArray_bytes(array)[0] == 0x00);
 	assert(R_ByteArray_bytes(array)[1] == 0x03);
 
+	R_ByteArray_reset(array);
+	R_ByteArray_appendBytes(array, 0x10, 0x20, 0x30);
+	assert(R_ByteArray_size(array) == 3);
+	assert(R_ByteArray_byte(array,0) == 0x10);
+	assert(R_ByteArray_byte(array,1) == 0x20);
+	assert(R_ByteArray_byte(array,2) == 0x30);
+
+
 
 	array = R_ByteArray_free(array);
 	array2 = R_ByteArray_free(array2);

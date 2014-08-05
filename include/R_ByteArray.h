@@ -30,4 +30,10 @@ uint8_t R_ByteArray_unshift(R_ByteArray* self);
 
 size_t R_ByteArray_moveSubArray(R_ByteArray* self, R_ByteArray* array, size_t start, size_t end);
 
+#define R_ByteArray_appendBytes(self, ...) \
+	{\
+		uint8_t R_ByteArray_appendBytes_data[] = {__VA_ARGS__}; \
+		R_ByteArray_appendCArray(self, R_ByteArray_appendBytes_data, sizeof(R_ByteArray_appendBytes_data)); \
+	}
+
 #endif /* R_ByteArray_h */
