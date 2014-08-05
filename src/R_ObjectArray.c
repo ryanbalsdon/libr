@@ -111,6 +111,7 @@ void* R_ObjectArray_addPointer(R_ObjectArray* self, size_t size) {
         R_ObjectArray_increaseAllocation(self);
 
     void* newPointer = malloc(size);
+    memset(newPointer, 0, size);
     
     self->array[self->arraySize] = newPointer;
     self->arraySize++;
