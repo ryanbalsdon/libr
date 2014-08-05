@@ -66,10 +66,10 @@ R_ByteArray* R_ByteArray_appendArray(R_ByteArray* self, R_ByteArray* array) {
 	return R_ByteArray_appendCArray(self, R_ByteArray_bytes(array), R_ByteArray_size(array));
 }
 
-size_t R_ByteArray_size(R_ByteArray* self) {
+size_t R_ByteArray_size(const R_ByteArray* self) {
 	return self->arraySize;
 }
-const uint8_t* R_ByteArray_bytes(R_ByteArray* self) {
+const uint8_t* R_ByteArray_bytes(const R_ByteArray* self) {
 	return self->array;
 }
 
@@ -112,7 +112,7 @@ size_t R_ByteArray_moveSubArray(R_ByteArray* self, R_ByteArray* array, size_t st
 	return subarrayLength;
 }
 
-uint8_t R_ByteArray_byte(R_ByteArray* self, size_t index) {
+uint8_t R_ByteArray_byte(const R_ByteArray* self, size_t index) {
 	if (index >= self->arraySize) return 0;
 	return self->array[index];
 }
