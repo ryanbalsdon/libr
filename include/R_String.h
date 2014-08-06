@@ -10,7 +10,7 @@
  */
 
 #include <stdbool.h>
-
+#include <stddef.h>
 
 typedef struct R_String R_String;
 
