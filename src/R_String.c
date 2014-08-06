@@ -116,7 +116,7 @@ float R_String_getFloat(R_String* self) {
 	return 0.0f;
 }
 
-R_String* R_String_getSubstring(R_String* self, int startingIndex, int endingIndex, R_String* output) {
+R_String* R_String_getSubstring(R_String* self, size_t startingIndex, size_t endingIndex, R_String* output) {
 	R_String_reset(output);
 	R_String_increaseAllocationSize(output, output->stringSize+(endingIndex-startingIndex)+2);
 	R_String_Strncpy(output->string, self->string+startingIndex, endingIndex-startingIndex+1);

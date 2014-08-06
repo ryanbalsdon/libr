@@ -30,7 +30,7 @@ int R_String_getInt(R_String* self);
 R_String* R_String_appendFloat(R_String* self, float value);
 float R_String_getFloat(R_String* self);
 
-R_String* R_String_getSubstring(R_String* self, int startingIndex, int endingIndex, R_String* output);
+R_String* R_String_getSubstring(R_String* self, size_t startingIndex, size_t endingIndex, R_String* output);
 R_String* R_String_getBracedString(R_String* self, char beginningBrace, char finishingBrace, R_String* output);
 R_String* R_String_getEnclosedString(R_String* self, char beginningBrace, char finishingBrace, R_String* output);
 char R_String_findFirstToken(R_String* self, char* tokens);
