@@ -223,3 +223,8 @@ char* R_String_Strcat(char* dest, const char* source) {
 	return R_String_Strcpy(copyStart, source);
 	//return strcat(dest, source);
 }
+
+bool R_String_isEmpty(R_String* self) {
+	if (self->stringSize == 0) return true;
+	return false;
+}

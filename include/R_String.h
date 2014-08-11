@@ -38,4 +38,6 @@ char R_String_findFirstToken(R_String* self, char* tokens);
 bool R_String_splitBracedString(R_String* self, char beginningBrace, char finishingBrace, 
 	R_String* beforeBraces, R_String* withBraces, R_String* insideBraces, R_String* afterBraces);
 
+bool R_String_isEmpty(R_String* self);
+
 #endif /* R_String_h */

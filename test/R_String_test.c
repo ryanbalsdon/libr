@@ -89,6 +89,9 @@ int main(void) {
 	R_String_setString(string, R_String_getString(string)+2);
 	assert(strcmp(R_String_getString(string), "23456789") == 0);
 
+	assert(R_String_isEmpty(string) == false);
+	R_String_reset(string);
+	assert(R_String_isEmpty(string) == true);
 
 
 	printf("Pass\n");
