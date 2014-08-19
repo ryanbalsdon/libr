@@ -26,6 +26,8 @@ int main(void) {
 	R_String_appendCString(string, " of awesomeness");
 	assert(strcmp(R_String_getString(string), "test") != 0);
 	assert(strcmp(R_String_getString(string), "test of awesomeness") == 0);
+	R_String_appendBytes(string, " of awesomeness", 11);
+	assert(strcmp(R_String_getString(string), "test of awesomeness of awesome") == 0);
 
 	R_String_setString(string, "test 2");
 	assert(strcmp(R_String_getString(string), "test 2") == 0);

@@ -21,6 +21,7 @@ R_String* R_String_free(R_String* self);
 const char* R_String_getString(R_String* self);
 R_String* R_String_appendCString(R_String* self, const char* string);
 R_String* R_String_appendString(R_String* self, R_String* string);
+R_String* R_String_appendBytes(R_String* self, const char* bytes, size_t byteCount);
 R_String* R_String_setString(R_String* self, const char* string);
 R_String* R_String_setSizedString(R_String* self, const char* string, size_t stringLength);
 

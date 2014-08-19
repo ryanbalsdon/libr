@@ -51,10 +51,14 @@ const char* R_String_getString(R_String* self) {
 }
 
 R_String* R_String_appendCString(R_String* self, const char* string) {
-	size_t length = strlen(string);
-	R_String_increaseAllocationSize(self, self->stringSize+length);
-	R_String_Strcat(self->string, string);
-	self->stringSize += length;
+	return R_String_appendBytes(self, string, strlen(string));
+}
+
+R_String* R_String_appendBytes(R_String* self, const char* bytes, size_t byteCount) {
+	R_String_increaseAllocationSize(self, self->stringSize+byteCount);
+	memcpy(self->string + self->stringSize, bytes, byteCount);
+	self->stringSize += byteCount;
+	if ((self->string)[self->stringSize] != '\0') R_String_appendBytes(self, "", 1);
 	return self;
 }
 
@@ -204,8 +208,6 @@ char* R_String_Strcpy(char* dest, const char* source) {
 			return dest;
 	}
 	return dest;
-	
-	//return strcpy(dest, source);
 }
 char* R_String_Strncpy(char* dest, const char* source, size_t num) {
 	
@@ -215,13 +217,14 @@ char* R_String_Strncpy(char* dest, const char* source, size_t num) {
 			return dest;
 	}
 	return dest;
-	
-	//return strncpy(dest, source, num);
 }
 char* R_String_Strcat(char* dest, const char* source) {
 	char* copyStart = dest + strlen(dest);
 	return R_String_Strcpy(copyStart, source);
-	//return strcat(dest, source);
+}
+char* R_String_Strncat(char* dest, const char* source, size_t num) {
+	char* copyStart = dest + strlen(dest);
+	return R_String_Strncpy(copyStart, source, num);
 }
 
 bool R_String_isEmpty(R_String* self) {
