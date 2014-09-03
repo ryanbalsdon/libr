@@ -58,7 +58,8 @@ R_String* R_String_appendBytes(R_String* self, const char* bytes, size_t byteCou
 	R_String_increaseAllocationSize(self, self->stringSize+byteCount);
 	memcpy(self->string + self->stringSize, bytes, byteCount);
 	self->stringSize += byteCount;
-	if ((self->string)[self->stringSize] != '\0') R_String_appendBytes(self, "", 1);
+	if ((self->string)[self->stringSize] != '\0')
+		(self->string)[self->stringSize] = '\0';
 	return self;
 }
 
