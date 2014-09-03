@@ -11,7 +11,7 @@
 #include <assert.h>
 #include <string.h>
 #include "R_String.h"
-
+#include "R_ByteArray.h"
 
 
 int main(void) {
@@ -21,9 +21,11 @@ int main(void) {
 
 	string = R_String_alloc();
 	assert(R_String_setString(string, "test") == string);
+	assert(R_String_length(string) == 4);
 	assert(strcmp(R_String_getString(string), "test") == 0);
 
 	R_String_appendCString(string, " of awesomeness");
+	assert(R_String_length(string) == 19);
 	assert(strcmp(R_String_getString(string), "test") != 0);
 	assert(strcmp(R_String_getString(string), "test of awesomeness") == 0);
 	R_String_appendBytes(string, " of awesomeness", 11);
@@ -71,13 +73,17 @@ int main(void) {
 	assert(strcmp(R_String_getString(withBraces), "{r{t}y{fg{h}vb}}") == 0);
 	assert(strcmp(R_String_getString(insideBraces), "r{t}y{fg{h}vb}") == 0);
 	assert(strcmp(R_String_getString(afterBraces), "qwe") == 0);
-
+	beforeBraces = R_String_free(beforeBraces);
+	withBraces = R_String_free(withBraces);
+	insideBraces = R_String_free(insideBraces);
+	afterBraces = R_String_free(afterBraces);
 
 	R_String_setString(string, "command;not");
 	assert(R_String_getBracedString(string, '\0', ';', substring) != NULL);
 	assert(strcmp(R_String_getString(R_String_getBracedString(string, 0, ';', substring)), "command;") == 0);
 	assert(R_String_getBracedString(string, ';', '\0', substring) != NULL);
 	assert(strcmp(R_String_getString(R_String_getBracedString(string, ';', 0, substring)), ";not") == 0);
+	substring = R_String_free(substring);
 
 	R_String_setString(string, "a%%sdf#ht");
 	assert(R_String_findFirstToken(string, "%%fh") == '%');
@@ -95,6 +101,14 @@ int main(void) {
 	R_String_reset(string);
 	assert(R_String_isEmpty(string) == true);
 
+	R_ByteArray* testArray = R_ByteArray_alloc();
+	R_ByteArray_appendBytes(testArray, 0x01, 0x23, 0x5A, 0xFF);
+	R_String_appendArrayAsHex(string, testArray);
+	assert(R_String_length(string) == 8);
+	assert(strcmp(R_String_getString(string), "01235AFF") == 0);
+	testArray = R_ByteArray_free(testArray);
 
+
+	string = R_String_free(string);
 	printf("Pass\n");
 }

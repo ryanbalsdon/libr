@@ -62,6 +62,10 @@ R_String* R_String_appendBytes(R_String* self, const char* bytes, size_t byteCou
 	return self;
 }
 
+size_t R_String_length(R_String* self) {
+	return self->stringSize;
+}
+
 void R_String_increaseAllocationSize(R_String* self, size_t spaceNeeded) {
 	size_t allocationNeeded = spaceNeeded + 1;
 	if (allocationNeeded < self->stringAllocationSize)
@@ -107,6 +111,22 @@ R_String* R_String_appendFloat(R_String* self, float value) {
 
 R_String* R_String_appendString(R_String* self, R_String* string) {
 	return R_String_appendCString(self, R_String_getString(string));
+}
+
+R_String* R_String_appendArrayAsHex(R_String* self, const R_ByteArray* array) {
+	if (array == NULL) return self;
+	for (int i=0; i<R_ByteArray_size(array); i++) {
+		char hexDigitF0 = (R_ByteArray_byte(array,i) & 0xF0) >> 4;
+		char hexDigit0F = (R_ByteArray_byte(array,i) & 0x0F);
+		if (hexDigitF0 >= 0x0 && hexDigitF0 <= 0x9) hexDigitF0 += ('0' - 0x0);
+		else if (hexDigitF0 >= 0xa && hexDigitF0 <= 0xf) hexDigitF0 += ('A' - 0xA);
+		if (hexDigit0F >= 0x0 && hexDigit0F <= 0x9) hexDigit0F += ('0' - 0x0);
+		else if (hexDigit0F >= 0xa && hexDigit0F <= 0xf) hexDigit0F += ('A' - 0xA);
+		R_String_appendBytes(self, &hexDigitF0, 1);
+		R_String_appendBytes(self, &hexDigit0F, 1);
+	}
+
+	return self;
 }
 
 int R_String_getInt(R_String* self) {
