@@ -32,4 +32,6 @@ size_t R_ByteArray_moveSubArray(R_ByteArray* self, R_ByteArray* array, size_t st
 
 #define R_ByteArray_appendBytes(self, ...) R_ByteArray_appendCArray(self, (uint8_t[]){__VA_ARGS__}, (sizeof((uint8_t[]){__VA_ARGS__})/sizeof(uint8_t)));
 
+int R_ByteArray_compare(R_ByteArray* self, R_ByteArray* comparor);
+
 #endif /* R_ByteArray_h */

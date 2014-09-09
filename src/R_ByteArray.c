@@ -116,3 +116,13 @@ uint8_t R_ByteArray_byte(const R_ByteArray* self, size_t index) {
 	if (index >= self->arraySize) return 0;
 	return self->array[index];
 }
+
+int R_ByteArray_compare(R_ByteArray* self, R_ByteArray* comparor) {
+	size_t lowerSize = (R_ByteArray_size(self) < R_ByteArray_size(comparor)) ? R_ByteArray_size(self) : R_ByteArray_size(comparor);
+	int decision = memcmp(R_ByteArray_bytes(self), R_ByteArray_bytes(comparor), lowerSize);
+	if (decision != 0) return decision;
+	if (R_ByteArray_size(self) == R_ByteArray_size(comparor)) return 0;
+	if (R_ByteArray_size(self) == lowerSize) return -1;
+	return 1;
+}
+

@@ -107,7 +107,26 @@ int main(void) {
 	assert(R_ByteArray_byte(array,1) == 0x20);
 	assert(R_ByteArray_byte(array,2) == 0x30);
 
-
+	R_ByteArray_reset(array);
+	R_ByteArray_reset(array2);
+	R_ByteArray_appendBytes(array,  0x10, 0x20, 0x30);
+	R_ByteArray_appendBytes(array2, 0x10, 0x20, 0x30);
+	assert(R_ByteArray_compare(array, array2) == 0);
+	R_ByteArray_reset(array);
+	R_ByteArray_reset(array2);
+	R_ByteArray_appendBytes(array,  0x10, 0x20);
+	R_ByteArray_appendBytes(array2, 0x10, 0x20, 0x30);
+	assert(R_ByteArray_compare(array, array2) != 0);
+	R_ByteArray_reset(array);
+	R_ByteArray_reset(array2);
+	R_ByteArray_appendBytes(array,  0x10, 0x20, 0x30, 0x40);
+	R_ByteArray_appendBytes(array2, 0x10, 0x20, 0x30);
+	assert(R_ByteArray_compare(array, array2) != 0);
+	R_ByteArray_reset(array);
+	R_ByteArray_reset(array2);
+	R_ByteArray_appendBytes(array,  0x10, 0x20, 0x31, 0x40);
+	R_ByteArray_appendBytes(array2, 0x10, 0x20, 0x30, 0x40);
+	assert(R_ByteArray_compare(array, array2) != 0);
 
 	array = R_ByteArray_free(array);
 	array2 = R_ByteArray_free(array2);
