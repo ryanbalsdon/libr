@@ -9,6 +9,8 @@
  * present and future rights to this software under copyright law.
  */
 
+#include <stdint.h>
+
 typedef struct R_ByteArray R_ByteArray;
 
 R_ByteArray* R_ByteArray_alloc(void);
