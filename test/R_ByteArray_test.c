@@ -11,6 +11,7 @@
 #include <assert.h>
 #include <string.h>
 #include "R_ByteArray.h"
+#include "R_String.h"
 
 int main(void) {
 	R_ByteArray* array = NULL;
@@ -127,6 +128,17 @@ int main(void) {
 	R_ByteArray_appendBytes(array,  0x10, 0x20, 0x31, 0x40);
 	R_ByteArray_appendBytes(array2, 0x10, 0x20, 0x30, 0x40);
 	assert(R_ByteArray_compare(array, array2) != 0);
+
+	R_ByteArray_reset(array);
+	R_ByteArray_reset(array2);
+	R_ByteArray_appendBytes(array,  0x10, 0xFA, 0xB5, 0x09);
+	R_String* string = R_String_alloc();
+	R_String_appendCString(string, "10fAB509");
+	printf("%s\n", R_String_getString(string));
+	R_ByteArray_appendHexString(array2, string);
+	assert(R_ByteArray_size(array2) == 4);
+	assert(R_ByteArray_compare(array, array2) == 0);
+	string = R_String_free(string);
 
 	array = R_ByteArray_free(array);
 	array2 = R_ByteArray_free(array2);
