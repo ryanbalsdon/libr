@@ -126,3 +126,26 @@ int R_ByteArray_compare(R_ByteArray* self, R_ByteArray* comparor) {
 	return 1;
 }
 
+static uint8_t hex_to_byte(char hex1, char hex2);
+static uint8_t hex_to_nibble(char hex);
+R_ByteArray* R_ByteArray_appendHexString(R_ByteArray* self, R_String* hex) {
+	for (int i=0; i<R_String_length(hex); i+=2) {
+		if (R_String_length(hex) > i+1)
+			R_ByteArray_appendByte(self, hex_to_byte(R_String_getString(hex)[i], R_String_getString(hex)[i+1]));
+		else
+			R_ByteArray_appendByte(self, hex_to_byte(R_String_getString(hex)[i], '0'));
+	}
+	return self;
+}
+static uint8_t hex_to_byte(char hex1, char hex2) {
+	return (hex_to_nibble(hex1) << 4) + hex_to_nibble(hex2);
+}
+static uint8_t hex_to_nibble(char hex) {
+	if (hex >= '0' && hex <= '9')
+		return 0x0 + (uint8_t)hex - (uint8_t)'0';
+	else if (hex >= 'a' && hex <= 'f')
+		return 0xa + (uint8_t)hex - (uint8_t)'a';
+	else if (hex >= 'A' && hex <= 'F')
+		return 0xA + (uint8_t)hex - (uint8_t)'A';
+	else return 0x0;
+}

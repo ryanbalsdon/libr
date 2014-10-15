@@ -11,9 +11,10 @@
 
 #include <stdbool.h>
 #include <stddef.h>
-#include "R_ByteArray.h"
 
 typedef struct R_String R_String;
+
+#include "R_ByteArray.h"
 
 R_String* R_String_alloc(void);
 R_String* R_String_reset(R_String* self);

@@ -13,6 +13,8 @@
 
 typedef struct R_ByteArray R_ByteArray;
 
+#include "R_String.h"
+
 R_ByteArray* R_ByteArray_alloc(void);
 R_ByteArray* R_ByteArray_reset(R_ByteArray* self);
 R_ByteArray* R_ByteArray_free(R_ByteArray* self);
@@ -20,6 +22,7 @@ R_ByteArray* R_ByteArray_free(R_ByteArray* self);
 R_ByteArray* R_ByteArray_appendByte(R_ByteArray* self, uint8_t byte);
 R_ByteArray* R_ByteArray_appendCArray(R_ByteArray* self, const uint8_t* bytes, size_t count);
 R_ByteArray* R_ByteArray_appendArray(R_ByteArray* self, R_ByteArray* array);
+R_ByteArray* R_ByteArray_appendHexString(R_ByteArray* self, R_String* hex);
 
 size_t R_ByteArray_size(const R_ByteArray* self);
 const uint8_t* R_ByteArray_bytes(const R_ByteArray* self);
