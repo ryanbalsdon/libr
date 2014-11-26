@@ -88,12 +88,15 @@ void    R_ByteArray_shift(R_ByteArray* self, uint8_t byte) {
 	self->arraySize++;
 }
 uint8_t R_ByteArray_unshift(R_ByteArray* self) {
-	uint8_t returnVal = (self->arraySize>0)?self->array[0]:0x00;
-	for (int i=0; i<self->arraySize-1; i++) {
-		self->array[i] = self->array[i+1];
+	if (self->arraySize>0) {
+		uint8_t returnVal = self->array[0];
+		for (int i=0; i<self->arraySize-1; i++) {
+			self->array[i] = self->array[i+1];
+		}
+		self->arraySize--;
+		return returnVal;
 	}
-	self->arraySize--;
-	return returnVal;
+	return 0x00;
 }
 
 size_t R_ByteArray_moveSubArray(R_ByteArray* self, R_ByteArray* array, size_t start, size_t end) {
