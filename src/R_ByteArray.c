@@ -13,15 +13,20 @@
 
 
 struct R_ByteArray {
-	uint8_t * array;       //The actual array
-    int arrayAllocationSize;//How large the internal array is. This is always as-large or larger than ArraySize.
-    int arraySize;          //How many objects the user has added to the array.
+  R_Object* type;
+  uint8_t * array;       //The actual array
+  int arrayAllocationSize;//How large the internal array is. This is always as-large or larger than ArraySize.
+  int arraySize;          //How many objects the user has added to the array.
 };
+
+static R_ByteArray* R_ByteArray_Constructor(R_ByteArray* self);
+static R_ByteArray* R_ByteArray_Destructor(R_ByteArray* self);
+static void R_ByteArray_Copier(R_ByteArray* self, R_ByteArray* new);
+R_Object_Typedef(R_ByteArray, R_ByteArray_Constructor, R_ByteArray_Destructor, R_ByteArray_Copier);
 
 static void R_ByteArray_increaseAllocationIfNeeded(R_ByteArray* self, size_t spaceNeeded);
 
-R_ByteArray* R_ByteArray_alloc(void) {
-	R_ByteArray* self = (R_ByteArray*)malloc(sizeof(R_ByteArray));
+static R_ByteArray* R_ByteArray_Constructor(R_ByteArray* self) {
 	self->array = (uint8_t*)malloc(128*sizeof(uint8_t));
     memset(self->array, 0, 128*sizeof(uint8_t));
     self->arrayAllocationSize = 128;
@@ -29,18 +34,21 @@ R_ByteArray* R_ByteArray_alloc(void) {
 
     return self;
 }
+static R_ByteArray* R_ByteArray_Destructor(R_ByteArray* self) {
+	free(self->array);
+	return self;
+}
+static void R_ByteArray_Copier(R_ByteArray* self, R_ByteArray* new) {
+	R_ByteArray_appendArray(new, self);
+}
+
 R_ByteArray* R_ByteArray_reset(R_ByteArray* self) {
-	self->array = (uint8_t*)realloc(self->array, 128*sizeof(uint8_t));
+    self->array = (uint8_t*)realloc(self->array, 128*sizeof(uint8_t));
     memset(self->array, 0, 128*sizeof(uint8_t));
     self->arrayAllocationSize = 128;
     self->arraySize = 0;
 
     return self;
-}
-R_ByteArray* R_ByteArray_free(R_ByteArray* self) {
-	free(self->array);
-	free(self);
-	return NULL;
 }
 
 static void R_ByteArray_increaseAllocationIfNeeded(R_ByteArray* self, size_t spaceNeeded) {

@@ -11,14 +11,15 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include "R_Object.h"
 
 typedef struct R_String R_String;
 
 #include "R_ByteArray.h"
 
-R_String* R_String_alloc(void);
+extern const R_Object* R_String_Type;
+
 R_String* R_String_reset(R_String* self);
-R_String* R_String_free(R_String* self);
 
 const char* R_String_getString(R_String* self);
 R_String* R_String_appendCString(R_String* self, const char* string);

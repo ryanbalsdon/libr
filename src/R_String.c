@@ -12,18 +12,24 @@
 #include "R_String.h"
 
 struct R_String {
+    R_Object* type;
     char* string;           //The allocated buffer
     size_t stringAllocationSize;//How large the internal buffer is. This is always as-large or larger than stringSize.
     size_t stringSize;          //How many objects the user has added to the array.
 };
+
+static R_String* R_String_Constructor(R_String* self);
+static R_String* R_String_Destructor(R_String* self);
+static void R_String_Copier(R_String* self, R_String* new);
+R_Object_Typedef(R_String, R_String_Constructor, R_String_Destructor, R_String_Copier);
+
 
 void R_String_increaseAllocationSize(R_String* self, size_t spaceNeeded);
 char* R_String_Strcpy(char* dest, const char* source);
 char* R_String_Strncpy(char* dest, const char* source, size_t num);
 char* R_String_Strcat(char* dest, const char* source);
 
-R_String* R_String_alloc(void) {
-	R_String* self = (R_String*)malloc(sizeof(R_String));
+R_String* R_String_Constructor(R_String* self) {
     self->string = (char*)malloc(128);
     memset(self->string, '\0', 128);
     self->stringAllocationSize = 128;
@@ -31,6 +37,16 @@ R_String* R_String_alloc(void) {
 
     return self;
 }
+R_String* R_String_Destructor(R_String* self) {
+    free(self->string);
+
+    return self;
+}
+void R_String_Copier(R_String* self, R_String* new) {
+    R_String_appendString(new, self);
+}
+
+
 R_String* R_String_reset(R_String* self) {
 	self->string = (char*)realloc(self->string, 128);
     memset(self->string, '\0', 128);
@@ -38,12 +54,6 @@ R_String* R_String_reset(R_String* self) {
     self->stringSize = 0;
 
     return self;
-}
-R_String* R_String_free(R_String* self) {
-    free(self->string);
-    free(self);
-
-    return NULL;
 }
 
 const char* R_String_getString(R_String* self) {
@@ -166,8 +176,7 @@ R_String* R_String_getEnclosedString(R_String* self, char beginningBrace, char f
 bool R_String_splitBracedString(R_String* self, char beginningBrace, char finishingBrace, 
 	R_String* beforeBraces, R_String* withBraces, R_String* insideBraces, R_String* afterBraces)
 {
-	R_String* input = R_String_alloc();
-	R_String_appendString(input, self);
+	R_String* input = R_Object_Copy(self);
 	if (beforeBraces != NULL) R_String_reset(beforeBraces);
 	if (withBraces != NULL) R_String_reset(withBraces);
 	if (insideBraces != NULL) R_String_reset(insideBraces);
@@ -179,8 +188,8 @@ bool R_String_splitBracedString(R_String* self, char beginningBrace, char finish
 			if (finishingBrace == '\0') {
 				if (beforeBraces != NULL) R_String_setSizedString(beforeBraces, input->string, i);
 				if (withBraces != NULL) R_String_getSubstring(input, (beginningBrace != 0)?i:i, strlen(input->string), withBraces);
-				if (insideBraces != NULL) R_String_getSubstring(input, (beginningBrace != 0)?i+1:i, strlen(input->string), insideBraces);						
-				//if (afterBraces != NULL) R_String_setString(afterBraces, "");
+				if (insideBraces != NULL) R_String_getSubstring(input, (beginningBrace != 0)?i+1:i, strlen(input->string), insideBraces);
+				R_Object_Delete(input);
 				return true;
 			}
 			for (int j=i+1; j<strlen(input->string)+1; j++) {
@@ -190,6 +199,7 @@ bool R_String_splitBracedString(R_String* self, char beginningBrace, char finish
 						if (withBraces != NULL) R_String_getSubstring(input, (beginningBrace != 0)?i:i, j, withBraces);
 						if (insideBraces != NULL) R_String_getSubstring(input, (beginningBrace != 0)?i+1:i, j-1, insideBraces);
 						if (afterBraces != NULL) R_String_setString(afterBraces, input->string+j+1);
+						R_Object_Delete(input);
 						return true;
 					}
 					else {
@@ -203,6 +213,7 @@ bool R_String_splitBracedString(R_String* self, char beginningBrace, char finish
 		}
 	}
 
+	R_Object_Delete(input);
 	return false;
 
 }

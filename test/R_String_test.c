@@ -15,11 +15,11 @@
 
 
 int main(void) {
-	R_String* string = R_String_alloc();
-	string = R_String_free(string);
-	assert(string == NULL);
+	R_String* string = R_Object_New(R_String_Type);
+	R_Object_Delete(string);
+	assert(R_Object_BytesAllocated == 0);
 
-	string = R_String_alloc();
+	string = R_Object_New(R_String_Type);
 	assert(R_String_setString(string, "test") == string);
 	assert(R_String_length(string) == 4);
 	assert(strcmp(R_String_getString(string), "test") == 0);
@@ -40,10 +40,11 @@ int main(void) {
 	R_String_appendFloat(string, 3.141592653589793238462643383279502884);
 	assert(strcmp("4948573.14159", R_String_getString(string)) == 0);
 
-	R_String* appendage = R_String_alloc();
+	R_String* appendage = R_Object_New(R_String_Type);
 	R_String_setString(appendage, "appendage");
 	R_String_appendString(string, appendage);
 	assert(strcmp("4948573.14159appendage", R_String_getString(string)) == 0);
+	R_Object_Delete(appendage);
 
 	R_String_reset(string);
 	R_String_appendInt(string, 494857);
@@ -53,7 +54,7 @@ int main(void) {
 	assert(R_String_getFloat(string) == 3.14f);
 
 	R_String_setString(string, "if (killer) then {hide};");
-	R_String* substring = R_String_alloc();
+	R_String* substring = R_Object_New(R_String_Type);
 	assert(R_String_getSubstring(string, 4, 9, substring) != NULL);
 	assert(strcmp(R_String_getString(R_String_getSubstring(string, 4, 9, substring)), "killer") == 0);
 	assert(R_String_getBracedString(string, '{', '}', substring) != NULL);
@@ -64,26 +65,26 @@ int main(void) {
 	assert(strcmp(R_String_getString(R_String_getBracedString(string, '{', '}', substring)), "{r{t}y{fg{h}vb}}") == 0);
 	assert(R_String_getEnclosedString(string, '{', '}', substring) != NULL);
 	assert(strcmp(R_String_getString(R_String_getEnclosedString(string, '{', '}', substring)), "r{t}y{fg{h}vb}") == 0);
-	R_String* beforeBraces = R_String_alloc();
-	R_String* withBraces = R_String_alloc();
-	R_String* insideBraces = R_String_alloc();
-	R_String* afterBraces = R_String_alloc();
+	R_String* beforeBraces = R_Object_New(R_String_Type);
+	R_String* withBraces = R_Object_New(R_String_Type);
+	R_String* insideBraces = R_Object_New(R_String_Type);
+	R_String* afterBraces = R_Object_New(R_String_Type);
 	assert(R_String_splitBracedString(string, '{', '}', beforeBraces, withBraces, insideBraces, afterBraces) == true);
 	assert(strcmp(R_String_getString(beforeBraces), "hi") == 0);
 	assert(strcmp(R_String_getString(withBraces), "{r{t}y{fg{h}vb}}") == 0);
 	assert(strcmp(R_String_getString(insideBraces), "r{t}y{fg{h}vb}") == 0);
 	assert(strcmp(R_String_getString(afterBraces), "qwe") == 0);
-	beforeBraces = R_String_free(beforeBraces);
-	withBraces = R_String_free(withBraces);
-	insideBraces = R_String_free(insideBraces);
-	afterBraces = R_String_free(afterBraces);
+	R_Object_Delete(beforeBraces);
+	R_Object_Delete(withBraces);
+	R_Object_Delete(insideBraces);
+	R_Object_Delete(afterBraces);
 
 	R_String_setString(string, "command;not");
 	assert(R_String_getBracedString(string, '\0', ';', substring) != NULL);
 	assert(strcmp(R_String_getString(R_String_getBracedString(string, 0, ';', substring)), "command;") == 0);
 	assert(R_String_getBracedString(string, ';', '\0', substring) != NULL);
 	assert(strcmp(R_String_getString(R_String_getBracedString(string, ';', 0, substring)), ";not") == 0);
-	substring = R_String_free(substring);
+	R_Object_Delete(substring);
 
 	R_String_setString(string, "a%%sdf#ht");
 	assert(R_String_findFirstToken(string, "%%fh") == '%');
@@ -101,14 +102,15 @@ int main(void) {
 	R_String_reset(string);
 	assert(R_String_isEmpty(string) == true);
 
-	R_ByteArray* testArray = R_ByteArray_alloc();
+	R_ByteArray* testArray = R_Object_New(R_ByteArray_Type);
 	R_ByteArray_appendBytes(testArray, 0x01, 0x23, 0x5A, 0xFF);
 	R_String_appendArrayAsHex(string, testArray);
 	assert(R_String_length(string) == 8);
 	assert(strcmp(R_String_getString(string), "01235AFF") == 0);
-	testArray = R_ByteArray_free(testArray);
+	R_Object_Delete(testArray);
 
 
-	string = R_String_free(string);
+	R_Object_Delete(string);
+	assert(R_Object_BytesAllocated == 0);
 	printf("Pass\n");
 }

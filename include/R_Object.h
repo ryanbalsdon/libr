@@ -41,7 +41,7 @@ typedef struct {
   R_Object_Copier copy; //If set to NULL, 'copy' will always fail. If not NULL, it's called during 'copy' to do deep copying.
 } R_Object;
 
-#define R_Object_Typedef(Type, ctor, dtor, copier) static const R_Object* Type ## _Type = &(R_Object){ \
+#define R_Object_Typedef(Type, ctor, dtor, copier) const R_Object* Type ## _Type = &(R_Object){ \
     sizeof(Type), \
     (R_Object_Constructor)ctor, \
     (R_Object_Destructor)dtor, \

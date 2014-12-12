@@ -54,7 +54,7 @@ R_Dictionary_Datum* R_Dictionary_Datum_free(R_Dictionary_Datum* self) {
 		R_ObjectArray_removeManagedAll(self->array, (R_ObjectArray_Deallocator)R_Dictionary_free);
 		R_ObjectArray_free(self->array);
 	}
-	if (self->string != NULL) self->string = R_String_free(self->string);
+	if (self->string != NULL) R_Object_Delete(self->string);
 	free(self);
 	return NULL;
 }
@@ -100,7 +100,7 @@ bool R_Dictionary_setString(R_Dictionary* self, const char* key, const char* dat
 	R_Dictionary_Datum* datum = R_Dictionary_prepareDatumForSetter(self, key);
 	if (datum == NULL) return false;
 
-	if (datum->string == NULL) datum->string = R_String_alloc();
+	if (datum->string == NULL) datum->string = R_Object_New(R_String_Type);
 	else R_String_reset(datum->string);
 	R_String_appendCString(datum->string, data);
 	datum->type = R_Dictionary_Datum_Type_Data;
@@ -134,7 +134,7 @@ const char* R_Dictionary_getString(R_Dictionary* self, const char* key) {
 bool R_Dictionary_setInt(R_Dictionary* self, const char* key, int data) {
 	R_Dictionary_Datum* datum = R_Dictionary_prepareDatumForSetter(self, key);
 	if (datum == NULL) return false;
-	if (datum->string == NULL) datum->string = R_String_alloc();
+	if (datum->string == NULL) datum->string = R_Object_New(R_String_Type);
 	else R_String_reset(datum->string);
 
 	R_String_appendInt(datum->string, data);
@@ -151,7 +151,7 @@ int R_Dictionary_getInt(R_Dictionary* self, const char* key) {
 bool R_Dictionary_setFloat(R_Dictionary* self, const char* key, float data) {
 	R_Dictionary_Datum* datum = R_Dictionary_prepareDatumForSetter(self, key);
 	if (datum == NULL) return false;
-	if (datum->string == NULL) datum->string = R_String_alloc();
+	if (datum->string == NULL) datum->string = R_Object_New(R_String_Type);
 	else R_String_reset(datum->string);
 
 	R_String_appendFloat(datum->string, data);
@@ -233,61 +233,61 @@ R_String* R_Dictionary_serialize(R_Dictionary* self, R_String* string) {
 }
 
 R_Dictionary* R_String_objectize(R_Dictionary* self, R_String* string) {
-	R_String* thisObjectString = R_String_alloc();
+	R_String* thisObjectString = R_Object_New(R_String_Type);
 	if (R_String_getEnclosedString(string, '{', '}', thisObjectString) == NULL ) {
-		R_String_free(thisObjectString);
+		R_Object_Delete(thisObjectString);
 		printf("no braces\n");
 		return NULL;
 	}
 
-	R_String* thisDatumKeyString = R_String_alloc();
-	R_String* thisDatumValueString = R_String_alloc();
+	R_String* thisDatumKeyString = R_Object_New(R_String_Type);
+	R_String* thisDatumValueString = R_Object_New(R_String_Type);
 	while (R_Dictionary_findNextDatumInString(thisObjectString, thisDatumKeyString, thisDatumValueString, thisObjectString)) {
 		char dataType = R_String_findFirstToken(thisDatumValueString, "'{[");
 		if (dataType == '\'') {
-			R_String* thisDatumNumberString = R_String_alloc();
+			R_String* thisDatumNumberString = R_Object_New(R_String_Type);
 			if (R_String_getEnclosedString(thisDatumValueString, '\'', '\'', thisDatumNumberString) == NULL ) {
-				R_String_free(thisDatumNumberString);
-				R_String_free(thisDatumValueString);
-				R_String_free(thisDatumKeyString);
-				R_String_free(thisObjectString);
+				R_Object_Delete(thisDatumNumberString);
+				R_Object_Delete(thisDatumValueString);
+				R_Object_Delete(thisDatumKeyString);
+				R_Object_Delete(thisObjectString);
 				printf("no single quotes\n");
 				return NULL;
 			}
 
 			R_Dictionary_setString(self, R_String_getString(thisDatumKeyString), R_String_getString(thisDatumNumberString));
-			R_String_free(thisDatumNumberString);
+			R_Object_Delete(thisDatumNumberString);
 		}
 		else if (dataType == '{') {
 			R_Dictionary* thisDatumObject = R_Dictionary_setObject(self, R_String_getString(thisDatumKeyString));
 			if (R_String_objectize(thisDatumObject, thisDatumValueString) == NULL) {
-				R_String_free(thisDatumValueString);
-				R_String_free(thisDatumKeyString);
-				R_String_free(thisObjectString);
+				R_Object_Delete(thisDatumValueString);
+				R_Object_Delete(thisDatumKeyString);
+				R_Object_Delete(thisObjectString);
 				printf("failed objectizing child\n");
 				return NULL;
 			}
 		}
 		else if (dataType == '[') {
-			R_String* thisDatumArrayEntryString = R_String_alloc();
+			R_String* thisDatumArrayEntryString = R_Object_New(R_String_Type);
 			while (R_String_splitBracedString(thisDatumValueString, '{', '}', NULL, thisDatumArrayEntryString, NULL, thisDatumValueString) == true) {
 				R_Dictionary* thisDatumObject = R_Dictionary_addToArray(self, R_String_getString(thisDatumKeyString));
 				if (R_String_objectize(thisDatumObject, thisDatumArrayEntryString) == NULL) {
-					R_String_free(thisDatumArrayEntryString);
-					R_String_free(thisDatumValueString);
-					R_String_free(thisDatumKeyString);
-					R_String_free(thisObjectString);
+					R_Object_Delete(thisDatumArrayEntryString);
+					R_Object_Delete(thisDatumValueString);
+					R_Object_Delete(thisDatumKeyString);
+					R_Object_Delete(thisObjectString);
 					printf("failed objectizing array entry\n");
 					return NULL;
 				}
 			}
-			R_String_free(thisDatumArrayEntryString);
+			R_Object_Delete(thisDatumArrayEntryString);
 		}
 	}
 
-	R_String_free(thisDatumValueString);
-	R_String_free(thisDatumKeyString);
-	R_String_free(thisObjectString);
+	R_Object_Delete(thisDatumValueString);
+	R_Object_Delete(thisDatumKeyString);
+	R_Object_Delete(thisObjectString);
 
 	return self;
 }
@@ -317,32 +317,32 @@ bool R_Dictionary_findNextDatumInString(R_String* _input, R_String* nextDatumKey
 	}
 	else if (valueStart[0] == '{') {
 		//this is an object value
-		R_String* valueString = R_String_alloc();
+		R_String* valueString = R_Object_New(R_String_Type);
 		R_String_setString(valueString, valueStart);
 		if (R_String_setSizedString(nextDatumKey, keyStart, keyEnd-keyStart) == NULL) {
-			valueString = R_String_free(valueString);
+			R_Object_Delete(valueString);
 			return false;
 		}
 		if (R_String_splitBracedString(valueString, '{', '}', NULL, nextDatumValue, NULL, _remainder) == false) {
-			valueString = R_String_free(valueString);
+			R_Object_Delete(valueString);
 			return false;
 		}
-		valueString = R_String_free(valueString);
+		R_Object_Delete(valueString);
 		return true;
 	}
 	else if (valueStart[0] == '[') {
 		//this is an array value
-		R_String* valueString = R_String_alloc();
+		R_String* valueString = R_Object_New(R_String_Type);
 		R_String_setString(valueString, valueStart);
 		if (R_String_setSizedString(nextDatumKey, keyStart, keyEnd-keyStart) == NULL) {
-			valueString = R_String_free(valueString);
+			R_Object_Delete(valueString);
 			return false;
 		}
 		if (R_String_splitBracedString(valueString, '[', ']', NULL, nextDatumValue, NULL, _remainder) == false) {
-			valueString = R_String_free(valueString);
+			R_Object_Delete(valueString);
 			return false;
 		}
-		valueString = R_String_free(valueString);
+		R_Object_Delete(valueString);
 		return true;
 	}
 

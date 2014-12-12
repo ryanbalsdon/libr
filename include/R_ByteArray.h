@@ -10,14 +10,16 @@
  */
 
 #include <stdint.h>
+#include "R_Object.h"
 
 typedef struct R_ByteArray R_ByteArray;
 
 #include "R_String.h"
 
-R_ByteArray* R_ByteArray_alloc(void);
+
+extern const R_Object* R_ByteArray_Type;
+
 R_ByteArray* R_ByteArray_reset(R_ByteArray* self);
-R_ByteArray* R_ByteArray_free(R_ByteArray* self);
 
 R_ByteArray* R_ByteArray_appendByte(R_ByteArray* self, uint8_t byte);
 R_ByteArray* R_ByteArray_appendCArray(R_ByteArray* self, const uint8_t* bytes, size_t count);

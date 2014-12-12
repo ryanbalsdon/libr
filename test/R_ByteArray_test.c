@@ -14,12 +14,11 @@
 #include "R_String.h"
 
 int main(void) {
-	R_ByteArray* array = NULL;
-	array = R_ByteArray_alloc();
-	array = R_ByteArray_free(array);
-	assert(array == NULL);
+	R_ByteArray* array = R_Object_New(R_ByteArray_Type);
+	R_Object_Delete(array);
+	assert(R_Object_BytesAllocated == 0);
 
-	array = R_ByteArray_alloc();
+	array = R_Object_New(R_ByteArray_Type);
 	assert(R_ByteArray_size(array) == 0);
 	R_ByteArray_appendByte(array, 0xA5);
 	assert(R_ByteArray_size(array) == 1);
@@ -39,7 +38,7 @@ int main(void) {
 	assert(R_ByteArray_bytes(array)[sizeof(bytes)] == 0xA5);
 
 	array = R_ByteArray_reset(array);
-	R_ByteArray* array2 = R_ByteArray_alloc();
+	R_ByteArray* array2 = R_Object_New(R_ByteArray_Type);
 	assert(R_ByteArray_size(array) == 0);
 	assert(R_ByteArray_size(array2) == 0);
 	R_ByteArray_appendCArray(array, bytes, sizeof(bytes));
@@ -132,15 +131,23 @@ int main(void) {
 	R_ByteArray_reset(array);
 	R_ByteArray_reset(array2);
 	R_ByteArray_appendBytes(array,  0x10, 0xFA, 0xB5, 0x09);
-	R_String* string = R_String_alloc();
+	R_String* string = R_Object_New(R_String_Type);
 	R_String_appendCString(string, "10fAB509");
-	printf("%s\n", R_String_getString(string));
 	R_ByteArray_appendHexString(array2, string);
 	assert(R_ByteArray_size(array2) == 4);
 	assert(R_ByteArray_compare(array, array2) == 0);
-	string = R_String_free(string);
+	R_Object_Delete(string);
 
-	array = R_ByteArray_free(array);
-	array2 = R_ByteArray_free(array2);
+	R_ByteArray_reset(array);
+	R_Object_Delete(array2);
+	R_ByteArray_appendCArray(array, bytes, sizeof(bytes));
+	array2 = R_Object_Copy(array);
+	assert(array2 != NULL);
+	assert(R_ByteArray_size(array2) == sizeof(bytes));
+	assert(memcmp(bytes, R_ByteArray_bytes(array2), sizeof(bytes)) == 0);
+
+	R_Object_Delete(array);
+	R_Object_Delete(array2);
+	assert(R_Object_BytesAllocated == 0);
 	printf("Pass\n");
 }
