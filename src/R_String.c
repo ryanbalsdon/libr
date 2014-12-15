@@ -12,10 +12,10 @@
 #include "R_String.h"
 
 struct R_String {
-    R_Type* type;
-    char* string;           //The allocated buffer
-    size_t stringAllocationSize;//How large the internal buffer is. This is always as-large or larger than stringSize.
-    size_t stringSize;          //How many objects the user has added to the array.
+	R_Type* type;
+	char* string;               //The allocated buffer
+	size_t stringAllocationSize;//How large the internal buffer is. This is always as-large or larger than stringSize.
+	size_t stringSize;          //How many objects the user has added to the array.
 };
 
 static R_String* R_String_Constructor(R_String* self);
@@ -30,30 +30,29 @@ char* R_String_Strncpy(char* dest, const char* source, size_t num);
 char* R_String_Strcat(char* dest, const char* source);
 
 R_String* R_String_Constructor(R_String* self) {
-    self->string = (char*)malloc(128);
-    memset(self->string, '\0', 128);
-    self->stringAllocationSize = 128;
-    self->stringSize = 0;
+	self->string = (char*)malloc(128);
+	memset(self->string, '\0', 128);
+	self->stringAllocationSize = 128;
+	self->stringSize = 0;
 
-    return self;
+	return self;
 }
 R_String* R_String_Destructor(R_String* self) {
-    free(self->string);
-
-    return self;
+	free(self->string);
+	return self;
 }
 void R_String_Copier(R_String* self, R_String* new) {
-    R_String_appendString(new, self);
+	R_String_appendString(new, self);
 }
 
 
 R_String* R_String_reset(R_String* self) {
 	self->string = (char*)realloc(self->string, 128);
-    memset(self->string, '\0', 128);
-    self->stringAllocationSize = 128;
-    self->stringSize = 0;
+	memset(self->string, '\0', 128);
+	self->stringAllocationSize = 128;
+	self->stringSize = 0;
 
-    return self;
+	return self;
 }
 
 const char* R_String_getString(R_String* self) {

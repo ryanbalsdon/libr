@@ -135,4 +135,3 @@ void R_ObjectArray_removeAll(R_ObjectArray* self) {
     for (int i=0; i<self->arraySize; i++) R_Type_Delete(self->array[i]);
     self->arraySize = 0;
 }
-

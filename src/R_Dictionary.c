@@ -349,6 +349,3 @@ const char* R_Dictionary_findValueStart(const char* input) {
 
 	return NULL;
 }
-
-
-
