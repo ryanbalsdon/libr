@@ -13,7 +13,7 @@
 
 
 struct R_ByteArray {
-  R_Object* type;
+  R_Type* type;
   uint8_t * array;       //The actual array
   int arrayAllocationSize;//How large the internal array is. This is always as-large or larger than ArraySize.
   int arraySize;          //How many objects the user has added to the array.
@@ -22,17 +22,17 @@ struct R_ByteArray {
 static R_ByteArray* R_ByteArray_Constructor(R_ByteArray* self);
 static R_ByteArray* R_ByteArray_Destructor(R_ByteArray* self);
 static void R_ByteArray_Copier(R_ByteArray* self, R_ByteArray* new);
-R_Object_Typedef(R_ByteArray, R_ByteArray_Constructor, R_ByteArray_Destructor, R_ByteArray_Copier);
+R_Type_Def(R_ByteArray, R_ByteArray_Constructor, R_ByteArray_Destructor, R_ByteArray_Copier);
 
 static void R_ByteArray_increaseAllocationIfNeeded(R_ByteArray* self, size_t spaceNeeded);
 
 static R_ByteArray* R_ByteArray_Constructor(R_ByteArray* self) {
 	self->array = (uint8_t*)malloc(128*sizeof(uint8_t));
-    memset(self->array, 0, 128*sizeof(uint8_t));
-    self->arrayAllocationSize = 128;
-    self->arraySize = 0;
+	memset(self->array, 0, 128*sizeof(uint8_t));
+	self->arrayAllocationSize = 128;
+	self->arraySize = 0;
 
-    return self;
+	return self;
 }
 static R_ByteArray* R_ByteArray_Destructor(R_ByteArray* self) {
 	free(self->array);
@@ -43,12 +43,12 @@ static void R_ByteArray_Copier(R_ByteArray* self, R_ByteArray* new) {
 }
 
 R_ByteArray* R_ByteArray_reset(R_ByteArray* self) {
-    self->array = (uint8_t*)realloc(self->array, 128*sizeof(uint8_t));
-    memset(self->array, 0, 128*sizeof(uint8_t));
-    self->arrayAllocationSize = 128;
-    self->arraySize = 0;
+	self->array = (uint8_t*)realloc(self->array, 128*sizeof(uint8_t));
+	memset(self->array, 0, 128*sizeof(uint8_t));
+	self->arrayAllocationSize = 128;
+	self->arraySize = 0;
 
-    return self;
+	return self;
 }
 
 static void R_ByteArray_increaseAllocationIfNeeded(R_ByteArray* self, size_t spaceNeeded) {

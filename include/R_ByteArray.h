@@ -10,14 +10,14 @@
  */
 
 #include <stdint.h>
-#include "R_Object.h"
+#include "R_Type.h"
 
 typedef struct R_ByteArray R_ByteArray;
 
 #include "R_String.h"
 
 
-extern const R_Object* R_ByteArray_Type;
+extern const R_Type* R_ByteArray_Type;
 
 R_ByteArray* R_ByteArray_reset(R_ByteArray* self);
 

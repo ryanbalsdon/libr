@@ -11,13 +11,13 @@
 
 #include <stdbool.h>
 #include <stddef.h>
-#include "R_Object.h"
+#include "R_Type.h"
 
 typedef struct R_String R_String;
 
 #include "R_ByteArray.h"
 
-extern const R_Object* R_String_Type;
+extern const R_Type* R_String_Type;
 
 R_String* R_String_reset(R_String* self);
 

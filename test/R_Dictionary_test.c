@@ -102,7 +102,7 @@ int main(void) {
 
 	R_Dictionary_reset(whit);
 	R_Dictionary_setInt(whit, "integer 1", 42);
-	R_String* string = R_Object_New(R_String_Type);
+	R_String* string = R_Type_New(R_String_Type);
 	assert(R_Dictionary_serialize(whit, string) != NULL);
 	assert(strcmp(R_String_getString(string), "{integer 1='42';};") == 0);
 	R_String_reset(string);

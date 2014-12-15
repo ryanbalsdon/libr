@@ -10,10 +10,10 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
-#include "R_Object.h"
+#include "R_Type.h"
 
 struct Testor {
-  R_Object* type;
+  R_Type* type;
   long test; //just to double-check that it's being nulled
 };
 
@@ -42,11 +42,11 @@ void Testor_Copier(Testor* testor, Testor* new_testor) {
   new_testor->test = testor->test;
 }
 
-R_Object_Typedef(Testor, NULL, NULL, NULL);
-R_Object_Typedef(ConstructorTestor, Testor_Constructor, NULL, NULL);
-R_Object_Typedef(DestructorTestor, NULL, Testor_Destructor, NULL);
-R_Object_Typedef(CopierTestor, NULL, NULL, Testor_Copier);
-R_Object_Typedef(FullTestor, Testor_Constructor, Testor_Destructor, Testor_Copier);
+R_Type_Def(Testor, NULL, NULL, NULL);
+R_Type_Def(ConstructorTestor, Testor_Constructor, NULL, NULL);
+R_Type_Def(DestructorTestor, NULL, Testor_Destructor, NULL);
+R_Type_Def(CopierTestor, NULL, NULL, Testor_Copier);
+R_Type_Def(FullTestor, Testor_Constructor, Testor_Destructor, Testor_Copier);
 
 void test_simple(void) {
   assert(Testor_Type->size == sizeof(Testor));
@@ -54,17 +54,17 @@ void test_simple(void) {
   assert(Testor_Type->dtor == NULL);
   assert(Testor_Type->copy == NULL);
 
-  Testor* testor = R_Object_New(Testor_Type);
+  Testor* testor = R_Type_New(Testor_Type);
   assert(testor != NULL);
   assert(testor->type == Testor_Type);
-  assert(R_Object_BytesAllocated == sizeof(Testor));
-  R_Object_Delete(testor);
-  assert(R_Object_BytesAllocated == 0);
+  assert(R_Type_BytesAllocated == sizeof(Testor));
+  R_Type_Delete(testor);
+  assert(R_Type_BytesAllocated == 0);
 }
 
 void test_constructor(void) {
   assert(ConstructorTestor_Type->size == sizeof(Testor));
-  assert(ConstructorTestor_Type->ctor == (R_Object_Constructor)Testor_Constructor);
+  assert(ConstructorTestor_Type->ctor == (R_Type_Constructor)Testor_Constructor);
   assert(ConstructorTestor_Type->dtor == NULL);
   assert(ConstructorTestor_Type->copy == NULL);
 
@@ -73,15 +73,15 @@ void test_constructor(void) {
   assert(Testor_Copier_Called == 0);
 
   assert(Testor_Constructor_Called == 0);
-  Testor* testor = R_Object_New(ConstructorTestor_Type);
+  Testor* testor = R_Type_New(ConstructorTestor_Type);
   assert(testor != NULL);
   assert(testor->type == ConstructorTestor_Type);
   assert(Testor_Constructor_Called == 1);
   assert(Testor_Destructor_Called == 0);
   assert(Testor_Copier_Called == 0);
-  assert(R_Object_BytesAllocated == sizeof(Testor));
-  R_Object_Delete(testor);
-  assert(R_Object_BytesAllocated == 0);
+  assert(R_Type_BytesAllocated == sizeof(Testor));
+  R_Type_Delete(testor);
+  assert(R_Type_BytesAllocated == 0);
 
   Testor_Constructor_Called = 0;
 }
@@ -89,23 +89,23 @@ void test_constructor(void) {
 void test_destructor(void) {
   assert(DestructorTestor_Type->size == sizeof(Testor));
   assert(DestructorTestor_Type->ctor == NULL);
-  assert(DestructorTestor_Type->dtor == (R_Object_Destructor)Testor_Destructor);
+  assert(DestructorTestor_Type->dtor == (R_Type_Destructor)Testor_Destructor);
   assert(DestructorTestor_Type->copy == NULL);
 
   assert(Testor_Constructor_Called == 0);
   assert(Testor_Destructor_Called == 0);
   assert(Testor_Copier_Called == 0);
 
-  Testor* testor = R_Object_New(DestructorTestor_Type);
+  Testor* testor = R_Type_New(DestructorTestor_Type);
   assert(testor != NULL);
   assert(testor->type == DestructorTestor_Type);
   assert(Testor_Constructor_Called == 0);
   assert(Testor_Destructor_Called == 0);
   assert(Testor_Copier_Called == 0);
-  assert(R_Object_BytesAllocated == sizeof(Testor));
-  R_Object_Delete(testor);
+  assert(R_Type_BytesAllocated == sizeof(Testor));
+  R_Type_Delete(testor);
   assert(Testor_Destructor_Called == 1);
-  assert(R_Object_BytesAllocated == 0);
+  assert(R_Type_BytesAllocated == 0);
 
   Testor_Destructor_Called = 0;
 }
@@ -114,54 +114,54 @@ void test_copier(void) {
   assert(CopierTestor_Type->size == sizeof(Testor));
   assert(CopierTestor_Type->ctor == NULL);
   assert(CopierTestor_Type->dtor == NULL);
-  assert(CopierTestor_Type->copy == (R_Object_Copier)Testor_Copier);
+  assert(CopierTestor_Type->copy == (R_Type_Copier)Testor_Copier);
 
   assert(Testor_Constructor_Called == 0);
   assert(Testor_Destructor_Called == 0);
   assert(Testor_Copier_Called == 0);
 
-  Testor* testor = R_Object_New(CopierTestor_Type);
+  Testor* testor = R_Type_New(CopierTestor_Type);
   assert(testor != NULL);
   assert(testor->type == CopierTestor_Type);
-  assert(R_Object_BytesAllocated == sizeof(Testor));
+  assert(R_Type_BytesAllocated == sizeof(Testor));
 
   testor->test = 1001;
-  Testor* testor_copy = R_Object_Copy(testor);
-  assert(R_Object_BytesAllocated == 2*sizeof(Testor));
+  Testor* testor_copy = R_Type_Copy(testor);
+  assert(R_Type_BytesAllocated == 2*sizeof(Testor));
   assert(Testor_Constructor_Called == 0);
   assert(Testor_Destructor_Called == 0);
   assert(Testor_Copier_Called == 1);
   assert(testor_copy->test == 1001);
 
-  R_Object_Delete(testor);
-  R_Object_Delete(testor_copy);
-  assert(R_Object_BytesAllocated == 0);
+  R_Type_Delete(testor);
+  R_Type_Delete(testor_copy);
+  assert(R_Type_BytesAllocated == 0);
 
   Testor_Copier_Called = 0;
 }
 
 void test_full(void) {
   assert(FullTestor_Type->size == sizeof(Testor));
-  assert(FullTestor_Type->ctor == (R_Object_Constructor)Testor_Constructor);
-  assert(FullTestor_Type->dtor == (R_Object_Destructor)Testor_Destructor);
-  assert(FullTestor_Type->copy == (R_Object_Copier)Testor_Copier);
+  assert(FullTestor_Type->ctor == (R_Type_Constructor)Testor_Constructor);
+  assert(FullTestor_Type->dtor == (R_Type_Destructor)Testor_Destructor);
+  assert(FullTestor_Type->copy == (R_Type_Copier)Testor_Copier);
 
   assert(Testor_Constructor_Called == 0);
   assert(Testor_Destructor_Called == 0);
   assert(Testor_Copier_Called == 0);
 
-  Testor* testor = R_Object_New(FullTestor_Type);
+  Testor* testor = R_Type_New(FullTestor_Type);
   assert(testor != NULL);
   assert(testor->type == FullTestor_Type);
   assert(Testor_Constructor_Called == 1);
   assert(Testor_Destructor_Called == 0);
   assert(Testor_Copier_Called == 0);
-  assert(R_Object_BytesAllocated == sizeof(Testor));
-  R_Object_Delete(testor);
+  assert(R_Type_BytesAllocated == sizeof(Testor));
+  R_Type_Delete(testor);
   assert(Testor_Constructor_Called == 1);
   assert(Testor_Destructor_Called == 1);
   assert(Testor_Copier_Called == 0);
-  assert(R_Object_BytesAllocated == 0);
+  assert(R_Type_BytesAllocated == 0);
 
   Testor_Constructor_Called = 0;
   Testor_Destructor_Called = 0;

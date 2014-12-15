@@ -12,7 +12,7 @@
 #include "R_String.h"
 
 struct R_String {
-    R_Object* type;
+    R_Type* type;
     char* string;           //The allocated buffer
     size_t stringAllocationSize;//How large the internal buffer is. This is always as-large or larger than stringSize.
     size_t stringSize;          //How many objects the user has added to the array.
@@ -21,7 +21,7 @@ struct R_String {
 static R_String* R_String_Constructor(R_String* self);
 static R_String* R_String_Destructor(R_String* self);
 static void R_String_Copier(R_String* self, R_String* new);
-R_Object_Typedef(R_String, R_String_Constructor, R_String_Destructor, R_String_Copier);
+R_Type_Def(R_String, R_String_Constructor, R_String_Destructor, R_String_Copier);
 
 
 void R_String_increaseAllocationSize(R_String* self, size_t spaceNeeded);
@@ -176,7 +176,7 @@ R_String* R_String_getEnclosedString(R_String* self, char beginningBrace, char f
 bool R_String_splitBracedString(R_String* self, char beginningBrace, char finishingBrace, 
 	R_String* beforeBraces, R_String* withBraces, R_String* insideBraces, R_String* afterBraces)
 {
-	R_String* input = R_Object_Copy(self);
+	R_String* input = R_Type_Copy(self);
 	if (beforeBraces != NULL) R_String_reset(beforeBraces);
 	if (withBraces != NULL) R_String_reset(withBraces);
 	if (insideBraces != NULL) R_String_reset(insideBraces);
@@ -189,7 +189,7 @@ bool R_String_splitBracedString(R_String* self, char beginningBrace, char finish
 				if (beforeBraces != NULL) R_String_setSizedString(beforeBraces, input->string, i);
 				if (withBraces != NULL) R_String_getSubstring(input, (beginningBrace != 0)?i:i, strlen(input->string), withBraces);
 				if (insideBraces != NULL) R_String_getSubstring(input, (beginningBrace != 0)?i+1:i, strlen(input->string), insideBraces);
-				R_Object_Delete(input);
+				R_Type_Delete(input);
 				return true;
 			}
 			for (int j=i+1; j<strlen(input->string)+1; j++) {
@@ -199,7 +199,7 @@ bool R_String_splitBracedString(R_String* self, char beginningBrace, char finish
 						if (withBraces != NULL) R_String_getSubstring(input, (beginningBrace != 0)?i:i, j, withBraces);
 						if (insideBraces != NULL) R_String_getSubstring(input, (beginningBrace != 0)?i+1:i, j-1, insideBraces);
 						if (afterBraces != NULL) R_String_setString(afterBraces, input->string+j+1);
-						R_Object_Delete(input);
+						R_Type_Delete(input);
 						return true;
 					}
 					else {
@@ -213,7 +213,7 @@ bool R_String_splitBracedString(R_String* self, char beginningBrace, char finish
 		}
 	}
 
-	R_Object_Delete(input);
+	R_Type_Delete(input);
 	return false;
 
 }
