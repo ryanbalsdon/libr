@@ -14,10 +14,7 @@
 
 
 typedef struct R_Dictionary R_Dictionary;
-
-R_Dictionary* R_Dictionary_alloc(void);
-R_Dictionary* R_Dictionary_reset(R_Dictionary* self);
-R_Dictionary* R_Dictionary_free(R_Dictionary* self);
+extern const R_Type* R_Dictionary_Type;
 
 bool R_Dictionary_doesKeyExist(R_Dictionary* self, const char* key);
 
@@ -33,7 +30,7 @@ R_Dictionary* R_Dictionary_getObject(R_Dictionary* self, const char* key);
 
 R_Dictionary* R_Dictionary_addToArray(R_Dictionary* self, const char* key);
 int R_Dictionary_getArraySize(R_Dictionary* self, const char* key);
-R_Dictionary* R_Dictionary_getArrayIndex(R_Dictionary* self, const char* key, int index);
+R_Dictionary* R_Dictionary_getArrayIndex(R_Dictionary* self, const char* key, size_t index);
 
 R_String* R_Dictionary_serialize(R_Dictionary* self, R_String* stringToAppendTo);
 R_Dictionary* R_String_objectize(R_Dictionary* self, R_String* string);

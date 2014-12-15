@@ -65,6 +65,11 @@ void R_Type_Delete(void* object);
  */
 void* R_Type_Copy(void* object);
 
+/*  R_Type_Type(void* object);
+    Returns the type/class of the object. Casts the given object to an R_Type** then dereferences it. Useful as shorthand.
+ */
+R_Type* R_Type_Type(void* object);
+
 /*  R_Type_BytesAllocated
     Number of bytes currently in-use. Mostly just useful for testing or profiling.
 */

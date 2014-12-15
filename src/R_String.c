@@ -230,7 +230,12 @@ char R_String_findFirstToken(R_String* self, char* tokens) {
 	return '\0';
 }
 
-
+bool R_String_isSame(R_String* self, R_String* comparor) {
+	if (self == NULL || comparor == NULL) return false;
+	if (R_String_length(self) != R_String_length(comparor)) return false;
+	if (strncmp(R_String_getString(self), R_String_getString(comparor), R_String_length(self)) != 0) return false;
+	return true;
+}
 
 char* R_String_Strcpy(char* dest, const char* source) {
 	

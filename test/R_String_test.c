@@ -127,6 +127,29 @@ void test_find_token(void) {
 	R_Type_Delete(string);
 }
 
+void test_is_same(void) {
+	R_String* stringA = R_Type_New(R_String_Type);
+	R_String* stringB = R_Type_New(R_String_Type);
+	R_String_setString(stringA, "different");
+	R_String_setString(stringB, "sizes");
+	assert(R_String_isSame(stringA, stringB) == false);
+	assert(R_String_isSame(stringB, stringA) == false);
+	R_String_setString(stringA, "same");
+	R_String_setString(stringB, "size");
+	assert(R_String_isSame(stringA, stringB) == false);
+	assert(R_String_isSame(stringB, stringA) == false);
+	R_String_setString(stringA, "substring");
+	R_String_setString(stringB, "substrin");
+	assert(R_String_isSame(stringA, stringB) == false);
+	assert(R_String_isSame(stringB, stringA) == false);
+	R_String_setString(stringA, "actually equal");
+	R_String_setString(stringB, "actually equal");
+	assert(R_String_isSame(stringA, stringB) == true);
+	assert(R_String_isSame(stringB, stringA) == true);
+	R_Type_Delete(stringA);
+	R_Type_Delete(stringB);
+}
+
 int main(void) {
 	assert(R_Type_BytesAllocated == 0);
 	test_set_get();

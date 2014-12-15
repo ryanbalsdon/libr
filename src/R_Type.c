@@ -37,3 +37,7 @@ void* R_Type_Copy(void* object) {
   if (new_object != NULL) type->copy(object, new_object);
   return new_object;
 }
+
+R_Type* R_Type_Type(void* object) {
+  return *(R_Type**)object; //First element of every object must be an R_Type*
+}

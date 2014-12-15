@@ -57,6 +57,7 @@ void test_simple(void) {
   Testor* testor = R_Type_New(Testor_Type);
   assert(testor != NULL);
   assert(testor->type == Testor_Type);
+  assert(R_Type_Type(testor) == Testor_Type);
   assert(R_Type_BytesAllocated == sizeof(Testor));
   R_Type_Delete(testor);
   assert(R_Type_BytesAllocated == 0);
@@ -76,6 +77,7 @@ void test_constructor(void) {
   Testor* testor = R_Type_New(ConstructorTestor_Type);
   assert(testor != NULL);
   assert(testor->type == ConstructorTestor_Type);
+  assert(R_Type_Type(testor) == ConstructorTestor_Type);
   assert(Testor_Constructor_Called == 1);
   assert(Testor_Destructor_Called == 0);
   assert(Testor_Copier_Called == 0);
@@ -99,6 +101,7 @@ void test_destructor(void) {
   Testor* testor = R_Type_New(DestructorTestor_Type);
   assert(testor != NULL);
   assert(testor->type == DestructorTestor_Type);
+  assert(R_Type_Type(testor) == DestructorTestor_Type);
   assert(Testor_Constructor_Called == 0);
   assert(Testor_Destructor_Called == 0);
   assert(Testor_Copier_Called == 0);
@@ -123,6 +126,7 @@ void test_copier(void) {
   Testor* testor = R_Type_New(CopierTestor_Type);
   assert(testor != NULL);
   assert(testor->type == CopierTestor_Type);
+  assert(R_Type_Type(testor) == CopierTestor_Type);
   assert(R_Type_BytesAllocated == sizeof(Testor));
 
   testor->test = 1001;
@@ -153,6 +157,7 @@ void test_full(void) {
   Testor* testor = R_Type_New(FullTestor_Type);
   assert(testor != NULL);
   assert(testor->type == FullTestor_Type);
+  assert(R_Type_Type(testor) == FullTestor_Type);
   assert(Testor_Constructor_Called == 1);
   assert(Testor_Destructor_Called == 0);
   assert(Testor_Copier_Called == 0);

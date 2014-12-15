@@ -46,5 +46,6 @@ bool R_String_splitBracedString(R_String* self, char beginningBrace, char finish
 	R_String* beforeBraces, R_String* withBraces, R_String* insideBraces, R_String* afterBraces);
 
 bool R_String_isEmpty(R_String* self);
+bool R_String_isSame(R_String* self, R_String* comparor);
 
 #endif /* R_String_h */
