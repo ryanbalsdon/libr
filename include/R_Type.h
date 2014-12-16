@@ -51,7 +51,8 @@ typedef struct {
 /*  R_Type_New
     Allocates a new object of the given type. Allocates and nulls type->size bytes than calls type->ctor, if it isn't null.
  */
-void* R_Type_New(const R_Type* type);
+void* R_Type_NewObjectOfType(const R_Type* type);
+#define R_Type_New(Type) (Type*)R_Type_NewObjectOfType(Type ## _Type)
 
 /*  R_Type_Delete
     Gives the memory allocated to the given object back to the system. If type->dtor isn't null, free is called on the result
@@ -66,9 +67,11 @@ void R_Type_Delete(void* object);
 void* R_Type_Copy(void* object);
 
 /*  R_Type_Type(void* object);
-    Returns the type/class of the object. Casts the given object to an R_Type** then dereferences it. Useful as shorthand.
+    Returns whether the object is the given type/class. Casts the given object to an R_Type** then dereferences and compares it. Useful as shorthand.
  */
-R_Type* R_Type_Type(void* object);
+int R_Type_IsObjectOfType(void* object, const R_Type* type);
+#define R_Type_IsOf(object, Type) R_Type_IsObjectOfType(object, Type ## _Type)
+
 
 /*  R_Type_BytesAllocated
     Number of bytes currently in-use. Mostly just useful for testing or profiling.

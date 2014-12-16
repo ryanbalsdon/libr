@@ -11,7 +11,7 @@
 
 size_t R_Type_BytesAllocated = 0;
 
-void* R_Type_New(const R_Type* type) {
+void* R_Type_NewObjectOfType(const R_Type* type) {
   if (type->size < sizeof(R_Type*)) return NULL; //If they were equal, this object would be useless. No good reason to limit that though...
   void* new_object = calloc(1, type->size);
   if (new_object != NULL) *(const R_Type**)new_object = type;
@@ -33,11 +33,14 @@ void* R_Type_Copy(void* object) {
   R_Type* type = *(R_Type**)object; //First element of every object must be an R_Type*
   if (type->copy == NULL) return NULL;
 
-  void* new_object = R_Type_New(type);
+  void* new_object = R_Type_NewObjectOfType(type);
   if (new_object != NULL) type->copy(object, new_object);
   return new_object;
 }
 
-R_Type* R_Type_Type(void* object) {
-  return *(R_Type**)object; //First element of every object must be an R_Type*
+int R_Type_IsObjectOfType(void* object, const R_Type* type) {
+  if (object == NULL || type == NULL) return 0;
+  R_Type* type_of_object = *(R_Type**)object; //First element of every object must be an R_Type*
+  if (type_of_object != type) return 0;
+  return 1;
 }

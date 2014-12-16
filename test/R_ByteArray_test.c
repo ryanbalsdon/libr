@@ -14,13 +14,13 @@
 #include "R_String.h"
 
 void test_allocation(void) {
-	R_ByteArray* array = R_Type_New(R_ByteArray_Type);
+	R_ByteArray* array = R_Type_New(R_ByteArray);
 	R_Type_Delete(array);
 	assert(R_Type_BytesAllocated == 0);
 }
 
 void test_appendByte(void) {
-	R_ByteArray* array = R_Type_New(R_ByteArray_Type);
+	R_ByteArray* array = R_Type_New(R_ByteArray);
 	assert(R_ByteArray_size(array) == 0);
 	R_ByteArray_appendByte(array, 0xA5);
 	assert(R_ByteArray_size(array) == 1);
@@ -32,7 +32,7 @@ void test_appendByte(void) {
 }
 
 void test_appendCArray(void) {
-	R_ByteArray* array = R_Type_New(R_ByteArray_Type);
+	R_ByteArray* array = R_Type_New(R_ByteArray);
 	assert(R_ByteArray_size(array) == 0);
 	uint8_t bytes[] = {0x00, 0x01, 0x02, 0x03};
 	R_ByteArray_appendCArray(array, bytes, sizeof(bytes));
@@ -45,8 +45,8 @@ void test_appendCArray(void) {
 }
 
 void test_appendArray(void) {
-	R_ByteArray* array = R_Type_New(R_ByteArray_Type);
-	R_ByteArray* array2 = R_Type_New(R_ByteArray_Type);
+	R_ByteArray* array = R_Type_New(R_ByteArray);
+	R_ByteArray* array2 = R_Type_New(R_ByteArray);
 	uint8_t bytes[] = {0x00, 0x01, 0x02, 0x03};
 	assert(R_ByteArray_size(array) == 0);
 	assert(R_ByteArray_size(array2) == 0);
@@ -60,7 +60,7 @@ void test_appendArray(void) {
 }
 
 void test_push_pop(void) {
-	R_ByteArray* array = R_Type_New(R_ByteArray_Type);
+	R_ByteArray* array = R_Type_New(R_ByteArray);
 	R_ByteArray_appendByte(array, 0x01);
 	R_ByteArray_appendByte(array, 0x02);
 	assert(R_ByteArray_size(array) == 2);
@@ -91,8 +91,8 @@ void test_push_pop(void) {
 }
 
 void test_MoveSubArray(void) {
-	R_ByteArray* array = R_Type_New(R_ByteArray_Type);
-	R_ByteArray* array2 = R_Type_New(R_ByteArray_Type);
+	R_ByteArray* array = R_Type_New(R_ByteArray);
+	R_ByteArray* array2 = R_Type_New(R_ByteArray);
 	uint8_t bytes[] = {0x00, 0x01, 0x02, 0x03};
 	R_ByteArray_appendCArray(array, bytes, sizeof(bytes));
 	assert(R_ByteArray_size(array)  == 4);
@@ -121,7 +121,7 @@ void test_MoveSubArray(void) {
 }
 
 void test_read_byte(void) {
-	R_ByteArray* array = R_Type_New(R_ByteArray_Type);
+	R_ByteArray* array = R_Type_New(R_ByteArray);
 	R_ByteArray_appendBytes(array, 0x10, 0x20, 0x30);
 	assert(R_ByteArray_size(array) == 3);
 	assert(R_ByteArray_byte(array,0) == 0x10);
@@ -131,8 +131,8 @@ void test_read_byte(void) {
 }
 
 void test_compare(void) {
-	R_ByteArray* array = R_Type_New(R_ByteArray_Type);
-	R_ByteArray* array2 = R_Type_New(R_ByteArray_Type);
+	R_ByteArray* array = R_Type_New(R_ByteArray);
+	R_ByteArray* array2 = R_Type_New(R_ByteArray);
 	R_ByteArray_appendBytes(array,  0x10, 0x20, 0x30);
 	R_ByteArray_appendBytes(array2, 0x10, 0x20, 0x30);
 	assert(R_ByteArray_compare(array, array2) == 0);
@@ -156,10 +156,10 @@ void test_compare(void) {
 }
 
 void test_appendHexString(void) {
-	R_ByteArray* array = R_Type_New(R_ByteArray_Type);
-	R_ByteArray* array2 = R_Type_New(R_ByteArray_Type);
+	R_ByteArray* array = R_Type_New(R_ByteArray);
+	R_ByteArray* array2 = R_Type_New(R_ByteArray);
 	R_ByteArray_appendBytes(array,  0x10, 0xFA, 0xB5, 0x09);
-	R_String* string = R_Type_New(R_String_Type);
+	R_String* string = R_Type_New(R_String);
 	R_String_appendCString(string, "10fAB509");
 	R_ByteArray_appendHexString(array2, string);
 	assert(R_ByteArray_size(array2) == 4);
@@ -170,7 +170,7 @@ void test_appendHexString(void) {
 }
 
 void test_copy(void) {
-	R_ByteArray* array = R_Type_New(R_ByteArray_Type);
+	R_ByteArray* array = R_Type_New(R_ByteArray);
 	uint8_t bytes[] = {0x00, 0x01, 0x02, 0x03};
 	R_ByteArray_appendCArray(array, bytes, sizeof(bytes));
 	R_ByteArray* array2 = R_Type_Copy(array);

@@ -22,7 +22,7 @@ R_Dictionary_Datum* R_Dictionary_Datum_Constructor(R_Dictionary_Datum* self);
 R_Dictionary_Datum* R_Dictionary_Datum_Destructor(R_Dictionary_Datum* self);
 
 R_Dictionary_Datum* R_Dictionary_Datum_Constructor(R_Dictionary_Datum* self) {
-	self->key = R_Type_New(R_String_Type);
+	self->key = R_Type_New(R_String);
 	return self;
 }
 
@@ -41,7 +41,7 @@ R_Dictionary* R_Dictionary_Constructor(R_Dictionary* self);
 R_Dictionary* R_Dictionary_Destructor(R_Dictionary* self);
 
 R_Dictionary* R_Dictionary_Constructor(R_Dictionary* self) {
-	self->dictionary = R_Type_New(R_ObjectArray_Type);
+	self->dictionary = R_Type_New(R_ObjectArray);
 	return self;
 }
 
@@ -77,7 +77,7 @@ R_Dictionary_Datum* R_Dictionary_prepareDatumForStringSetter(R_Dictionary* self,
 	R_Dictionary_Datum* datum = R_Dictionary_prepareDatumForSetter(self, key);
 	if (datum == NULL) return false;
 	if (datum->value != NULL) R_Type_Delete(datum->value);
-	datum->value = R_Type_New(R_String_Type);
+	datum->value = R_Type_New(R_String);
 	if (datum->value == NULL) return NULL;
 	return datum;
 }
@@ -86,14 +86,14 @@ R_Dictionary_Datum* R_Dictionary_prepareDatumForSetter(R_Dictionary* self, const
 	if (self == NULL || key == NULL) return NULL;
 	R_Dictionary_Datum* datum = R_Dictionary_getDatum(self, key);
 	if (datum != NULL) return datum;
-	datum = R_ObjectArray_addObject(self->dictionary, R_Dictionary_Datum_Type);
+	datum = R_ObjectArray_add(self->dictionary, R_Dictionary_Datum);
 	R_String_setString(datum->key, key);
 	return datum;
 }
 
 R_Dictionary_Datum* R_Dictionary_getDatum(R_Dictionary* self, const char* key) {
 	if (self == NULL || key == NULL) return NULL;
-	R_String* r_key = R_Type_New(R_String_Type);
+	R_String* r_key = R_Type_New(R_String);
 	if (r_key == NULL) return NULL;
 	R_String_setString(r_key, key);
 
@@ -106,7 +106,7 @@ R_Dictionary_Datum* R_Dictionary_getDatum(R_Dictionary* self, const char* key) {
 const char* R_Dictionary_getString(R_Dictionary* self, const char* key) {
 	if (self == NULL || key == NULL) return NULL;
 	R_Dictionary_Datum* datum = R_Dictionary_getDatum(self, key);
-	if (datum == NULL || datum->value == NULL || R_Type_Type(datum->value) != R_String_Type) return NULL;
+	if (datum == NULL || datum->value == NULL || R_Type_IsOf(datum->value, R_String) == false) return NULL;
 	return R_String_getString(datum->value);
 }
 
@@ -120,7 +120,7 @@ bool R_Dictionary_setInt(R_Dictionary* self, const char* key, int data) {
 int R_Dictionary_getInt(R_Dictionary* self, const char* key) {
 	if (self == NULL || key == NULL) return false;
 	R_Dictionary_Datum* datum = R_Dictionary_getDatum(self, key);
-	if (datum == NULL || datum->value == NULL || R_Type_Type(datum->value) != R_String_Type) return 0;
+	if (datum == NULL || datum->value == NULL || R_Type_IsOf(datum->value, R_String) == false) return 0;
 	return R_String_getInt(datum->value);
 }
 
@@ -134,7 +134,7 @@ bool R_Dictionary_setFloat(R_Dictionary* self, const char* key, float data) {
 float R_Dictionary_getFloat(R_Dictionary* self, const char* key) {
 	if (self == NULL || key == NULL) return false;
 	R_Dictionary_Datum* datum = R_Dictionary_getDatum(self, key);
-	if (datum == NULL || datum->value == NULL || R_Type_Type(datum->value) != R_String_Type) return 0;
+	if (datum == NULL || datum->value == NULL || R_Type_IsOf(datum->value, R_String) == false) return 0;
 	return R_String_getFloat(datum->value);
 }
 
@@ -143,14 +143,14 @@ R_Dictionary* R_Dictionary_setObject(R_Dictionary* self, const char* key) {
 	R_Dictionary_Datum* datum = R_Dictionary_prepareDatumForSetter(self, key);
 	if (datum == NULL) return NULL;
 	if (datum->value != NULL) R_Type_Delete(datum->value);
-	datum->value = R_Type_New(R_Dictionary_Type);
+	datum->value = R_Type_New(R_Dictionary);
 	return datum->value;
 }
 
 R_Dictionary* R_Dictionary_getObject(R_Dictionary* self, const char* key) {
 	if (self == NULL || key == NULL) return NULL;
 	R_Dictionary_Datum* datum = R_Dictionary_getDatum(self, key);
-	if (datum == NULL || datum->value == NULL || R_Type_Type(datum->value) != R_Dictionary_Type) return NULL;
+	if (datum == NULL || datum->value == NULL || R_Type_IsOf(datum->value, R_Dictionary) == false) return NULL;
 	return datum->value;
 }
 
@@ -158,25 +158,25 @@ R_Dictionary* R_Dictionary_addToArray(R_Dictionary* self, const char* key) {
 	if (self == NULL || key == NULL) return NULL;
 	R_Dictionary_Datum* datum = R_Dictionary_prepareDatumForSetter(self, key);
 	if (datum == NULL) return NULL;
-	if (datum->value != NULL && R_Type_Type(datum->value) != R_ObjectArray_Type) {
+	if (datum->value != NULL && R_Type_IsOf(datum->value, R_ObjectArray) == false) {
 		R_Type_Delete(datum->value);
 		datum->value = NULL;
 	}
-	if (datum->value == NULL) datum->value = R_Type_New(R_ObjectArray_Type);
-	return R_ObjectArray_addObject(datum->value, R_Dictionary_Type);
+	if (datum->value == NULL) datum->value = R_Type_New(R_ObjectArray);
+	return R_ObjectArray_add(datum->value, R_Dictionary);
 }
 
 int R_Dictionary_getArraySize(R_Dictionary* self, const char* key) {
 	if (self == NULL || key == NULL) return 0;
 	R_Dictionary_Datum* datum = R_Dictionary_getDatum(self, key);
-	if (datum == NULL || datum->value == NULL || R_Type_Type(datum->value) != R_ObjectArray_Type) return 0;
+	if (datum == NULL || datum->value == NULL || R_Type_IsOf(datum->value, R_ObjectArray) == false) return 0;
 	return R_ObjectArray_length(datum->value);
 }
 
 R_Dictionary* R_Dictionary_getArrayIndex(R_Dictionary* self, const char* key, unsigned int index) {
 	if (self == NULL || key == NULL) return NULL;
 	R_Dictionary_Datum* datum = R_Dictionary_getDatum(self, key);
-	if (datum == NULL || datum->value == NULL || R_Type_Type(datum->value) == NULL) return NULL;
+	if (datum == NULL || datum->value == NULL) return NULL;
 	return (R_Dictionary*)R_ObjectArray_pointerAtIndex(datum->value, index);
 }
 
@@ -189,15 +189,15 @@ R_String* R_Dictionary_serialize(R_Dictionary* self, R_String* string) {
 		if (datum == NULL) return NULL;
 		R_String_appendString(string, datum->key);
 		R_String_appendCString(string, "=");
-		if (R_Type_Type(datum->value) == R_String_Type) {
+		if (R_Type_IsOf(datum->value, R_String)) {
 			R_String_appendCString(string, "'");
 			R_String_appendString(string, datum->value);
 			R_String_appendCString(string, "';");
 		}
-		else if (R_Type_Type(datum->value) == R_Dictionary_Type) {
+		else if (R_Type_IsOf(datum->value, R_Dictionary)) {
 			R_Dictionary_serialize(datum->value, string);
 		}
-		else if (R_Type_Type(datum->value) == R_ObjectArray_Type) {
+		else if (R_Type_IsOf(datum->value, R_ObjectArray)) {
 			R_String_appendCString(string, "[");
 			for (int i=0; i<R_ObjectArray_length(datum->value); i++) {
 				R_Dictionary* arrayMember = (R_Dictionary*)R_ObjectArray_pointerAtIndex(datum->value, i);
@@ -213,18 +213,18 @@ R_String* R_Dictionary_serialize(R_Dictionary* self, R_String* string) {
 
 R_Dictionary* R_String_objectize(R_Dictionary* self, R_String* string) {
 	if (self == NULL || string == NULL) return NULL;
-	R_String* thisObjectString = R_Type_New(R_String_Type);
+	R_String* thisObjectString = R_Type_New(R_String);
 	if (R_String_getEnclosedString(string, '{', '}', thisObjectString) == NULL ) {
 		R_Type_Delete(thisObjectString);
 		return NULL;
 	}
 
-	R_String* thisDatumKeyString = R_Type_New(R_String_Type);
-	R_String* thisDatumValueString = R_Type_New(R_String_Type);
+	R_String* thisDatumKeyString = R_Type_New(R_String);
+	R_String* thisDatumValueString = R_Type_New(R_String);
 	while (R_Dictionary_findNextDatumInString(thisObjectString, thisDatumKeyString, thisDatumValueString, thisObjectString)) {
 		char dataType = R_String_findFirstToken(thisDatumValueString, "'{[");
 		if (dataType == '\'') {
-			R_String* thisDatumNumberString = R_Type_New(R_String_Type);
+			R_String* thisDatumNumberString = R_Type_New(R_String);
 			if (R_String_getEnclosedString(thisDatumValueString, '\'', '\'', thisDatumNumberString) == NULL ) {
 				R_Type_Delete(thisDatumNumberString);
 				R_Type_Delete(thisDatumValueString);
@@ -246,7 +246,7 @@ R_Dictionary* R_String_objectize(R_Dictionary* self, R_String* string) {
 			}
 		}
 		else if (dataType == '[') {
-			R_String* thisDatumArrayEntryString = R_Type_New(R_String_Type);
+			R_String* thisDatumArrayEntryString = R_Type_New(R_String);
 			while (R_String_splitBracedString(thisDatumValueString, '{', '}', NULL, thisDatumArrayEntryString, NULL, thisDatumValueString) == true) {
 				R_Dictionary* thisDatumObject = R_Dictionary_addToArray(self, R_String_getString(thisDatumKeyString));
 				if (R_String_objectize(thisDatumObject, thisDatumArrayEntryString) == NULL) {
@@ -292,7 +292,7 @@ bool R_Dictionary_findNextDatumInString(R_String* _input, R_String* nextDatumKey
 	}
 	else if (valueStart[0] == '{') {
 		//this is an object value
-		R_String* valueString = R_Type_New(R_String_Type);
+		R_String* valueString = R_Type_New(R_String);
 		R_String_setString(valueString, valueStart);
 		if (R_String_setSizedString(nextDatumKey, keyStart, keyEnd-keyStart) == NULL) {
 			R_Type_Delete(valueString);
@@ -307,7 +307,7 @@ bool R_Dictionary_findNextDatumInString(R_String* _input, R_String* nextDatumKey
 	}
 	else if (valueStart[0] == '[') {
 		//this is an array value
-		R_String* valueString = R_Type_New(R_String_Type);
+		R_String* valueString = R_Type_New(R_String);
 		R_String_setString(valueString, valueStart);
 		if (R_String_setSizedString(nextDatumKey, keyStart, keyEnd-keyStart) == NULL) {
 			R_Type_Delete(valueString);

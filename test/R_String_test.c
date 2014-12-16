@@ -14,7 +14,7 @@
 #include "R_ByteArray.h"
 
 void test_set_get(void) {
-	R_String* string = R_Type_New(R_String_Type);
+	R_String* string = R_Type_New(R_String);
 	assert(R_String_setString(string, "test") == string);
 	assert(R_String_length(string) == 4);
 	assert(strcmp(R_String_getString(string), "test") == 0);
@@ -37,7 +37,7 @@ void test_set_get(void) {
 }
 
 void test_append_bytes(void) {
-	R_String* string = R_Type_New(R_String_Type);
+	R_String* string = R_Type_New(R_String);
 	assert(R_String_setString(string, "test") == string);
 	assert(R_String_length(string) == 4);
 	R_String_appendCString(string, " of awesomeness");
@@ -50,12 +50,12 @@ void test_append_bytes(void) {
 }
 
 void test_int_float_string(void) {
-	R_String* string = R_Type_New(R_String_Type);
+	R_String* string = R_Type_New(R_String);
 	R_String_appendInt(string, 494857);
 	assert(strcmp("494857", R_String_getString(string)) == 0);
 	R_String_appendFloat(string, 3.141592653589793238462643383279502884);
 	assert(strcmp("4948573.14159", R_String_getString(string)) == 0);
-	R_String* appendage = R_Type_New(R_String_Type);
+	R_String* appendage = R_Type_New(R_String);
 	R_String_setString(appendage, "appendage");
 	R_String_appendString(string, appendage);
 	assert(strcmp("4948573.14159appendage", R_String_getString(string)) == 0);
@@ -70,10 +70,10 @@ void test_int_float_string(void) {
 }
 
 void test_getBraces(void) {
-	R_String* string = R_Type_New(R_String_Type);
+	R_String* string = R_Type_New(R_String);
 
 	R_String_setString(string, "if (killer) then {hide};");
-	R_String* substring = R_Type_New(R_String_Type);
+	R_String* substring = R_Type_New(R_String);
 	assert(R_String_getSubstring(string, 4, 9, substring) != NULL);
 	assert(strcmp(R_String_getString(R_String_getSubstring(string, 4, 9, substring)), "killer") == 0);
 	assert(R_String_getBracedString(string, '{', '}', substring) != NULL);
@@ -84,10 +84,10 @@ void test_getBraces(void) {
 	assert(strcmp(R_String_getString(R_String_getBracedString(string, '{', '}', substring)), "{r{t}y{fg{h}vb}}") == 0);
 	assert(R_String_getEnclosedString(string, '{', '}', substring) != NULL);
 	assert(strcmp(R_String_getString(R_String_getEnclosedString(string, '{', '}', substring)), "r{t}y{fg{h}vb}") == 0);
-	R_String* beforeBraces = R_Type_New(R_String_Type);
-	R_String* withBraces = R_Type_New(R_String_Type);
-	R_String* insideBraces = R_Type_New(R_String_Type);
-	R_String* afterBraces = R_Type_New(R_String_Type);
+	R_String* beforeBraces = R_Type_New(R_String);
+	R_String* withBraces = R_Type_New(R_String);
+	R_String* insideBraces = R_Type_New(R_String);
+	R_String* afterBraces = R_Type_New(R_String);
 	assert(R_String_splitBracedString(string, '{', '}', beforeBraces, withBraces, insideBraces, afterBraces) == true);
 	assert(strcmp(R_String_getString(beforeBraces), "hi") == 0);
 	assert(strcmp(R_String_getString(withBraces), "{r{t}y{fg{h}vb}}") == 0);
@@ -108,8 +108,8 @@ void test_getBraces(void) {
 }
 
 void test_setHex(void) {
-	R_String* string = R_Type_New(R_String_Type);
-	R_ByteArray* testArray = R_Type_New(R_ByteArray_Type);
+	R_String* string = R_Type_New(R_String);
+	R_ByteArray* testArray = R_Type_New(R_ByteArray);
 	R_ByteArray_appendBytes(testArray, 0x01, 0x23, 0x5A, 0xFF);
 	R_String_appendArrayAsHex(string, testArray);
 	assert(R_String_length(string) == 8);
@@ -119,7 +119,7 @@ void test_setHex(void) {
 }
 
 void test_find_token(void) {
-	R_String* string = R_Type_New(R_String_Type);
+	R_String* string = R_Type_New(R_String);
 	R_String_setString(string, "a%%sdf#ht");
 	assert(R_String_findFirstToken(string, "%%fh") == '%');
 	assert(R_String_findFirstToken(string, "#fh") == 'f');
@@ -128,8 +128,8 @@ void test_find_token(void) {
 }
 
 void test_is_same(void) {
-	R_String* stringA = R_Type_New(R_String_Type);
-	R_String* stringB = R_Type_New(R_String_Type);
+	R_String* stringA = R_Type_New(R_String);
+	R_String* stringB = R_Type_New(R_String);
 	R_String_setString(stringA, "different");
 	R_String_setString(stringB, "sizes");
 	assert(R_String_isSame(stringA, stringB) == false);

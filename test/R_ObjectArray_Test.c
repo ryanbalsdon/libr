@@ -32,23 +32,23 @@ R_Type_Def(Integer, Integer_Constructor, Integer_Destructor, NULL);
 
 void test_allocations(void) {
 	assert(R_Type_BytesAllocated == 0);
-	R_ObjectArray* array = R_Type_New(R_ObjectArray_Type);
+	R_ObjectArray* array = R_Type_New(R_ObjectArray);
 	R_Type_Delete(array);
 	assert(R_Type_BytesAllocated == 0);
 }
 
 void test_integer(void) {
 	assert(R_Type_BytesAllocated == 0);
-	R_ObjectArray* array = R_Type_New(R_ObjectArray_Type);
+	R_ObjectArray* array = R_Type_New(R_ObjectArray);
 
 	assert(Integer_Constructor_Called == 0);
-	Integer* integer = R_ObjectArray_addObject(array, Integer_Type);
+	Integer* integer = R_ObjectArray_add(array, Integer);
 	assert(Integer_Constructor_Called == 1);
 	assert(integer->integer == 42);
 	integer->integer = 0;
 	assert(R_ObjectArray_length(array) == 1);
 
-	integer = R_ObjectArray_addObject(array, Integer_Type);
+	integer = R_ObjectArray_add(array, Integer);
 	assert(Integer_Constructor_Called == 2);
 	assert(integer->integer == 42);
 	integer->integer = 1;
@@ -73,10 +73,10 @@ void test_integer(void) {
 }
 
 void test_pop(void) {
-	R_ObjectArray* array = R_Type_New(R_ObjectArray_Type);
-	Integer* integerA = R_ObjectArray_addObject(array, Integer_Type);
-	Integer* integerB = R_ObjectArray_addObject(array, Integer_Type);
-	Integer* integerC = R_ObjectArray_addObject(array, Integer_Type);
+	R_ObjectArray* array = R_Type_New(R_ObjectArray);
+	Integer* integerA = R_ObjectArray_add(array, Integer);
+	Integer* integerB = R_ObjectArray_add(array, Integer);
+	Integer* integerC = R_ObjectArray_add(array, Integer);
 	integerA->integer = 0;
 	integerB->integer = 1;
 	integerC->integer = 2;
@@ -101,10 +101,10 @@ void test_pop(void) {
 }
 
 void test_swap(void) {
-	R_ObjectArray* array = R_Type_New(R_ObjectArray_Type);
-	Integer* integerA = R_ObjectArray_addObject(array, Integer_Type);
-	Integer* integerB = R_ObjectArray_addObject(array, Integer_Type);
-	Integer* integerC = R_ObjectArray_addObject(array, Integer_Type);
+	R_ObjectArray* array = R_Type_New(R_ObjectArray);
+	Integer* integerA = R_ObjectArray_add(array, Integer);
+	Integer* integerB = R_ObjectArray_add(array, Integer);
+	Integer* integerC = R_ObjectArray_add(array, Integer);
 	integerA->integer = 0;
 	integerB->integer = 1;
 	integerC->integer = 2;
@@ -131,10 +131,10 @@ void test_cleanup(void) {
 	Integer_Destructor_Called = 0;
 	Integer_Constructor_Called = 0;
 
-	R_ObjectArray* array = R_Type_New(R_ObjectArray_Type);
-	R_ObjectArray_addObject(array, Integer_Type);
-	R_ObjectArray_addObject(array, Integer_Type);
-	R_ObjectArray_addObject(array, Integer_Type);
+	R_ObjectArray* array = R_Type_New(R_ObjectArray);
+	R_ObjectArray_add(array, Integer);
+	R_ObjectArray_add(array, Integer);
+	R_ObjectArray_add(array, Integer);
 	R_Type_Delete(array);
 	assert(Integer_Constructor_Called == 3);
 	assert(Integer_Destructor_Called == 3);

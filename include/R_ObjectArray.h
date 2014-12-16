@@ -16,7 +16,8 @@ extern const R_Type* R_ObjectArray_Type;
 typedef struct R_ObjectArray R_ObjectArray;
 
 //allocates memory and adds a pointer to it to the array. Returns the new pointer.
-void* R_ObjectArray_addObject(R_ObjectArray* self, const R_Type* type);
+void* R_ObjectArray_addObjectOfType(R_ObjectArray* self, const R_Type* type);
+#define R_ObjectArray_add(self, Type) (Type*)R_ObjectArray_addObjectOfType(self, Type ## _Type)
 
 //removes the pointer from the array and deallocates associated memory.
 void R_ObjectArray_removeIndex(R_ObjectArray* self, unsigned int index);

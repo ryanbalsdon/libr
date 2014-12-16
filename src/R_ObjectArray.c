@@ -93,11 +93,11 @@ void R_ObjectArray_swap(R_ObjectArray* self, int indexA, int indexB) {
     self->array[indexB] = temp;
 }
 
-void* R_ObjectArray_addObject(R_ObjectArray* self, const R_Type* type) {
+void* R_ObjectArray_addObjectOfType(R_ObjectArray* self, const R_Type* type) {
     if (type == NULL || self == NULL) return NULL;
     R_ObjectArray_increaseAllocationIfRequired(self);
 
-    void* newPointer = R_Type_New(type);
+    void* newPointer = R_Type_NewObjectOfType(type);
     if (newPointer == NULL) return NULL;
 
     self->array[self->arraySize] = newPointer;

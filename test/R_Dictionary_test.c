@@ -15,14 +15,14 @@
 
 void test_allocation(void) {
 	assert(R_Type_BytesAllocated == 0);
-	R_Dictionary* dict = R_Type_New(R_Dictionary_Type);
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
 	R_Type_Delete(dict);
 	assert(R_Type_BytesAllocated == 0);
 }
 extern const R_Type* R_Dictionary_Datum_Type;
 
 void test_key_creation(void) {
-	R_Dictionary* dict = R_Type_New(R_Dictionary_Type);
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
 	assert(R_Dictionary_doesKeyExist(dict, "key") == false);
 	assert(R_Dictionary_setString(dict, "key", "data") == true);
 	assert(R_Dictionary_doesKeyExist(dict, "key") == true);
@@ -37,7 +37,7 @@ void test_key_creation(void) {
 }
 
 void test_strings(void) {
-	R_Dictionary* dict = R_Type_New(R_Dictionary_Type);
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
 	assert(R_Dictionary_setString(dict, "crazy", "no") == true);
 	assert(R_Dictionary_setString(dict, "awesome", "yes") == true);
 	assert(strcmp(R_Dictionary_getString(dict, "crazy"), "no") == 0);
@@ -46,7 +46,7 @@ void test_strings(void) {
 }
 
 void test_ints(void) {
-	R_Dictionary* dict = R_Type_New(R_Dictionary_Type);
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
 	assert(R_Dictionary_setInt(dict, "integer-test", 42) == true);
 	assert(R_Dictionary_setInt(dict, "whatager-test", 3153) == true);
 	assert(R_Dictionary_getInt(dict, "integer-test") == 42);
@@ -59,7 +59,7 @@ void test_ints(void) {
 }
 
 void test_floats(void) {
-	R_Dictionary* dict = R_Type_New(R_Dictionary_Type);
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
 	assert(R_Dictionary_setFloat(dict, "float-test", 42.0f) == true);
 	assert(R_Dictionary_setFloat(dict, "pi", 3.14159f) == true);
 	assert(R_Dictionary_getFloat(dict, "float-test") == 42.0f);
@@ -76,7 +76,7 @@ void test_floats(void) {
 }
 
 void test_data_mutability(void) {
-	R_Dictionary* dict = R_Type_New(R_Dictionary_Type);
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
 	assert(R_Dictionary_setInt(dict, "type-test", 42) == true);
 	assert(strcmp(R_Dictionary_getString(dict, "type-test"), "42") == 0);
 	assert(R_Dictionary_getFloat(dict, "type-test") == 42.0f);
@@ -94,7 +94,7 @@ void test_data_mutability(void) {
 }
 
 void test_sub_objects(void) {
-	R_Dictionary* dict = R_Type_New(R_Dictionary_Type);
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
 	R_Dictionary* child = R_Dictionary_setObject(dict, "child");
 	assert(child != NULL);
 	assert(R_Dictionary_setInt(child, "id", 1) == true);
@@ -114,7 +114,7 @@ void test_sub_objects(void) {
 }
 
 void test_arrays(void) {
-	R_Dictionary* dict = R_Type_New(R_Dictionary_Type);
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
 	R_Dictionary* arrayMember1 = R_Dictionary_addToArray(dict, "array");
 	assert(arrayMember1 != NULL);
 	assert(R_Dictionary_setInt(arrayMember1, "member", 1) == true);
@@ -129,9 +129,9 @@ void test_arrays(void) {
 }
 
 void test_serialization_1(void) {
-	R_Dictionary* dict = R_Type_New(R_Dictionary_Type);
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
 	R_Dictionary_setInt(dict, "integer 1", 42);
-	R_String* string = R_Type_New(R_String_Type);
+	R_String* string = R_Type_New(R_String);
 	assert(R_Dictionary_serialize(dict, string) != NULL);
 	assert(strcmp(R_String_getString(string), "{integer 1='42';};") == 0);
 	R_String_reset(string);
@@ -164,8 +164,8 @@ void test_serialization_1(void) {
 }
 
 void test_serialization_2(void) {
-	R_Dictionary* dict = R_Type_New(R_Dictionary_Type);
-	R_String* string = R_Type_New(R_String_Type);
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
+	R_String* string = R_Type_New(R_String);
 	R_String_setString(string, "{number='14.1';};");
 	assert(R_String_objectize(dict, string) != NULL);
 	assert(R_Dictionary_getFloat(dict, "number") == 14.1f);
