@@ -63,8 +63,8 @@ static void R_ObjectArray_increaseAllocationIfRequired(R_ObjectArray* self) {
     self->arrayAllocationSize *= 2;
 }
 
-inline void* R_ObjectArray_pointerAtIndex(R_ObjectArray* self, int index) {
-    if (index < 0 || index >= R_ObjectArray_length(self))
+inline void* R_ObjectArray_pointerAtIndex(R_ObjectArray* self, unsigned int index) {
+    if (index >= R_ObjectArray_length(self))
         return NULL;
     return self->array[index];
 }
@@ -106,8 +106,8 @@ void* R_ObjectArray_addObject(R_ObjectArray* self, const R_Type* type) {
     return newPointer;
 }
 
-void R_ObjectArray_removeIndex(R_ObjectArray* self, int index) {
-    if (self == NULL || index<0 || index>=self->arraySize) return;
+void R_ObjectArray_removeIndex(R_ObjectArray* self, unsigned int index) {
+    if (self == NULL || index>=self->arraySize) return;
 
     void* pointerToDelete = R_ObjectArray_pointerAtIndex(self, index);
     R_Type_Delete(pointerToDelete);

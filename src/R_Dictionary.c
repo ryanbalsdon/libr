@@ -18,6 +18,8 @@ typedef struct {
 	R_String* key;
 	void* value;
 } R_Dictionary_Datum;
+R_Dictionary_Datum* R_Dictionary_Datum_Constructor(R_Dictionary_Datum* self);
+R_Dictionary_Datum* R_Dictionary_Datum_Destructor(R_Dictionary_Datum* self);
 
 R_Dictionary_Datum* R_Dictionary_Datum_Constructor(R_Dictionary_Datum* self) {
 	self->key = R_Type_New(R_String_Type);
@@ -35,6 +37,8 @@ struct R_Dictionary {
 	R_Type* type;
 	R_ObjectArray* dictionary;
 };
+R_Dictionary* R_Dictionary_Constructor(R_Dictionary* self);
+R_Dictionary* R_Dictionary_Destructor(R_Dictionary* self);
 
 R_Dictionary* R_Dictionary_Constructor(R_Dictionary* self) {
 	self->dictionary = R_Type_New(R_ObjectArray_Type);
@@ -169,7 +173,7 @@ int R_Dictionary_getArraySize(R_Dictionary* self, const char* key) {
 	return R_ObjectArray_length(datum->value);
 }
 
-R_Dictionary* R_Dictionary_getArrayIndex(R_Dictionary* self, const char* key, size_t index) {
+R_Dictionary* R_Dictionary_getArrayIndex(R_Dictionary* self, const char* key, unsigned int index) {
 	if (self == NULL || key == NULL) return NULL;
 	R_Dictionary_Datum* datum = R_Dictionary_getDatum(self, key);
 	if (datum == NULL || datum->value == NULL || R_Type_Type(datum->value) == NULL) return NULL;

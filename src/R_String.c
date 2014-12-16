@@ -28,6 +28,8 @@ void R_String_increaseAllocationSize(R_String* self, size_t spaceNeeded);
 char* R_String_Strcpy(char* dest, const char* source);
 char* R_String_Strncpy(char* dest, const char* source, size_t num);
 char* R_String_Strcat(char* dest, const char* source);
+char* R_String_Strncat(char* dest, const char* source, size_t num);
+
 
 R_String* R_String_Constructor(R_String* self) {
 	self->string = (char*)malloc(128);

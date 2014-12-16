@@ -19,11 +19,11 @@ typedef struct R_ObjectArray R_ObjectArray;
 void* R_ObjectArray_addObject(R_ObjectArray* self, const R_Type* type);
 
 //removes the pointer from the array and deallocates associated memory.
-void R_ObjectArray_removeIndex(R_ObjectArray* self, int index);
+void R_ObjectArray_removeIndex(R_ObjectArray* self, unsigned int index);
 void R_ObjectArray_removePointer(R_ObjectArray* self, void* pointer);
 void R_ObjectArray_removeAll(R_ObjectArray* self);
 
-void* R_ObjectArray_pointerAtIndex(R_ObjectArray* self, int index);
+void* R_ObjectArray_pointerAtIndex(R_ObjectArray* self, unsigned int index);
 void* R_ObjectArray_lastPointer(R_ObjectArray* self);
 int R_ObjectArray_indexOfPointer(R_ObjectArray* self, void* pointer);
 

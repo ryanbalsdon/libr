@@ -30,7 +30,7 @@ R_Dictionary* R_Dictionary_getObject(R_Dictionary* self, const char* key);
 
 R_Dictionary* R_Dictionary_addToArray(R_Dictionary* self, const char* key);
 int R_Dictionary_getArraySize(R_Dictionary* self, const char* key);
-R_Dictionary* R_Dictionary_getArrayIndex(R_Dictionary* self, const char* key, size_t index);
+R_Dictionary* R_Dictionary_getArrayIndex(R_Dictionary* self, const char* key, unsigned int index);
 
 R_String* R_Dictionary_serialize(R_Dictionary* self, R_String* stringToAppendTo);
 R_Dictionary* R_String_objectize(R_Dictionary* self, R_String* string);
