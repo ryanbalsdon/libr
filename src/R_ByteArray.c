@@ -65,19 +65,23 @@ R_ByteArray* R_ByteArray_appendByte(R_ByteArray* self, uint8_t byte) {
 	return self;
 }
 R_ByteArray* R_ByteArray_appendCArray(R_ByteArray* self, const uint8_t* bytes, size_t count) {
+	if (self == NULL || bytes == NULL || count == 0) return self;
 	R_ByteArray_increaseAllocationIfNeeded(self, count*sizeof(uint8_t));
 	memcpy(self->array+self->arraySize, bytes, count*sizeof(uint8_t));
 	self->arraySize+=count*sizeof(uint8_t);
 	return self;
 }
 R_ByteArray* R_ByteArray_appendArray(R_ByteArray* self, R_ByteArray* array) {
+	if (array == NULL || self == NULL) return self;
 	return R_ByteArray_appendCArray(self, R_ByteArray_bytes(array), R_ByteArray_size(array));
 }
 
 size_t R_ByteArray_size(const R_ByteArray* self) {
+	if (self == NULL) return 0;
 	return self->arraySize;
 }
 const uint8_t* R_ByteArray_bytes(const R_ByteArray* self) {
+	if (self == NULL) return NULL;
 	return self->array;
 }
 
