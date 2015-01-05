@@ -12,6 +12,9 @@ all: folders objects/$(OUTPUT)
 test: folders objects/$(OUTPUT)
 	cd test && make
 
+valgrind: folders objects/$(OUTPUT)
+	cd test && make valgrind
+
 folders:
 	mkdir -p objects
 

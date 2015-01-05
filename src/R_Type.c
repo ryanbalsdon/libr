@@ -16,8 +16,11 @@ void* R_Type_NewObjectOfType(const R_Type* type) {
   void* new_object = calloc(1, type->size);
   if (new_object != NULL) *(const R_Type**)new_object = type;
   if (new_object != NULL) R_Type_BytesAllocated += type->size;
-  if (new_object != NULL && type->ctor != NULL) type->ctor(new_object);
-  return new_object; 
+  if (new_object != NULL && type->ctor != NULL && type->ctor(new_object) == NULL) {
+    free(new_object);
+    new_object = NULL;
+  }
+  return new_object;
 }
 
 void R_Type_Delete(void* object) {

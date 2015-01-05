@@ -14,8 +14,8 @@
 struct R_String {
 	R_Type* type;
 	char* string;               //The allocated buffer
-	size_t stringAllocationSize;//How large the internal buffer is. This is always as-large or larger than stringSize.
-	size_t stringSize;          //How many objects the user has added to the array.
+	size_t stringAllocationSize;//How large the internal buffer is. This is always larger than stringSize.
+	size_t stringSize;          //How many characters are in the string. Does not include the null-terminator.
 };
 
 static R_String* R_String_Constructor(R_String* self);
@@ -79,13 +79,14 @@ size_t R_String_length(R_String* self) {
 }
 
 void R_String_increaseAllocationSize(R_String* self, size_t spaceNeeded) {
-	size_t allocationNeeded = spaceNeeded + 1;
+	size_t allocationNeeded = spaceNeeded + 1; //Extra character is the null-terminator
 	if (allocationNeeded < self->stringAllocationSize)
 		return;
 
 	size_t newSize = (self->stringAllocationSize == 0)?1:self->stringAllocationSize;
 	do {newSize*=2;} while (allocationNeeded > newSize);
 	self->string = (char*)realloc(self->string, newSize);
+	memset(self->string + self->stringAllocationSize, '\0', newSize - self->stringAllocationSize);
 	self->stringAllocationSize = newSize;
 }
 

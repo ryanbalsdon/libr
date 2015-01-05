@@ -173,12 +173,25 @@ void test_full(void) {
   Testor_Destructor_Called = 0;
 }
 
+typedef struct Testor BadConstructorTestor;
+BadConstructorTestor* Bad_Constructor(BadConstructorTestor* testor) {
+  //Assume some setup goes wrong. Clean it up then:
+  return NULL;
+}
+R_Type_Def(BadConstructorTestor, Bad_Constructor, NULL, NULL);
+
+void test_bad_constructor(void) {
+  BadConstructorTestor* testor = R_Type_New(BadConstructorTestor);
+  assert(testor == NULL);
+}
+
 int main(void) {
   test_simple();
   test_constructor();
   test_destructor();
   test_copier();
   test_full();
+  test_bad_constructor();
 
   printf("Pass\n");
 }
