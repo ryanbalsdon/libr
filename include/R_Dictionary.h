@@ -14,7 +14,7 @@
 
 
 typedef struct R_Dictionary R_Dictionary;
-extern const R_Type* R_Dictionary_Type;
+R_Type_Declare(R_Dictionary);
 
 bool R_Dictionary_doesKeyExist(R_Dictionary* self, const char* key);
 

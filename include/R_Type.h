@@ -41,18 +41,23 @@ typedef struct {
   R_Type_Copier copy; //If set to NULL, 'copy' will always fail. If not NULL, it's called during 'copy' to do deep copying.
 } R_Type;
 
-#define R_Type_Def(Type, ctor, dtor, copier) const R_Type* Type ## _Type = &(R_Type){ \
+#define R_Type_Object(Type) R_Type__ ## Type
+
+#define R_Type_Def(Type, ctor, dtor, copier) const R_Type* R_Type_Object(Type) = &(R_Type){ \
     sizeof(Type), \
     (R_Type_Constructor)ctor, \
     (R_Type_Destructor)dtor, \
     (R_Type_Copier)copier \
   }
 
+#define R_Type_Declare(Type) extern const R_Type* R_Type_Object(Type)
+
+
 /*  R_Type_New
     Allocates a new object of the given type. Allocates and nulls type->size bytes than calls type->ctor, if it isn't null.
  */
 void* R_Type_NewObjectOfType(const R_Type* type);
-#define R_Type_New(Type) (Type*)R_Type_NewObjectOfType(Type ## _Type)
+#define R_Type_New(Type) (Type*)R_Type_NewObjectOfType(R_Type_Object(Type))
 
 /*  R_Type_Delete
     Gives the memory allocated to the given object back to the system. If type->dtor isn't null, free is called on the result
@@ -70,7 +75,7 @@ void* R_Type_Copy(void* object);
     Returns whether the object is the given type/class. Casts the given object to an R_Type** then dereferences and compares it. Useful as shorthand.
  */
 int R_Type_IsObjectOfType(void* object, const R_Type* type);
-#define R_Type_IsOf(object, Type) R_Type_IsObjectOfType(object, Type ## _Type)
+#define R_Type_IsOf(object, Type) R_Type_IsObjectOfType(object, R_Type_Object(Type))
 
 
 /*  R_Type_BytesAllocated

@@ -17,7 +17,7 @@ typedef struct R_String R_String;
 
 #include "R_ByteArray.h"
 
-extern const R_Type* R_String_Type;
+R_Type_Declare(R_String);
 
 R_String* R_String_reset(R_String* self);
 
