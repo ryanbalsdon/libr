@@ -31,7 +31,7 @@ void R_Type_Delete(void* object) {
   else free(object);
 }
 
-void* R_Type_Copy(void* object) {
+void* R_Type_Copy(const void* object) {
   if (object == NULL) return NULL;
   R_Type* type = *(R_Type**)object; //First element of every object must be an R_Type*
   if (type->copy == NULL) return NULL;
@@ -41,7 +41,7 @@ void* R_Type_Copy(void* object) {
   return new_object;
 }
 
-int R_Type_IsObjectOfType(void* object, const R_Type* type) {
+int R_Type_IsObjectOfType(const void* object, const R_Type* type) {
   if (object == NULL || type == NULL) return 0;
   R_Type* type_of_object = *(R_Type**)object; //First element of every object must be an R_Type*
   if (type_of_object != type) return 0;

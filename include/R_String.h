@@ -21,7 +21,7 @@ R_Type_Declare(R_String);
 
 R_String* R_String_reset(R_String* self);
 
-const char* R_String_getString(R_String* self);
+const char* R_String_getString(const R_String* self);
 R_String* R_String_appendCString(R_String* self, const char* string);
 R_String* R_String_appendString(R_String* self, R_String* string);
 R_String* R_String_appendBytes(R_String* self, const char* bytes, size_t byteCount);
@@ -30,7 +30,7 @@ R_String* R_String_appendArrayAsHex(R_String* self, const R_ByteArray* array);
 R_String* R_String_setString(R_String* self, const char* string);
 R_String* R_String_setSizedString(R_String* self, const char* string, size_t stringLength);
 
-size_t R_String_length(R_String* self);
+size_t R_String_length(const R_String* self);
 
 R_String* R_String_appendInt(R_String* self, int value);
 int R_String_getInt(R_String* self);

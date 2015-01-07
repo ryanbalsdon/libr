@@ -71,7 +71,7 @@ R_ByteArray* R_ByteArray_appendCArray(R_ByteArray* self, const uint8_t* bytes, s
 	self->arraySize+=count*sizeof(uint8_t);
 	return self;
 }
-R_ByteArray* R_ByteArray_appendArray(R_ByteArray* self, R_ByteArray* array) {
+R_ByteArray* R_ByteArray_appendArray(R_ByteArray* self, const R_ByteArray* array) {
 	if (array == NULL || self == NULL) return self;
 	return R_ByteArray_appendCArray(self, R_ByteArray_bytes(array), R_ByteArray_size(array));
 }
@@ -128,11 +128,20 @@ size_t R_ByteArray_moveSubArray(R_ByteArray* self, R_ByteArray* array, size_t st
 }
 
 uint8_t R_ByteArray_byte(const R_ByteArray* self, size_t index) {
-	if (index >= self->arraySize) return 0;
+	if (self == NULL || index >= self->arraySize) return 0;
 	return self->array[index];
 }
 
-int R_ByteArray_compare(R_ByteArray* self, R_ByteArray* comparor) {
+uint8_t R_ByteArray_first(const R_ByteArray* self) {
+	return R_ByteArray_byte(self, 0);
+}
+
+uint8_t R_ByteArray_last(const R_ByteArray* self) {
+	return R_ByteArray_byte(self, self->arraySize - 1);
+}
+
+
+int R_ByteArray_compare(R_ByteArray* self, const R_ByteArray* comparor) {
 	size_t lowerSize = (R_ByteArray_size(self) < R_ByteArray_size(comparor)) ? R_ByteArray_size(self) : R_ByteArray_size(comparor);
 	int decision = memcmp(R_ByteArray_bytes(self), R_ByteArray_bytes(comparor), lowerSize);
 	if (decision != 0) return decision;
@@ -143,7 +152,17 @@ int R_ByteArray_compare(R_ByteArray* self, R_ByteArray* comparor) {
 
 static uint8_t hex_to_byte(char hex1, char hex2);
 static uint8_t hex_to_nibble(char hex);
-R_ByteArray* R_ByteArray_appendHexString(R_ByteArray* self, R_String* hex) {
+R_ByteArray* R_ByteArray_appendHexCString(R_ByteArray* self, const char* hex) {
+	size_t length = strlen(hex);
+	for (int i=0; i<length; i+=2) {
+		if (length > i+1)
+			R_ByteArray_appendByte(self, hex_to_byte(hex[i], hex[i+1]));
+		else
+			R_ByteArray_appendByte(self, hex_to_byte(hex[i], '0'));
+	}
+	return self;
+}
+R_ByteArray* R_ByteArray_appendHexString(R_ByteArray* self, const R_String* hex) {
 	for (int i=0; i<R_String_length(hex); i+=2) {
 		if (R_String_length(hex) > i+1)
 			R_ByteArray_appendByte(self, hex_to_byte(R_String_getString(hex)[i], R_String_getString(hex)[i+1]));
@@ -163,4 +182,44 @@ static uint8_t hex_to_nibble(char hex) {
 	else if (hex >= 'A' && hex <= 'F')
 		return 0xA + (uint8_t)hex - (uint8_t)'A';
 	else return 0x0;
+}
+
+R_ByteArray* R_ByteArray_setByte(R_ByteArray* self, uint8_t byte) {
+	if (self == NULL) return NULL;
+	R_ByteArray_reset(self);
+	return R_ByteArray_appendByte(self, byte);
+}
+R_ByteArray* R_ByteArray_setCArray(R_ByteArray* self, const uint8_t* bytes, size_t count) {
+	if (self == NULL) return NULL;
+	R_ByteArray_reset(self);
+	return R_ByteArray_appendCArray(self, bytes, count);
+}
+R_ByteArray* R_ByteArray_setArray(R_ByteArray* self, const R_ByteArray* array) {
+	if (self == NULL) return NULL;
+	R_ByteArray_reset(self);
+	return R_ByteArray_appendArray(self, array);
+}
+R_ByteArray* R_ByteArray_setHexString(R_ByteArray* self, const R_String* hex) {
+	if (self == NULL) return NULL;
+	R_ByteArray_reset(self);
+	return R_ByteArray_appendHexString(self, hex);
+}
+R_ByteArray* R_ByteArray_setHexCString(R_ByteArray* self, const char* hex) {
+	if (self == NULL) return NULL;
+	R_ByteArray_reset(self);
+	return R_ByteArray_appendHexCString(self, hex);
+}
+R_ByteArray* R_ByteArray_setUInt32(R_ByteArray* self, uint32_t value) {
+	if (self == NULL) return NULL;
+	R_ByteArray_reset(self);
+	return R_ByteArray_appendUInt32(self, value);
+}
+
+R_ByteArray* R_ByteArray_appendUInt32(R_ByteArray* self, uint32_t value) {
+	if (self == NULL) return NULL;
+	if ((value & 0xFF000000) != 0) R_ByteArray_appendByte(self, (value & 0xFF000000) >> 24);
+	if ((value & 0xFFFF0000) != 0) R_ByteArray_appendByte(self, (value & 0x00FF0000) >> 16);
+	if ((value & 0xFFFFFF00) != 0) R_ByteArray_appendByte(self, (value & 0x0000FF00) >>  8);
+	if ((value & 0xFFFFFFFF) != 0) R_ByteArray_appendByte(self, (value & 0x000000FF) >>  0);
+	return self;
 }

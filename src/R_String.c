@@ -57,7 +57,7 @@ R_String* R_String_reset(R_String* self) {
 	return self;
 }
 
-const char* R_String_getString(R_String* self) {
+const char* R_String_getString(const R_String* self) {
 	return self->string;
 }
 
@@ -74,7 +74,7 @@ R_String* R_String_appendBytes(R_String* self, const char* bytes, size_t byteCou
 	return self;
 }
 
-size_t R_String_length(R_String* self) {
+size_t R_String_length(const R_String* self) {
 	return self->stringSize;
 }
 

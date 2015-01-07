@@ -28,6 +28,8 @@ void test_appendByte(void) {
 	R_ByteArray_appendByte(array, 0xFF);
 	assert(R_ByteArray_size(array) == 2);
 	assert(R_ByteArray_bytes(array)[1] == 0xFF);
+	assert(R_ByteArray_first(array) == 0xA5);
+	assert(R_ByteArray_last(array) == 0xFF);
 	R_Type_Delete(array);
 }
 
@@ -158,13 +160,26 @@ void test_compare(void) {
 void test_appendHexString(void) {
 	R_ByteArray* array = R_Type_New(R_ByteArray);
 	R_ByteArray* array2 = R_Type_New(R_ByteArray);
+
 	R_ByteArray_appendBytes(array,  0x10, 0xFA, 0xB5, 0x09);
 	R_String* string = R_Type_New(R_String);
 	R_String_appendCString(string, "10fAB509");
 	R_ByteArray_appendHexString(array2, string);
 	assert(R_ByteArray_size(array2) == 4);
 	assert(R_ByteArray_compare(array, array2) == 0);
+	R_ByteArray_setHexString(array2, string);
+	assert(R_ByteArray_size(array2) == 4);
+	assert(R_ByteArray_compare(array, array2) == 0);
 	R_Type_Delete(string);
+
+	R_ByteArray_reset(array2);
+	R_ByteArray_appendHexCString(array2, "10fAB509");
+	assert(R_ByteArray_size(array2) == 4);
+	assert(R_ByteArray_compare(array, array2) == 0);
+	R_ByteArray_setHexCString(array2, "10fAB509");
+	assert(R_ByteArray_size(array2) == 4);
+	assert(R_ByteArray_compare(array, array2) == 0);
+
 	R_Type_Delete(array);
 	R_Type_Delete(array2);
 }
@@ -181,6 +196,28 @@ void test_copy(void) {
 	R_Type_Delete(array2);
 }
 
+void test_append_integers(void) {
+	R_ByteArray* array = R_Type_New(R_ByteArray);
+	R_ByteArray* comparor = R_ByteArray_appendBytes(R_Type_New(R_ByteArray), 0x01);
+	assert(R_ByteArray_appendUInt32(array, 0x01) == array);
+	assert(R_ByteArray_compare(array, comparor) == 0);
+
+	R_ByteArray_setBytes(comparor, 0x20, 0x01);
+	assert(R_ByteArray_setUInt32(array, 0x2001) == array);
+	assert(R_ByteArray_compare(array, comparor) == 0);
+
+	R_ByteArray_setBytes(comparor, 0x20, 0x00, 0x01);
+	assert(R_ByteArray_setUInt32(array, 0x200001) == array);
+	assert(R_ByteArray_compare(array, comparor) == 0);
+
+	R_ByteArray_setBytes(comparor, 0xFF, 0x20, 0x00, 0x01);
+	assert(R_ByteArray_setUInt32(array, 0xFF200001) == array);
+	assert(R_ByteArray_compare(array, comparor) == 0);
+
+	R_Type_Delete(array);
+	R_Type_Delete(comparor);
+}
+
 int main(void) {
 	assert(R_Type_BytesAllocated == 0);
 
@@ -194,6 +231,7 @@ int main(void) {
 	test_compare();
 	test_appendHexString();
 	test_copy();
+	test_append_integers();
 
 	assert(R_Type_BytesAllocated == 0);
 	printf("Pass\n");

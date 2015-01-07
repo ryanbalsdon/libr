@@ -29,7 +29,7 @@ typedef void* (*R_Type_Destructor)(void* object);
     Function Pointer for an R_Type copier. Used to deep-copy an object. object_input is the
    object to copy. object_output is a newly allocated and inited object of the same type.
 */
-typedef void (*R_Type_Copier)(void* object_input, void* object_output);
+typedef void (*R_Type_Copier)(const void* object_input, void* object_output);
 
 /*  R_Type
     Struct used to describe an object.
@@ -69,12 +69,12 @@ void R_Type_Delete(void* object);
     Deep-copies the given object. If type->copy is null, this will always fail (and return null). If type->copy isn't null, a new
    object of the same type is allocated, type->ctor is run on it (if it isn't null) and type->copy is run on both.
  */
-void* R_Type_Copy(void* object);
+void* R_Type_Copy(const void* object);
 
 /*  R_Type_Type(void* object);
     Returns whether the object is the given type/class. Casts the given object to an R_Type** then dereferences and compares it. Useful as shorthand.
  */
-int R_Type_IsObjectOfType(void* object, const R_Type* type);
+int R_Type_IsObjectOfType(const void* object, const R_Type* type);
 #define R_Type_IsOf(object, Type) R_Type_IsObjectOfType(object, R_Type_Object(Type))
 
 
