@@ -59,6 +59,7 @@ void test_simple(void) {
   assert(testor->type == R_Type_Object(Testor));
   assert(R_Type_IsOf(testor, Testor));
   assert(!R_Type_IsOf(testor, FullTestor));
+  assert(R_Type_IsNotOf(testor, FullTestor));
   assert(R_Type_BytesAllocated == sizeof(Testor));
   R_Type_Delete(testor);
   assert(R_Type_BytesAllocated == 0);
@@ -79,6 +80,7 @@ void test_constructor(void) {
   assert(testor != NULL);
   assert(testor->type == R_Type_Object(ConstructorTestor));
   assert(R_Type_IsOf(testor, ConstructorTestor));
+  assert(R_Type_IsNotOf(testor, Testor));
   assert(Testor_Constructor_Called == 1);
   assert(Testor_Destructor_Called == 0);
   assert(Testor_Copier_Called == 0);

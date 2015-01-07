@@ -76,6 +76,8 @@ void* R_Type_Copy(const void* object);
  */
 int R_Type_IsObjectOfType(const void* object, const R_Type* type);
 #define R_Type_IsOf(object, Type) R_Type_IsObjectOfType(object, R_Type_Object(Type))
+int R_Type_IsObjectNotOfType(const void* object, const R_Type* type);
+#define R_Type_IsNotOf(object, Type) R_Type_IsObjectNotOfType(object, R_Type_Object(Type))
 
 
 /*  R_Type_BytesAllocated

@@ -47,3 +47,7 @@ int R_Type_IsObjectOfType(const void* object, const R_Type* type) {
   if (type_of_object != type) return 0;
   return 1;
 }
+
+int R_Type_IsObjectNotOfType(const void* object, const R_Type* type) {
+  return !R_Type_IsObjectOfType(object, type);
+}
