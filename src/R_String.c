@@ -74,6 +74,10 @@ R_String* R_String_appendBytes(R_String* self, const char* bytes, size_t byteCou
 	return self;
 }
 
+R_String* R_String_appendArray(R_String* self, const R_ByteArray* array) {
+	return R_String_appendBytes(self, (char*)R_ByteArray_bytes(array), R_ByteArray_size(array));
+}
+
 size_t R_String_length(const R_String* self) {
 	return self->stringSize;
 }
