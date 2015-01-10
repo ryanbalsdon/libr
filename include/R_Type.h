@@ -82,7 +82,25 @@ int R_Type_IsObjectNotOfType(const void* object, const R_Type* type);
 
 /*  R_Type_BytesAllocated
     Number of bytes currently in-use. Mostly just useful for testing or profiling.
-*/
+ */
 extern size_t R_Type_BytesAllocated;
+
+/* R_Type_shallowCopy
+   A basic R_Type_Copier for objects without any internally-allocated memory.
+ */
+void R_Type_shallowCopy(const void* object_input, void* object_output);
+
+/* R_Integer
+   A basic integer type.
+ */
+typedef struct {R_Type* type; int Integer;} R_Integer;
+R_Type_Declare(R_Integer);
+
+/* R_Float
+   A basic floating point type.
+ */
+typedef struct {R_Type* type; float Float;} R_Float;
+R_Type_Declare(R_Float);
+
 
 #endif

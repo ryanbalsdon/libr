@@ -187,6 +187,30 @@ void test_bad_constructor(void) {
   assert(testor == NULL);
 }
 
+void test_integer(void) {
+  R_Integer* value = R_Type_New(R_Integer);
+  assert(value->Integer == 0);
+  value->Integer += 42;
+  assert(value->Integer == 42);
+  R_Integer* value_copy = R_Type_Copy(value);
+  assert(value_copy->Integer == 42);
+  R_Type_Delete(value);
+  assert(value_copy->Integer == 42);
+  R_Type_Delete(value_copy);
+}
+
+void test_float(void) {
+  R_Float* value = R_Type_New(R_Float);
+  assert(value->Float == 0.0f);
+  value->Float += 2.0f;
+  value->Float *= 2.0f;
+  assert(value->Float == 4.0f);
+  R_Float* value_copy = R_Type_Copy(value);
+  assert(value_copy->Float == 4.0f);
+  R_Type_Delete(value);
+  assert(value_copy->Float == 4.0f);
+  R_Type_Delete(value_copy);}
+
 int main(void) {
   test_simple();
   test_constructor();
@@ -194,6 +218,8 @@ int main(void) {
   test_copier();
   test_full();
   test_bad_constructor();
+  test_integer();
+  test_float();
 
   printf("Pass\n");
 }

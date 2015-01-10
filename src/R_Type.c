@@ -7,6 +7,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include "R_Type.h"
 
 size_t R_Type_BytesAllocated = 0;
@@ -51,3 +52,14 @@ int R_Type_IsObjectOfType(const void* object, const R_Type* type) {
 int R_Type_IsObjectNotOfType(const void* object, const R_Type* type) {
   return !R_Type_IsObjectOfType(object, type);
 }
+
+void R_Type_shallowCopy(const void* object_input, void* object_output) {
+  if (object_input == NULL || object_output == NULL) return;
+  R_Type* input_type  = *(R_Type**)object_input;
+  R_Type* output_type = *(R_Type**)object_output;
+  if (input_type->size != output_type->size) return;
+  memcpy(object_output, object_input, input_type->size);
+}
+
+R_Type_Def(R_Integer, NULL, NULL, R_Type_shallowCopy);
+R_Type_Def(R_Float, NULL, NULL, R_Type_shallowCopy);
