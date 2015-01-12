@@ -223,3 +223,23 @@ R_ByteArray* R_ByteArray_appendUInt32(R_ByteArray* self, uint32_t value) {
 	if ((value & 0xFFFFFFFF) != 0) R_ByteArray_appendByte(self, (value & 0x000000FF) >>  0);
 	return self;
 }
+
+R_ByteArray* R_ByteArray_appendUInt32AsBCD(R_ByteArray* self, uint32_t value) {
+	//Construct the array first in reverse, then append it to self
+	R_ByteArray* reversed = R_Type_New(R_ByteArray);
+	if (self == NULL || reversed == NULL) return NULL;
+	do {
+		uint8_t right_digit = value % 10;
+		value /= 10;
+		uint8_t left_digit = value % 10;
+		value /= 10;
+		R_ByteArray_appendByte(reversed, (left_digit << 4) | right_digit);
+	} while (value > 0);
+
+	for (int i=R_ByteArray_size(reversed)-1; i>=0; i--) {
+		R_ByteArray_appendByte(self, R_ByteArray_byte(reversed, i));
+	}
+
+	R_Type_Delete(reversed);
+	return self;
+}

@@ -35,6 +35,7 @@ R_ByteArray* R_ByteArray_appendHexString(R_ByteArray* self, const R_String* hex)
 R_ByteArray* R_ByteArray_appendHexCString(R_ByteArray* self, const char* hex);
 #define R_ByteArray_appendBytes(self, ...) R_ByteArray_appendCArray(self, (uint8_t[]){__VA_ARGS__}, (sizeof((uint8_t[]){__VA_ARGS__})/sizeof(uint8_t)));
 R_ByteArray* R_ByteArray_appendUInt32(R_ByteArray* self, uint32_t value);
+R_ByteArray* R_ByteArray_appendUInt32AsBCD(R_ByteArray* self, uint32_t value);
 
 size_t R_ByteArray_size(const R_ByteArray* self);
 const uint8_t* R_ByteArray_bytes(const R_ByteArray* self);
