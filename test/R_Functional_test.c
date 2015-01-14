@@ -10,7 +10,9 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+#include <stdbool.h>
 #include "R_Functional.h"
+#include "R_ObjectArray.h"
 
 void Integer_Doubler(R_Integer* integer) {
 	integer->Integer *= 2;
@@ -38,8 +40,36 @@ void test_functors(void) {
 	R_Type_Delete(functor_10);
 }
 
+void test_objectarray_iterator(void) {
+  R_ObjectArray* array = R_Type_New(R_ObjectArray);
+  R_Integer* integer = R_ObjectArray_add(array, R_Integer);
+  integer->Integer = 0;
+  integer = R_ObjectArray_add(array, R_Integer);
+  integer->Integer = 1;
+  integer = R_ObjectArray_add(array, R_Integer);
+  integer->Integer = 2;
+
+  bool integer0_found = false;
+  bool integer1_found = false;
+  bool integer2_found = false;
+
+  R_ObjectArray_each(array, R_Integer, value) {
+  	if (value->Integer == 0) integer0_found = true;
+  	if (value->Integer == 1) integer1_found = true;
+  	if (value->Integer == 2) integer2_found = true;
+  }
+
+  assert(integer0_found);
+  assert(integer1_found);
+  assert(integer2_found);
+
+  R_Type_Delete(array);
+}
+
 int main(void) {
   test_functors();
+  test_objectarray_iterator();
+
 
   assert(R_Type_BytesAllocated == 0);
   printf("Pass\n");

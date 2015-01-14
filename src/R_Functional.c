@@ -30,4 +30,3 @@ void* R_Functor_call(R_Functor* self) {
 	self->function(self->state);
 	return self->state;
 }
-

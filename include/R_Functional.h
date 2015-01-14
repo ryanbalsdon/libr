@@ -21,4 +21,6 @@ R_Type_Declare(R_Functor);
 
 void* R_Functor_call(R_Functor*); //Returns the functor's state object
 
+#define R_ObjectArray_each(array, TYPE, NAME) for(TYPE* NAME=NULL; (NAME=(TYPE*)R_ObjectArray_pointerAtIndex(array, R_ObjectArray_indexOfPointer(array, NAME)+1));)
+
 #endif /*R_Functional_h*/
