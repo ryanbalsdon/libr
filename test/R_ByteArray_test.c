@@ -218,6 +218,39 @@ void test_append_integers(void) {
 	R_Type_Delete(comparor);
 }
 
+void test_bcd(void) {
+	R_ByteArray* array = R_Type_New(R_ByteArray);
+	assert(R_ByteArray_appendUInt32AsBCD(array, 0) == array);
+	assert(R_ByteArray_size(array) == 1);
+	assert(R_ByteArray_byte(array,0) == 0x00);
+
+	R_ByteArray_reset(array);
+	assert(R_ByteArray_appendUInt32AsBCD(array, 5) == array);
+	assert(R_ByteArray_size(array) == 1);
+	assert(R_ByteArray_byte(array,0) == 0x05);
+
+	R_ByteArray_reset(array);
+	assert(R_ByteArray_appendUInt32AsBCD(array, 54) == array);
+	assert(R_ByteArray_size(array) == 1);
+	assert(R_ByteArray_byte(array,0) == 0x54);
+
+	R_ByteArray_reset(array);
+	assert(R_ByteArray_appendUInt32AsBCD(array, 1234) == array);
+	assert(R_ByteArray_size(array) == 2);
+	assert(R_ByteArray_byte(array,0) == 0x12);
+	assert(R_ByteArray_byte(array,1) == 0x34);
+
+	R_ByteArray_reset(array);
+	assert(R_ByteArray_appendUInt32AsBCD(array, 1234567) == array);
+	assert(R_ByteArray_size(array) == 4);
+	assert(R_ByteArray_byte(array,0) == 0x01);
+	assert(R_ByteArray_byte(array,1) == 0x23);
+	assert(R_ByteArray_byte(array,2) == 0x45);
+	assert(R_ByteArray_byte(array,3) == 0x67);
+
+	R_Type_Delete(array);
+}
+
 int main(void) {
 	assert(R_Type_BytesAllocated == 0);
 
@@ -232,6 +265,7 @@ int main(void) {
 	test_appendHexString();
 	test_copy();
 	test_append_integers();
+	test_bcd();
 
 	assert(R_Type_BytesAllocated == 0);
 	printf("Pass\n");

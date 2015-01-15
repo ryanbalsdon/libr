@@ -92,6 +92,7 @@ R_ByteArray* R_ByteArray_appendHexCString(R_ByteArray* self, const char* hex);
     Appends the given integer as 4 bytes, network order.
 */
 R_ByteArray* R_ByteArray_appendUInt32(R_ByteArray* self, uint32_t value);
+R_ByteArray* R_ByteArray_appendUInt32AsBCD(R_ByteArray* self, uint32_t value);
 
 /*  R_ByteArray_size
     Returns the number of bytes currently in the array, not the total amount of allocated memory.
