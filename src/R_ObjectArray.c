@@ -42,14 +42,9 @@ R_ObjectArray* R_ObjectArray_Destructor(R_ObjectArray* self) {
     return self;
 }
 
-inline int R_ObjectArray_getSize(R_ObjectArray* self) {
+inline int R_ObjectArray_size(R_ObjectArray* self) {
     return self->arraySize;
 }
-
-inline int R_ObjectArray_length(R_ObjectArray* self) {
-    return self->arraySize;
-}
-
 
 static void R_ObjectArray_increaseAllocationIfRequired(R_ObjectArray* self) {
     if (self->arrayAllocationSize > self->arraySize) return;
@@ -70,7 +65,7 @@ inline void* R_ObjectArray_pointerAtIndex(R_ObjectArray* self, unsigned int inde
 }
 
 void* R_ObjectArray_lastPointer(R_ObjectArray* self) {
-    return R_ObjectArray_pointerAtIndex(self, R_ObjectArray_getSize(self)-1);
+    return R_ObjectArray_pointerAtIndex(self, R_ObjectArray_size(self)-1);
 }
 
 int R_ObjectArray_indexOfPointer(R_ObjectArray* self, void* pointer) {
@@ -82,7 +77,7 @@ int R_ObjectArray_indexOfPointer(R_ObjectArray* self, void* pointer) {
 }
 
 void R_ObjectArray_pop(R_ObjectArray* self) {
-    R_ObjectArray_removeIndex(self, R_ObjectArray_getSize(self)-1);
+    R_ObjectArray_removeIndex(self, R_ObjectArray_size(self)-1);
 }
 
 void R_ObjectArray_swap(R_ObjectArray* self, int indexA, int indexB) {

@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+#include <stdbool.h>
 #include "R_ObjectArray.h"
 
 struct Integer {
@@ -139,16 +140,42 @@ void test_cleanup(void) {
 	assert(Integer_Constructor_Called == 3);
 	assert(Integer_Destructor_Called == 3);
 	assert(R_Type_BytesAllocated == 0);
+}
 
+void test_objectarray_iterator(void) {
+  R_ObjectArray* array = R_Type_New(R_ObjectArray);
+  R_Integer* integer = R_ObjectArray_add(array, R_Integer);
+  integer->Integer = 0;
+  integer = R_ObjectArray_add(array, R_Integer);
+  integer->Integer = 1;
+  integer = R_ObjectArray_add(array, R_Integer);
+  integer->Integer = 2;
+
+  bool integer0_found = false;
+  bool integer1_found = false;
+  bool integer2_found = false;
+
+  R_ObjectArray_each(array, R_Integer, value) {
+  	if (value->Integer == 0) integer0_found = true;
+  	if (value->Integer == 1) integer1_found = true;
+  	if (value->Integer == 2) integer2_found = true;
+  }
+
+  assert(integer0_found);
+  assert(integer1_found);
+  assert(integer2_found);
+
+  R_Type_Delete(array);
 }
 
 int main(void) {
-	assert(R_Type_BytesAllocated == 0);
 	test_allocations();
 	test_integer();
 	test_pop();
 	test_swap();
 	test_cleanup();
+	test_objectarray_iterator();
 
+	assert(R_Type_BytesAllocated == 0);
 	printf("Pass\n");
 }
