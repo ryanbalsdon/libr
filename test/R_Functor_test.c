@@ -11,7 +11,7 @@
 #include <assert.h>
 #include <string.h>
 #include "R_Functor.h"
-#include "R_ObjectArray.h"
+
 
 void Integer_Doubler(R_Integer* integer) {
 	integer->Integer *= 2;

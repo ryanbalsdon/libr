@@ -11,7 +11,7 @@
 #include <assert.h>
 #include <string.h>
 #include "R_Dictionary.h"
-#include "R_ObjectArray.h"
+
 
 void test_allocation(void) {
 	assert(R_Type_BytesAllocated == 0);

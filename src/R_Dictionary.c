@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "R_Dictionary.h"
-#include "R_ObjectArray.h"
+#include "R_List.h"
 
 
 typedef struct {
@@ -35,13 +35,13 @@ R_Type_Def(R_Dictionary_Datum, R_Dictionary_Datum_Constructor, R_Dictionary_Datu
 
 struct R_Dictionary {
 	R_Type* type;
-	R_ObjectArray* dictionary;
+	R_List* dictionary;
 };
 R_Dictionary* R_Dictionary_Constructor(R_Dictionary* self);
 R_Dictionary* R_Dictionary_Destructor(R_Dictionary* self);
 
 R_Dictionary* R_Dictionary_Constructor(R_Dictionary* self) {
-	self->dictionary = R_Type_New(R_ObjectArray);
+	self->dictionary = R_Type_New(R_List);
 	return self;
 }
 
@@ -86,7 +86,7 @@ R_Dictionary_Datum* R_Dictionary_prepareDatumForSetter(R_Dictionary* self, const
 	if (self == NULL || key == NULL) return NULL;
 	R_Dictionary_Datum* datum = R_Dictionary_getDatum(self, key);
 	if (datum != NULL) return datum;
-	datum = R_ObjectArray_add(self->dictionary, R_Dictionary_Datum);
+	datum = R_List_add(self->dictionary, R_Dictionary_Datum);
 	R_String_setString(datum->key, key);
 	return datum;
 }
@@ -97,8 +97,8 @@ R_Dictionary_Datum* R_Dictionary_getDatum(R_Dictionary* self, const char* key) {
 	if (r_key == NULL) return NULL;
 	R_String_setString(r_key, key);
 
-	for (int i=0; i<R_ObjectArray_length(self->dictionary); i++) {
-		R_Dictionary_Datum* datum = R_ObjectArray_pointerAtIndex(self->dictionary, i);
+	for (int i=0; i<R_List_length(self->dictionary); i++) {
+		R_Dictionary_Datum* datum = R_List_pointerAtIndex(self->dictionary, i);
 		if (R_String_isSame(r_key, datum->key)) return R_Type_Delete(r_key), datum;
 	}
 	return R_Type_Delete(r_key), NULL;
@@ -158,34 +158,34 @@ R_Dictionary* R_Dictionary_addToArray(R_Dictionary* self, const char* key) {
 	if (self == NULL || key == NULL) return NULL;
 	R_Dictionary_Datum* datum = R_Dictionary_prepareDatumForSetter(self, key);
 	if (datum == NULL) return NULL;
-	if (datum->value != NULL && R_Type_IsOf(datum->value, R_ObjectArray) == false) {
+	if (datum->value != NULL && R_Type_IsOf(datum->value, R_List) == false) {
 		R_Type_Delete(datum->value);
 		datum->value = NULL;
 	}
-	if (datum->value == NULL) datum->value = R_Type_New(R_ObjectArray);
-	return R_ObjectArray_add(datum->value, R_Dictionary);
+	if (datum->value == NULL) datum->value = R_Type_New(R_List);
+	return R_List_add(datum->value, R_Dictionary);
 }
 
 int R_Dictionary_getArraySize(R_Dictionary* self, const char* key) {
 	if (self == NULL || key == NULL) return 0;
 	R_Dictionary_Datum* datum = R_Dictionary_getDatum(self, key);
-	if (datum == NULL || datum->value == NULL || R_Type_IsOf(datum->value, R_ObjectArray) == false) return 0;
-	return R_ObjectArray_length(datum->value);
+	if (datum == NULL || datum->value == NULL || R_Type_IsOf(datum->value, R_List) == false) return 0;
+	return R_List_length(datum->value);
 }
 
 R_Dictionary* R_Dictionary_getArrayIndex(R_Dictionary* self, const char* key, unsigned int index) {
 	if (self == NULL || key == NULL) return NULL;
 	R_Dictionary_Datum* datum = R_Dictionary_getDatum(self, key);
 	if (datum == NULL || datum->value == NULL) return NULL;
-	return (R_Dictionary*)R_ObjectArray_pointerAtIndex(datum->value, index);
+	return (R_Dictionary*)R_List_pointerAtIndex(datum->value, index);
 }
 
 R_String* R_Dictionary_serialize(R_Dictionary* self, R_String* string) {
 	if (self == NULL || string == NULL) return NULL;
 	R_String_appendCString(string, "{");
 
-	for (int keyIndex=0; keyIndex<R_ObjectArray_length(self->dictionary); keyIndex++) {
-		R_Dictionary_Datum* datum = (R_Dictionary_Datum*)R_ObjectArray_pointerAtIndex(self->dictionary, keyIndex);
+	for (int keyIndex=0; keyIndex<R_List_length(self->dictionary); keyIndex++) {
+		R_Dictionary_Datum* datum = (R_Dictionary_Datum*)R_List_pointerAtIndex(self->dictionary, keyIndex);
 		if (datum == NULL) return NULL;
 		R_String_appendString(string, datum->key);
 		R_String_appendCString(string, "=");
@@ -197,10 +197,10 @@ R_String* R_Dictionary_serialize(R_Dictionary* self, R_String* string) {
 		else if (R_Type_IsOf(datum->value, R_Dictionary)) {
 			R_Dictionary_serialize(datum->value, string);
 		}
-		else if (R_Type_IsOf(datum->value, R_ObjectArray)) {
+		else if (R_Type_IsOf(datum->value, R_List)) {
 			R_String_appendCString(string, "[");
-			for (int i=0; i<R_ObjectArray_length(datum->value); i++) {
-				R_Dictionary* arrayMember = (R_Dictionary*)R_ObjectArray_pointerAtIndex(datum->value, i);
+			for (int i=0; i<R_List_length(datum->value); i++) {
+				R_Dictionary* arrayMember = (R_Dictionary*)R_List_pointerAtIndex(datum->value, i);
 				R_Dictionary_serialize(arrayMember, string);
 			}
 			R_String_appendCString(string, "];");
