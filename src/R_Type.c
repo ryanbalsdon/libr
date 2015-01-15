@@ -63,3 +63,5 @@ void R_Type_shallowCopy(const void* object_input, void* object_output) {
 
 R_Type_Def(R_Integer, NULL, NULL, R_Type_shallowCopy);
 R_Type_Def(R_Float, NULL, NULL, R_Type_shallowCopy);
+R_Type_Def(R_Unsigned, NULL, NULL, R_Type_shallowCopy);
+

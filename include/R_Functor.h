@@ -11,7 +11,7 @@
 
 #include "R_Type.h"
 
-typedef void (*R_Functor_Function)(void* state);
+typedef void* (*R_Functor_Function)(void* state);
 typedef struct {
 	R_Type* type;
 	void* state; //Must be an instance of an R_Type object because R_Type_Delete will be called against it
@@ -19,6 +19,6 @@ typedef struct {
 } R_Functor;
 R_Type_Declare(R_Functor);
 
-void* R_Functor_call(R_Functor*); //Returns the functor's state object
+void* R_Functor_call(R_Functor*);
 
 #endif /*R_Functor_h*/

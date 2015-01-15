@@ -13,8 +13,9 @@
 #include "R_Functor.h"
 
 
-void Integer_Doubler(R_Integer* integer) {
+void* Integer_Doubler(R_Integer* integer) {
 	integer->Integer *= 2;
+	return integer;
 }
 R_Functor* Integer_Doubler_Functor_Init(R_Functor* functor, int initial) {
 	R_Integer* state = R_Type_New(R_Integer);

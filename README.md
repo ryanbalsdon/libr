@@ -1,5 +1,5 @@
 # R Library
- This library is a collection of useful, free, single-file libraries for C. The focus of these modules is on ease-of-use, clarity and stability. It will be slower and consume more memory than custom or larger implementations.
+ This library is a collection of useful, free, single-file libraries for C. The focus of these modules is on ease-of-use, clarity and stability. It will be slower and consume more memory than custom implementations and that's OK. The intention is to create a framework speeding up embedded development, where standards-compliance and ease-of-use is king. Later in a project, when bottle-necks are found, more fine-tuned solutions are to be used.
 
 ## Why Single-File?
  Single-File libraries are easier to deal with! They're small enough that they can be included into a project as source which brings two main benefits: they're much easier to use when debugging and we don't have to worry about low-level formats of pre-built libraries.
@@ -43,16 +43,18 @@ R_Type_Delete(instance); // Free memory back to the heap, after running the dest
  R_Type_Delete(array);
 ```
 
-### R_ObjectArray
- R_ObjectArray is a collection of objects allocated using the R_Type methods, stored internally as an array of pointers.
+### R_List
+ R_List is a collection of objects allocated using the R_Type methods, stored internally as an array of pointers.
 ```
- R_ObjectArray* list = R_Type_New(R_ObjectArray);
- R_Integer* integer = R_ObjectArray_add(list, R_Integer); integer->Integer = 42;
- integer = R_ObjectArray_add(list, R_Integer); number->Integer = 2;
- R_ObjectArray_each(list, R_Integer, number) {printf("%d ", number->Integer);} //prints "42 2"
+ R_List* list = R_Type_New(R_List);
+ R_Integer* integer = R_List_add(list, R_Integer); integer->Integer = 42;
+ integer = R_List_add(list, R_Integer); number->Integer = 2;
+ R_List_each(list, R_Integer, number) {printf("%d ", number->Integer);} //prints "42 2"
  R_Type_Delete(list); //Also deletes both R_Integer elements
 ```
 
 ### R_Dictionary
  R_Dictionary is a Dictionary/Hash object built using R_Type, R_String and R_ObjectArray. It supports sub-object, array and string data types with some helper functions to convert other data types into strings. It was built primary for (de)serializing data as json but doesn't currently follow the json spec.
  
+### R_Functor
+ A functor is a "function with state". These are useful for making iterators and other, similar constructs but is just a class with a single, overridable method. This shows how customized R_Type instances can be used for something similar to interfaces. 

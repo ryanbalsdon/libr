@@ -12,11 +12,33 @@
 #include "R_List.h"
 
 
+typedef struct {
+    R_Type* type;
+    unsigned int next_index;
+    R_List* list; //This is not a copy. Do not call R_Type_Delete on it!
+} R_List_Iterator_State;
+R_Type_Def(R_List_Iterator_State, NULL, NULL, NULL);
+
+static void* R_List_iterator(R_List_Iterator_State* state) {
+    if (state->next_index >= R_List_size(state->list)) return NULL;
+    return R_List_pointerAtIndex(state->list, state->next_index++);
+}
+
+R_Functor* R_List_Iterator(R_Functor* functor, R_List* list) {
+    R_List_Iterator_State* state = R_Type_New(R_List_Iterator_State);
+    state->list = list;
+    state->next_index = 0;
+    functor->state = state;
+    functor->function = (R_Functor_Function)R_List_iterator;
+    return functor;
+}
+
 struct R_List {
     R_Type* type;
     void ** array;          //The actual array
-    int arrayAllocationSize;//How large the internal array is. This is always as-large or larger than ArraySize.
-    int arraySize;          //How many objects the user has added to the array.
+    size_t arrayAllocationSize;//How large the internal array is. This is always as-large or larger than ArraySize.
+    size_t arraySize;          //How many objects the user has added to the array.
+    unsigned int last_index_of_pointer_at_index; //Optimization for the 'each' operator
 };
 
 static R_List* R_List_Constructor(R_List* self);
@@ -59,8 +81,8 @@ static void R_List_increaseAllocationIfRequired(R_List* self) {
 }
 
 inline void* R_List_pointerAtIndex(R_List* self, unsigned int index) {
-    if (index >= R_List_length(self))
-        return NULL;
+    if (self == NULL || index >= R_List_length(self)) return NULL;
+    self->last_index_of_pointer_at_index = index;
     return self->array[index];
 }
 
@@ -69,6 +91,9 @@ void* R_List_lastPointer(R_List* self) {
 }
 
 int R_List_indexOfPointer(R_List* self, void* pointer) {
+    if (self == NULL || pointer == NULL) return -1;
+    //last_index_of_pointer_at_index is an optimization for the 'each' operator
+    if (pointer == self->array[self->last_index_of_pointer_at_index]) return self->last_index_of_pointer_at_index;
     for (int i=0; i<self->arraySize; i++) {
         if (self->array[i] == pointer)
             return i;

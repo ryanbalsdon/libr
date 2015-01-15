@@ -209,7 +209,19 @@ void test_float(void) {
   assert(value_copy->Float == 4.0f);
   R_Type_Delete(value);
   assert(value_copy->Float == 4.0f);
-  R_Type_Delete(value_copy);}
+  R_Type_Delete(value_copy);
+}
+
+void test_unsigned(void) {
+  R_Unsigned* value = R_Type_New(R_Unsigned);
+  assert(value->Integer == 0);
+  value->Integer = -1;
+  assert(value->Integer > 0);
+  R_Unsigned* value_copy = R_Type_Copy(value);
+  assert(value_copy->Integer == value->Integer);
+  R_Type_Delete(value);
+  R_Type_Delete(value_copy);
+}
 
 int main(void) {
   test_simple();

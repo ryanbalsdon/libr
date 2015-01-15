@@ -151,6 +151,32 @@ void test_objectarray_iterator(void) {
   integer = R_List_add(array, R_Integer);
   integer->Integer = 2;
 
+  R_Functor* iterator = R_List_Iterator(R_Type_New(R_Functor), array);
+  R_Integer* element = R_Functor_call(iterator);
+  assert(R_Type_IsOf(element, R_Integer));
+  assert(element->Integer == 0);
+  element = R_Functor_call(iterator);
+  assert(R_Type_IsOf(element, R_Integer));
+  assert(element->Integer == 1);
+  element = R_Functor_call(iterator);
+  assert(R_Type_IsOf(element, R_Integer));
+  assert(element->Integer == 2);
+  element = R_Functor_call(iterator);
+  assert(element == NULL);
+
+  R_Type_Delete(iterator);
+  R_Type_Delete(array);
+}
+
+void test_objectarray_each(void) {
+  R_List* array = R_Type_New(R_List);
+  R_Integer* integer = R_List_add(array, R_Integer);
+  integer->Integer = 0;
+  integer = R_List_add(array, R_Integer);
+  integer->Integer = 1;
+  integer = R_List_add(array, R_Integer);
+  integer->Integer = 2;
+
   bool integer0_found = false;
   bool integer1_found = false;
   bool integer2_found = false;
@@ -175,6 +201,7 @@ int main(void) {
 	test_swap();
 	test_cleanup();
 	test_objectarray_iterator();
+	test_objectarray_each();
 
 	assert(R_Type_BytesAllocated == 0);
 	printf("Pass\n");

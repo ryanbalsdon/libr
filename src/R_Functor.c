@@ -27,6 +27,5 @@ static void R_Functor_Copier(R_Functor* self, R_Functor* new) {
 
 void* R_Functor_call(R_Functor* self) {
 	if (self == NULL || self->function == NULL) return NULL;
-	self->function(self->state);
-	return self->state;
+	return self->function(self->state);
 }

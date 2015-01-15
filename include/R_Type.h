@@ -102,5 +102,10 @@ R_Type_Declare(R_Integer);
 typedef struct {R_Type* type; float Float;} R_Float;
 R_Type_Declare(R_Float);
 
+/* R_Unsigned
+   A basic unsigned integer type.
+ */
+typedef struct {R_Type* type; unsigned int Integer;} R_Unsigned;
+R_Type_Declare(R_Unsigned);
 
 #endif

@@ -10,6 +10,7 @@
  */
 
 #include "R_Type.h"
+#include "R_Functor.h"
 
 R_Type_Declare(R_List);
 typedef struct R_List R_List;
@@ -70,7 +71,12 @@ void R_List_pop(R_List* self);
  */
 void R_List_swap(R_List* self, int indexA, int indexB);
 
-/*  R_List_swap
+/*  R_List_Iterator
+    Initializes a functor as an iterator/enumerator for the list. Each call returns the next element.
+ */
+R_Functor* R_List_Iterator(R_Functor* functor, R_List* list);
+
+/*  R_List_each
     Sets up a loop to iterate over the list.
  */
 #define R_List_each(array, TYPE, NAME) for(TYPE* NAME=NULL; (NAME=(TYPE*)R_List_pointerAtIndex(array, R_List_indexOfPointer(array, NAME)+1));)
