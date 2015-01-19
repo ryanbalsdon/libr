@@ -48,7 +48,12 @@ void* R_List_pointerAtIndex(R_List* self, unsigned int index);
 /*  R_List_lastPointer
     Returns the last object in the list or NULL.
  */
-void* R_List_lastPointer(R_List* self);
+void* R_List_last(R_List* self);
+
+/*  R_List_lastPointer
+ Returns the last object in the list or NULL.
+ */
+void* R_List_first(R_List* self);
 
 /*  R_List_indexOfPointer
     Finds the given object in the list and returns the index of it. Returns -1 if the object isn't found.

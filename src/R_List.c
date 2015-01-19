@@ -86,8 +86,12 @@ inline void* R_List_pointerAtIndex(R_List* self, unsigned int index) {
     return self->array[index];
 }
 
-void* R_List_lastPointer(R_List* self) {
+void* R_List_last(R_List* self) {
     return R_List_pointerAtIndex(self, R_List_size(self)-1);
+}
+
+void* R_List_first(R_List* self) {
+	return R_List_pointerAtIndex(self, 0);
 }
 
 int R_List_indexOfPointer(R_List* self, void* pointer) {
