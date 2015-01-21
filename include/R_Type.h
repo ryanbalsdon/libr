@@ -95,17 +95,23 @@ void R_Type_shallowCopy(const void* object_input, void* object_output);
  */
 typedef struct {R_Type* type; int Integer;} R_Integer;
 R_Type_Declare(R_Integer);
+R_Integer* R_Integer_set(R_Integer* self, int value);
+int R_Integer_get(R_Integer* self);
 
 /* R_Float
    A basic floating point type.
  */
 typedef struct {R_Type* type; float Float;} R_Float;
 R_Type_Declare(R_Float);
+R_Float* R_Float_set(R_Float* self, float value);
+float R_Float_get(R_Float* self);
 
 /* R_Unsigned
    A basic unsigned integer type.
  */
 typedef struct {R_Type* type; unsigned int Integer;} R_Unsigned;
 R_Type_Declare(R_Unsigned);
+R_Unsigned* R_Unsigned_set(R_Unsigned* self, unsigned int value);
+unsigned int R_Unsigned_get(R_Unsigned* self);
 
 #endif

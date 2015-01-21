@@ -27,9 +27,8 @@ R_Type_Def(R_ByteArray, R_ByteArray_Constructor, R_ByteArray_Destructor, R_ByteA
 static void R_ByteArray_increaseAllocationIfNeeded(R_ByteArray* self, size_t spaceNeeded);
 
 static R_ByteArray* R_ByteArray_Constructor(R_ByteArray* self) {
-	self->array = (uint8_t*)malloc(128*sizeof(uint8_t));
-	memset(self->array, 0, 128*sizeof(uint8_t));
-	self->arrayAllocationSize = 128;
+	self->array = NULL;
+	self->arrayAllocationSize = 0;
 	self->arraySize = 0;
 
 	return self;
@@ -52,9 +51,8 @@ R_ByteArray* R_ByteArray_reset(R_ByteArray* self) {
 }
 
 static void R_ByteArray_increaseAllocationIfNeeded(R_ByteArray* self, size_t spaceNeeded) {
-	while (self->arrayAllocationSize < self->arraySize + spaceNeeded) {
-		//double allocation
-		self->arrayAllocationSize *= 2;
+	if (self->arrayAllocationSize < self->arraySize + spaceNeeded) {
+		self->arrayAllocationSize = self->arraySize + spaceNeeded;
 		self->array = (uint8_t*)realloc(self->array, self->arrayAllocationSize);
 	}
 }

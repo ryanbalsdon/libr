@@ -49,9 +49,8 @@ R_Type_Def(R_List, R_List_Constructor, R_List_Destructor, NULL);
 static void R_List_increaseAllocationIfRequired(R_List* self);
 
 R_List* R_List_Constructor(R_List* self) {
-    self->array = (void**)malloc(128*sizeof(void*));
-    memset(self->array, 0, 128*sizeof(void*));
-    self->arrayAllocationSize = 128;
+    self->array = NULL;
+    self->arrayAllocationSize = 0;
     self->arraySize = 0;
 
     return self;
@@ -68,16 +67,11 @@ inline int R_List_size(R_List* self) {
     return self->arraySize;
 }
 
-static void R_List_increaseAllocationIfRequired(R_List* self) {
+static void R_List_increaseAllocationIfRequired(R_List* self) { //increase by 1 void**
     if (self->arrayAllocationSize > self->arraySize) return;
-    //double allocation
-    void ** newArray = (void**)malloc(2*self->arrayAllocationSize*sizeof(void*));
-    for (int i=0; i<self->arrayAllocationSize; i++) {
-        newArray[i] = self->array[i];
-    }
-    free(self->array);
-    self->array = newArray;
-    self->arrayAllocationSize *= 2;
+    self->arrayAllocationSize += 1;
+    self->array = (void**)realloc(self->array, self->arrayAllocationSize*sizeof(void*));
+    self->array[self->arrayAllocationSize - 1] = NULL;
 }
 
 inline void* R_List_pointerAtIndex(R_List* self, unsigned int index) {

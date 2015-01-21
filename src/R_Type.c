@@ -62,6 +62,14 @@ void R_Type_shallowCopy(const void* object_input, void* object_output) {
 }
 
 R_Type_Def(R_Integer, NULL, NULL, R_Type_shallowCopy);
+R_Integer* R_Integer_set(R_Integer* self, int value) {self->Integer = value; return self;}
+int R_Integer_get(R_Integer* self) {return self->Integer;}
+
 R_Type_Def(R_Float, NULL, NULL, R_Type_shallowCopy);
+R_Float* R_Float_set(R_Float* self, float value) {self->Float = value; return self;}
+float R_Float_get(R_Float* self) {return self->Float;}
+
 R_Type_Def(R_Unsigned, NULL, NULL, R_Type_shallowCopy);
+R_Unsigned* R_Unsigned_set(R_Unsigned* self, unsigned int value) {self->Integer = value; return self;}
+unsigned int R_Unsigned_get(R_Unsigned* self) {return self->Integer;}
 

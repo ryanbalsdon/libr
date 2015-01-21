@@ -274,3 +274,9 @@ bool R_String_isEmpty(R_String* self) {
 	if (self->stringSize == 0) return true;
 	return false;
 }
+
+bool R_String_compare(R_String* self, const char* comparor) {
+	if (self == NULL || comparor == NULL) return false;
+	if (strcmp(R_String_getString(self), comparor) != 0) return false;
+	return true;
+}

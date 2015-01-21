@@ -134,6 +134,8 @@ void test_is_same(void) {
 	R_String_setString(stringB, "sizes");
 	assert(R_String_isSame(stringA, stringB) == false);
 	assert(R_String_isSame(stringB, stringA) == false);
+	assert(R_String_compare(stringA, "different") == true);
+	assert(R_String_compare(stringA, "diff") == false);
 	R_String_setString(stringA, "same");
 	R_String_setString(stringB, "size");
 	assert(R_String_isSame(stringA, stringB) == false);

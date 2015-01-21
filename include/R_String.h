@@ -125,4 +125,9 @@ bool R_String_isEmpty(R_String* self);
  */
 bool R_String_isSame(R_String* self, R_String* comparor);
 
+/*  R_String_compare
+    Returns true if the output of strcmp would be 0
+ */
+bool R_String_compare(R_String* self, const char* comparor);
+
 #endif /* R_String_h */
