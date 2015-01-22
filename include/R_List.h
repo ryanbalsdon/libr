@@ -28,7 +28,7 @@ void* R_List_addObjectOfType(R_List* self, const R_Type* type);
 /*  R_List_removeIndex
     Removes the object at the given index and destroys it.
  */
-void R_List_removeIndex(R_List* self, unsigned int index);
+void R_List_removeIndex(R_List* self, size_t index);
 
 /*  R_List_removePointer
     Removes the given object and destroys it.
@@ -43,7 +43,7 @@ void R_List_removeAll(R_List* self);
 /*  R_List_pointerAtIndex
     Returns the object at the given index or NULL.
  */
-void* R_List_pointerAtIndex(R_List* self, unsigned int index);
+void* R_List_pointerAtIndex(R_List* self, size_t index);
 
 /*  R_List_lastPointer
     Returns the last object in the list or NULL.
@@ -58,12 +58,12 @@ void* R_List_first(R_List* self);
 /*  R_List_indexOfPointer
     Finds the given object in the list and returns the index of it. Returns -1 if the object isn't found.
  */
-int R_List_indexOfPointer(R_List* self, void* pointer);
+size_t R_List_indexOfPointer(R_List* self, void* pointer);
 
 /*  R_List_size
     Returns the number of objects in the list.
  */
-int R_List_size(R_List* self);
+size_t R_List_size(R_List* self);
 #define  R_List_length R_List_size
 
 /*  R_List_pop

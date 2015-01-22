@@ -69,7 +69,7 @@ R_Dictionary* R_Dictionary_addToArray(R_Dictionary* self, const char* key);
 /*  R_Dictionary_getArraySize
     Returns the size of the array at the given key, if it exists. Otherwise, zero.
  */
-int R_Dictionary_getArraySize(R_Dictionary* self, const char* key);
+size_t R_Dictionary_getArraySize(R_Dictionary* self, const char* key);
 
 /*  R_Dictionary_getArrayIndex
     Returns the dictionary at the given index of the array at the given key.

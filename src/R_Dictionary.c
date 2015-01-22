@@ -166,7 +166,7 @@ R_Dictionary* R_Dictionary_addToArray(R_Dictionary* self, const char* key) {
 	return R_List_add(datum->value, R_Dictionary);
 }
 
-int R_Dictionary_getArraySize(R_Dictionary* self, const char* key) {
+size_t R_Dictionary_getArraySize(R_Dictionary* self, const char* key) {
 	if (self == NULL || key == NULL) return 0;
 	R_Dictionary_Datum* datum = R_Dictionary_getDatum(self, key);
 	if (datum == NULL || datum->value == NULL || R_Type_IsOf(datum->value, R_List) == false) return 0;
