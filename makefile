@@ -1,6 +1,6 @@
-CC=gcc
-AR=ar
-CFLAGS=-Wall -g
+CC ?= gcc
+AR ?= ar
+CFLAGS = -Wall -g -std=c99
 INCLUDES=include/
 
 SRCS = $(wildcard src/*.c)
