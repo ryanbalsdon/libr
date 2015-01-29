@@ -76,6 +76,7 @@ void test_getBraces(void) {
 	R_String* substring = R_Type_New(R_String);
 	assert(R_String_getSubstring(string, 4, 9, substring) != NULL);
 	assert(strcmp(R_String_getString(R_String_getSubstring(string, 4, 9, substring)), "killer") == 0);
+	assert(R_String_length(substring) == 6);
 	assert(R_String_getBracedString(string, '{', '}', substring) != NULL);
 	assert(strcmp(R_String_getString(R_String_getBracedString(string, '{', '}', substring)), "{hide}") == 0);
 
@@ -152,6 +153,51 @@ void test_is_same(void) {
 	R_Type_Delete(stringB);
 }
 
+void test_json_formatting(void) {
+	R_String* test1 = R_String_appendCString(R_Type_New(R_String), "no controls");
+	R_String* test2 = R_String_appendCString(R_Type_New(R_String), "all controls: \" \\ / \b \f \n \r \t");
+
+	R_String* string = R_Type_New(R_String);
+	assert(R_String_appendStringAsJson(string, test1) == string);
+	assert(R_String_compare(string, "\"no controls\""));
+
+	R_String_reset(string);
+	assert(R_String_appendStringAsJson(string, test2) == string);
+	assert(R_String_compare(string, "\"all controls: \\\" \\\\ \\/ \\b \\f \\n \\r \\t\""));
+	
+	R_Type_Delete(string);
+	R_Type_Delete(test1);
+	R_Type_Delete(test2);
+}
+
+void test_shift(void) {
+	R_String* string = R_String_appendCString(R_Type_New(R_String), "012345");
+	assert(R_String_length(string) == 6);
+	assert(R_String_first(string) == '0');
+	assert(R_String_shift(string) == '0');
+	assert(R_String_length(string) == 5);
+	assert(R_String_first(string) == '1');
+	assert(R_String_shift(string) == '1');
+	assert(R_String_length(string) == 4);
+	assert(R_String_first(string) == '2');
+	assert(R_String_shift(string) == '2');
+	assert(R_String_length(string) == 3);
+	assert(R_String_last(string) == '5');
+	assert(R_String_pop(string)  == '5');
+	assert(R_String_length(string) == 2);
+	assert(R_String_last(string) == '4');
+	assert(R_String_pop(string)  == '4');
+	assert(R_String_length(string) == 1);
+	R_Type_Delete(string);
+}
+
+void test_trim(void) {
+	R_String* string = R_String_appendCString(R_Type_New(R_String), " \t hello world\r\n ");
+	assert(R_String_trim(string) == string);
+	assert(R_String_compare(string, "hello world"));
+	R_Type_Delete(string);
+}
+
 int main(void) {
 	assert(R_Type_BytesAllocated == 0);
 	test_set_get();
@@ -160,6 +206,9 @@ int main(void) {
 	test_getBraces();
 	test_setHex();
 	test_find_token();
+	test_json_formatting();
+	test_shift();
+	test_trim();
 	assert(R_Type_BytesAllocated == 0);
 	printf("Pass\n");
 }

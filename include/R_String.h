@@ -28,6 +28,15 @@ R_String* R_String_reset(R_String* self);
     Returns a buffer to a C String. This buffer is not a copy!
  */
 const char* R_String_getString(const R_String* self);
+#define R_String_cstring R_String_getString
+
+char R_String_first(const R_String* self);
+char R_String_shift(R_String* self);
+char R_String_last(const R_String* self);
+char R_String_pop(R_String* self);
+
+R_String* R_String_trim(R_String* self);
+
 
 /*  R_String_appendCString
     Appends the given C String to the end of the string.
@@ -129,5 +138,7 @@ bool R_String_isSame(R_String* self, R_String* comparor);
     Returns true if the output of strcmp would be 0
  */
 bool R_String_compare(R_String* self, const char* comparor);
+
+R_String* R_String_appendStringAsJson(R_String* self, R_String* string);
 
 #endif /* R_String_h */

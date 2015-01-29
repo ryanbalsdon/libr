@@ -10,8 +10,8 @@
  */
 
 #include <stdbool.h>
+#include "R_Type.h"
 #include "R_String.h"
-
 
 typedef struct R_Dictionary R_Dictionary;
 R_Type_Declare(R_Dictionary);
@@ -24,5 +24,10 @@ void* R_Dictionary_get(R_Dictionary* self, const char* key);
 void R_Dictionary_removeAll(R_Dictionary* self);
 bool R_Dictionary_isPresent(R_Dictionary* self, const char* key);
 bool R_Dictionary_isNotPresent(R_Dictionary* self, const char* key);
+
+size_t R_Dictionary_size(R_Dictionary* self);
+
+R_String* R_Dictionary_toJson(R_Dictionary* self, R_String* buffer);
+R_Dictionary* R_Dictionary_fromJson(R_Dictionary* self, R_String* buffer);
 
 #endif /* R_Dictionary_h */

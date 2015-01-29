@@ -145,22 +145,22 @@ void test_cleanup(void) {
 void test_objectarray_iterator(void) {
   R_List* array = R_Type_New(R_List);
   R_Integer* integer = R_List_add(array, R_Integer);
-  integer->Integer = 0;
+  R_Integer_set(integer, 0);
   integer = R_List_add(array, R_Integer);
-  integer->Integer = 1;
+  R_Integer_set(integer, 1);
   integer = R_List_add(array, R_Integer);
-  integer->Integer = 2;
+  R_Integer_set(integer, 2);
 
   R_Functor* iterator = R_List_Iterator(R_Type_New(R_Functor), array);
   R_Integer* element = R_Functor_call(iterator);
   assert(R_Type_IsOf(element, R_Integer));
-  assert(element->Integer == 0);
+  assert(R_Integer_get(element) == 0);
   element = R_Functor_call(iterator);
   assert(R_Type_IsOf(element, R_Integer));
-  assert(element->Integer == 1);
+  assert(R_Integer_get(element) == 1);
   element = R_Functor_call(iterator);
   assert(R_Type_IsOf(element, R_Integer));
-  assert(element->Integer == 2);
+  assert(R_Integer_get(element) == 2);
   element = R_Functor_call(iterator);
   assert(element == NULL);
 
@@ -171,20 +171,20 @@ void test_objectarray_iterator(void) {
 void test_objectarray_each(void) {
   R_List* array = R_Type_New(R_List);
   R_Integer* integer = R_List_add(array, R_Integer);
-  integer->Integer = 0;
+  R_Integer_set(integer, 0);
   integer = R_List_add(array, R_Integer);
-  integer->Integer = 1;
+  R_Integer_set(integer, 1);
   integer = R_List_add(array, R_Integer);
-  integer->Integer = 2;
+  R_Integer_set(integer, 2);
 
   bool integer0_found = false;
   bool integer1_found = false;
   bool integer2_found = false;
 
   R_List_each(array, R_Integer, value) {
-  	if (value->Integer == 0) integer0_found = true;
-  	if (value->Integer == 1) integer1_found = true;
-  	if (value->Integer == 2) integer2_found = true;
+  	if (R_Integer_get(value) == 0) integer0_found = true;
+  	if (R_Integer_get(value) == 1) integer1_found = true;
+  	if (R_Integer_get(value) == 2) integer2_found = true;
   }
 
   assert(integer0_found);

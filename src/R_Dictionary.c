@@ -11,6 +11,7 @@
 #include <string.h>
 #include "R_Dictionary.h"
 #include "R_List.h"
+#include "R_String.h"
 
 
 
@@ -97,3 +98,114 @@ bool R_Dictionary_isPresent(R_Dictionary* self, const char* key) {
 bool R_Dictionary_isNotPresent(R_Dictionary* self, const char* key) {
 	return !R_Dictionary_isPresent(self, key);
 }
+size_t R_Dictionary_size(R_Dictionary* self) {
+	if (self == NULL) return 0;
+	return R_List_size(self->elements);
+}
+
+void R_Dictionary_toJson_writeValue(R_String* buffer, void* value);
+R_String* R_Dictionary_toJson(R_Dictionary* self, R_String* buffer) {
+	if (self == NULL || R_Dictionary_size(self) == 0 || buffer == NULL || R_String_reset(buffer) == NULL) return NULL;
+	R_String_appendCString(buffer, "{");
+
+	R_List_each(self->elements, R_Dictionary_Element, element) {
+		R_String_appendStringAsJson(buffer, element->key);
+		R_String_appendCString(buffer, ":");
+		R_Dictionary_toJson_writeValue(buffer, element->value);
+		if (element != R_List_last(self->elements)) R_String_appendCString(buffer, ",");
+	}
+
+	R_String_appendCString(buffer, "}");
+	return buffer;
+}
+
+void R_Dictionary_toJson_writeValue(R_String* buffer, void* value) {
+	if (R_Type_IsOf(value, R_String)) R_String_appendStringAsJson(buffer, value);
+	else if (R_Type_IsOf(value, R_Integer)) R_String_appendInt(buffer, R_Integer_get(value));
+	else if (R_Type_IsOf(value, R_Float)) R_String_appendFloat(buffer, R_Float_get(value));
+	else if (R_Type_IsOf(value, R_Boolean)) {
+		if (R_Boolean_get(value)) R_String_appendCString(buffer, "true");
+		else R_String_appendCString(buffer, "false");
+	}
+	else if (R_Type_IsOf(value, R_Dictionary)) {
+		R_String* sub_buffer = R_Type_New(R_String);
+		R_String_appendString(buffer, R_Dictionary_toJson(value, sub_buffer));
+		R_Type_Delete(sub_buffer);
+	}
+	else if (R_Type_IsOf(value, R_List)) {
+		R_String_appendCString(buffer, "[");
+		R_List_each(value, void, element) {
+			R_Dictionary_toJson_writeValue(buffer, element);
+			if (element != R_List_last(value)) R_String_appendCString(buffer, ",");
+		}
+		R_String_appendCString(buffer, "]");
+	}
+	else R_String_appendCString(buffer, "\"Unknown Type\"");
+}
+
+R_String* R_Dictionary_fromJson_moveQuotedString(R_String* source, R_String* dest);
+R_Dictionary* R_Dictionary_fromJson(R_Dictionary* self, R_String* buffer) {
+	if (self == NULL || buffer == NULL) return NULL;
+	R_String* string = R_Type_Copy(buffer);
+	if (string == NULL) return NULL;
+	R_String_trim(string);
+	if (R_String_first(string) != '{') {
+		R_Type_delete(string);
+		return NULL;
+	}
+	R_String_shift(string);
+	R_String_trim(string);
+	while (1) {
+		R_String* key = R_Type_New(R_String);
+		if (R_Dictionary_fromJson_moveQuotedString(string, key) == NULL) {
+			R_Type_Delete(key);
+			R_Type_Delete(string);
+			return NULL;
+		}
+		R_String_trim(string);
+		if (R_String_first(string) != ':') {
+			R_Type_Delete(key);
+			R_Type_Delete(string);
+			return NULL;
+		}
+		R_String_shift(string);
+		R_String_trim(string);
+		if (R_String_first(string) == '"') {//value is a string
+			R_String* value = R_Type_New(R_String);
+			if (R_Dictionary_fromJson_moveQuotedString(string, value) == NULL) {
+				R_Type_Delete(value);
+				R_Type_Delete(key);
+				R_Type_Delete(string);
+				return NULL;
+			}
+		}
+	}
+
+	return R_Dictionary_fromJson_readObject(self, string);
+}
+
+R_String* R_Dictionary_fromJson_moveQuotedString(R_String* source, R_String* dest) {
+	if (source == NULL || dest == NULL) return NULL;
+	if (R_String_first(string) != '"') return NULL;
+	R_String_shift(source);
+	while (R_String_length(source) > 0) {
+		char character = R_String_shift(source);
+		if (character == '\\' && R_String_length(source) > 0) {
+			char escaped = R_String_shift(string);
+			if (escaped == '\\') R_String_appendCString(dest, "\\");
+			else if (escaped == '/') R_String_appendCString(dest, "/");
+			else if (escaped == 'b') R_String_appendCString(dest, "\b");
+			else if (escaped == 'f') R_String_appendCString(dest, "\f");
+			else if (escaped == 'n') R_String_appendCString(dest, "\n");
+			else if (escaped == 'r') R_String_appendCString(dest, "\r");
+			else if (escaped == 't') R_String_appendCString(dest, "\t");
+		}
+		else if (character == '"') return dest;
+		else R_String_appendBytes(dest, &character, 1);
+	}
+	return NULL;
+}
+
+
+
+

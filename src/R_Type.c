@@ -61,15 +61,46 @@ void R_Type_shallowCopy(const void* object_input, void* object_output) {
   memcpy(object_output, object_input, input_type->size);
 }
 
+struct R_Integer {R_Type* type; int Integer;};
 R_Type_Def(R_Integer, NULL, NULL, R_Type_shallowCopy);
-R_Integer* R_Integer_set(R_Integer* self, int value) {self->Integer = value; return self;}
-int R_Integer_get(R_Integer* self) {return self->Integer;}
+R_Integer* R_Integer_set(R_Integer* self, int value) {
+  if (self == NULL) return NULL;
+  self->Integer = value; 
+  return self;
+}
+int R_Integer_get(R_Integer* self) {
+  return self->Integer;
+}
 
+struct R_Float {R_Type* type; float Float;};
 R_Type_Def(R_Float, NULL, NULL, R_Type_shallowCopy);
-R_Float* R_Float_set(R_Float* self, float value) {self->Float = value; return self;}
-float R_Float_get(R_Float* self) {return self->Float;}
+R_Float* R_Float_set(R_Float* self, float value) {
+  if (self == NULL) return NULL;
+  self->Float = value; 
+  return self;
+}
+float R_Float_get(R_Float* self) {
+  return self->Float;
+}
 
+struct R_Unsigned {R_Type* type; unsigned int Integer;};
 R_Type_Def(R_Unsigned, NULL, NULL, R_Type_shallowCopy);
-R_Unsigned* R_Unsigned_set(R_Unsigned* self, unsigned int value) {self->Integer = value; return self;}
-unsigned int R_Unsigned_get(R_Unsigned* self) {return self->Integer;}
+R_Unsigned* R_Unsigned_set(R_Unsigned* self, unsigned int value) {
+  if (self == NULL) return NULL;
+  self->Integer = value; 
+  return self;
+}
+unsigned int R_Unsigned_get(R_Unsigned* self) {
+  return self->Integer;
+}
 
+struct R_Boolean {R_Type* type; uint8_t Boolean;};
+R_Type_Def(R_Boolean, NULL, NULL, R_Type_shallowCopy);
+R_Boolean* R_Boolean_set(R_Boolean* self, uint8_t value) {
+  if (self == NULL || (value != 0 && value != 1)) return NULL;
+  self->Boolean = value; 
+  return self;
+}
+uint8_t R_Boolean_get(R_Boolean* self) {
+  return self->Boolean;
+}

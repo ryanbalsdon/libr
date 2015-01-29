@@ -189,36 +189,35 @@ void test_bad_constructor(void) {
 
 void test_integer(void) {
   R_Integer* value = R_Type_New(R_Integer);
-  assert(value->Integer == 0);
-  value->Integer += 42;
-  assert(value->Integer == 42);
+  assert(R_Integer_get(value) == 0);
+  R_Integer_set(value, 42);
+  assert(R_Integer_get(value) == 42);
   R_Integer* value_copy = R_Type_Copy(value);
-  assert(value_copy->Integer == 42);
+  assert(R_Integer_get(value_copy) == 42);
   R_Type_Delete(value);
-  assert(value_copy->Integer == 42);
+  assert(R_Integer_get(value_copy) == 42);
   R_Type_Delete(value_copy);
 }
 
 void test_float(void) {
   R_Float* value = R_Type_New(R_Float);
-  assert(value->Float == 0.0f);
-  value->Float += 2.0f;
-  value->Float *= 2.0f;
-  assert(value->Float == 4.0f);
+  assert(R_Float_get(value) == 0.0f);
+  R_Float_set(value, 4.2f);
+  assert(R_Float_get(value) == 4.2f);
   R_Float* value_copy = R_Type_Copy(value);
-  assert(value_copy->Float == 4.0f);
+  assert(R_Float_get(value_copy) == 4.2f);
   R_Type_Delete(value);
-  assert(value_copy->Float == 4.0f);
+  assert(R_Float_get(value_copy) == 4.2f);
   R_Type_Delete(value_copy);
 }
 
 void test_unsigned(void) {
   R_Unsigned* value = R_Type_New(R_Unsigned);
-  assert(value->Integer == 0);
-  value->Integer = -1;
-  assert(value->Integer > 0);
+  assert(R_Unsigned_get(value) == 0);
+  R_Unsigned_set(value, -1);
+  assert(R_Unsigned_get(value) > 0);
   R_Unsigned* value_copy = R_Type_Copy(value);
-  assert(value_copy->Integer == value->Integer);
+  assert(R_Unsigned_get(value_copy) == R_Unsigned_get(value));
   R_Type_Delete(value);
   R_Type_Delete(value_copy);
 }

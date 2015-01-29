@@ -158,11 +158,14 @@ float R_String_getFloat(R_String* self) {
 }
 
 R_String* R_String_getSubstring(R_String* self, size_t startingIndex, size_t endingIndex, R_String* output) {
+	if (self == NULL || output == NULL) return NULL;
+	if (endingIndex == 0 || endingIndex < startingIndex) endingIndex = self->stringSize - 1;
+	size_t substring_length = endingIndex-startingIndex + 1; //both ends are included!
 	R_String_reset(output);
-	R_String_increaseAllocationSize(output, output->stringSize+(endingIndex-startingIndex)+2);
-	R_String_Strncpy(output->string, self->string+startingIndex, endingIndex-startingIndex+1);
-	output->string[endingIndex-startingIndex+2] = '\0';
-	output->stringSize = endingIndex-startingIndex+2;
+	R_String_increaseAllocationSize(output, output->stringSize+substring_length);
+	R_String_Strncpy(output->string, self->string+startingIndex, substring_length);
+	output->string[substring_length] = '\0';
+	output->stringSize = substring_length;
 	return output;
 }
 
@@ -279,4 +282,69 @@ bool R_String_compare(R_String* self, const char* comparor) {
 	if (self == NULL || comparor == NULL) return false;
 	if (strcmp(R_String_getString(self), comparor) != 0) return false;
 	return true;
+}
+
+R_String* R_String_appendStringAsJson(R_String* self, R_String* string) {
+	if (self == NULL || string == NULL) return NULL;
+	R_String_appendCString(self, "\"");
+
+	for (int i=0; i<R_String_length(string); i++) {
+		char character = R_String_getString(string)[i];
+		if (character == '"')  {R_String_appendCString(self, "\\\""); continue;}
+		if (character == '\\') {R_String_appendCString(self, "\\\\"); continue;}
+		if (character == '/')  {R_String_appendCString(self, "\\/");  continue;}
+		if (character == '\b') {R_String_appendCString(self, "\\b");  continue;}
+		if (character == '\f') {R_String_appendCString(self, "\\f");  continue;}
+		if (character == '\n') {R_String_appendCString(self, "\\n");  continue;}
+		if (character == '\r') {R_String_appendCString(self, "\\r");  continue;}
+		if (character == '\t') {R_String_appendCString(self, "\\t");  continue;}
+		if (character < 0x1f) continue;
+		R_String_appendBytes(self, &character, 1);
+	}
+
+	R_String_appendCString(self, "\"");
+	return self;
+}
+
+char R_String_first(const R_String* self) {
+	if (self == NULL || R_String_length(self) == 0) return '\0';
+	return *R_String_getString(self);
+}
+char R_String_shift(R_String* self) {
+	if (self == NULL) return '\0';
+	char ret = R_String_first(self);
+	R_String* copy = R_Type_Copy(self);
+	R_String_getSubstring(copy, 1, 0, self);
+	R_Type_Delete(copy);
+	return ret;
+}
+char R_String_last(const R_String* self) {
+	if (self == NULL || R_String_length(self) == 0) return '\0';
+	return R_String_getString(self)[R_String_length(self)-1];
+}
+char R_String_pop(R_String* self) {
+	if (self == NULL || self->stringSize == 0) return '\0';
+	char ret = R_String_last(self);
+	self->stringSize--;
+	self->string[self->stringSize] = '\0';
+	return ret;
+}
+
+bool R_String_trim_isWhiteSpace(char character);
+R_String* R_String_trim(R_String* self) {
+	if (self == NULL) return NULL;
+	while(R_String_length(self) > 0 && R_String_trim_isWhiteSpace(R_String_first(self))) R_String_shift(self);
+	while(R_String_length(self) > 0 && R_String_trim_isWhiteSpace(R_String_last(self))) R_String_pop(self);
+	return self;
+}
+
+bool R_String_trim_isWhiteSpace(char character) {
+	switch (character) {
+		case ' ':
+		case '\t':
+		case '\n':
+		case '\r':
+			return true;
+	}
+	return false;
 }
