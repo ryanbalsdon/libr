@@ -26,5 +26,5 @@ objects/%.test: objects/%
 objects/%.valgrind: objects/%
 	valgrind --leak-check=full --show-leak-kinds=definite $<
 
-objects/%: %.c ../objects/*.a
-	$(CC) $(CFLAGS) -I$(INCLUDES) -o $@ ../objects/*.a $<
+objects/%: %.c ../objects/libr.a
+	$(CC) $(CFLAGS) -I$(INCLUDES) -o $@ ../objects/libr.a $<
