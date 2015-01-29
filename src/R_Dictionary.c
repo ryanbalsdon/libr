@@ -27,8 +27,8 @@ R_Dictionary_Datum* R_Dictionary_Datum_Constructor(R_Dictionary_Datum* self) {
 }
 
 R_Dictionary_Datum* R_Dictionary_Datum_Destructor(R_Dictionary_Datum* self) {
-	R_Type_Delete(self->key);
-	if (self->value != NULL) R_Type_Delete(self->value);
+	R_Type_DeleteAndNull(self->key);
+	if (self->value != NULL) R_Type_DeleteAndNull(self->value);
 	return self;
 }
 R_Type_Def(R_Dictionary_Datum, R_Dictionary_Datum_Constructor, R_Dictionary_Datum_Destructor, NULL);
@@ -46,7 +46,7 @@ R_Dictionary* R_Dictionary_Constructor(R_Dictionary* self) {
 }
 
 R_Dictionary* R_Dictionary_Destructor(R_Dictionary* self) {
-	R_Type_Delete(self->dictionary);
+	R_Type_DeleteAndNull(self->dictionary);
 	return self;
 }
 R_Type_Def(R_Dictionary, R_Dictionary_Constructor, R_Dictionary_Destructor, NULL);

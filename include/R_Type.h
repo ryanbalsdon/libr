@@ -65,6 +65,11 @@ void* R_Type_NewObjectOfType(const R_Type* type);
  */
 void R_Type_Delete(void* object);
 
+/*  R_Type_DeleteAndNull
+    Convenience macro that runs R_Type_Delete against the object then sets the object to NULL.
+ */
+#define R_Type_DeleteAndNull(object) do{R_Type_Delete(object);object=NULL;}while(0)
+
 /*  R_Type_Copy
     Deep-copies the given object. If type->copy is null, this will always fail (and return null). If type->copy isn't null, a new
    object of the same type is allocated, type->ctor is run on it (if it isn't null) and type->copy is run on both.

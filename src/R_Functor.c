@@ -16,7 +16,7 @@ static void R_Functor_Copier(R_Functor* self, R_Functor* new);
 R_Type_Def(R_Functor, NULL, R_Functor_Destructor, R_Functor_Copier);
 
 static R_Functor* R_Functor_Destructor(R_Functor* self) {
-	R_Type_Delete(self->state);
+	R_Type_DeleteAndNull(self->state);
 	return self;
 }
 
