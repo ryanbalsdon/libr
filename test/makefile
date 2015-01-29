@@ -1,6 +1,6 @@
-CC=gcc
-CFLAGS=-Wall -g
-INCLUDES=../include/
+CC ?= gcc
+CFLAGS = -Wall -g -std=c99
+INCLUDES = -I../include/
 
 SRCS = $(wildcard *.c)
 OBJS = $(patsubst %.c,objects/%,$(SRCS))
@@ -27,4 +27,4 @@ objects/%.valgrind: objects/%
 	valgrind --leak-check=full --show-leak-kinds=definite $<
 
 objects/%: %.c ../objects/libr.a
-	$(CC) $(CFLAGS) -I$(INCLUDES) -o $@ ../objects/libr.a $<
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ ../objects/libr.a $<
