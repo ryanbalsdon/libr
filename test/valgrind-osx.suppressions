@@ -239,7 +239,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: possible
+
    fun:malloc_zone_calloc
    fun:NXHashInsert
    fun:_NXHashRehashToCapacity
@@ -256,7 +256,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: possible
+
    fun:malloc_zone_calloc
    fun:NXHashInsert
    fun:_ZL12realizeClassP10objc_class
@@ -460,7 +460,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: possible
+
    fun:malloc_zone_calloc
    fun:NXHashInsert
    fun:NXCreateHashTableFromZone
@@ -698,7 +698,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: possible
+
    fun:malloc_zone_calloc
    fun:NXHashInsert
    fun:_ZL12realizeClassP10objc_class
@@ -715,7 +715,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: possible
+
    fun:malloc_zone_calloc
    fun:NXHashInsert
    fun:_NXHashRehashToCapacity
@@ -766,7 +766,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: possible
+
    fun:malloc_zone_calloc
    fun:NXHashInsert
    fun:_NXHashRehashToCapacity
@@ -817,7 +817,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: possible
+
    fun:malloc_zone_calloc
    fun:NXHashInsert
    fun:_ZL12realizeClassP10objc_class
@@ -936,7 +936,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: possible
+
    fun:malloc_zone_calloc
    fun:NXHashInsert
    fun:_ZL12realizeClassP10objc_class
@@ -1038,7 +1038,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: possible
+
    fun:malloc_zone_malloc
    fun:NXCreateMapTableFromZone
    fun:_ZL20unattachedCategoriesv
@@ -1106,7 +1106,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: possible
+
    fun:malloc_zone_malloc
    fun:_strdup_internal
    fun:NXMapKeyCopyingInsert
@@ -1174,7 +1174,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: possible
+
    fun:malloc_zone_malloc
    fun:NXCreateMapTableFromZone
    fun:_ZL15remappedClassesa
@@ -1191,7 +1191,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: possible
+
    fun:malloc_zone_malloc
    fun:NXCreateMapTableFromZone
    fun:_ZL18futureNamedClassesv
@@ -1208,7 +1208,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: possible
+
    fun:malloc_zone_malloc
    fun:_ZL12_NXMapRehashP11_NXMapTable
    fun:NXMapInsert
@@ -1259,7 +1259,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: possible
+
    fun:malloc_zone_malloc
    fun:NXCreateMapTableFromZone
    fun:_read_images
@@ -1276,7 +1276,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: possible
+
    fun:malloc_zone_malloc
    fun:_ZL12_NXMapRehashP11_NXMapTable
    fun:NXMapInsert
@@ -1327,7 +1327,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: possible
+
    fun:malloc_zone_calloc
    fun:_read_images
    fun:map_images_nolock
