@@ -29,8 +29,8 @@ R_Dictionary_Element* R_Dictionary_Element_Constructor(R_Dictionary_Element* sel
 }
 
 R_Dictionary_Element* R_Dictionary_Element_Destructor(R_Dictionary_Element* self) {
-	R_Type_Delete(self->key);
-	R_Type_Delete(self->value);
+	R_Type_DeleteAndNull(self->key);
+	R_Type_DeleteAndNull(self->value);
 	return self;
 }
 R_Type_Def(R_Dictionary_Element, R_Dictionary_Element_Constructor, R_Dictionary_Element_Destructor, NULL);
@@ -48,7 +48,7 @@ R_Dictionary* R_Dictionary_Constructor(R_Dictionary* self) {
 }
 
 R_Dictionary* R_Dictionary_Destructor(R_Dictionary* self) {
-	R_Type_Delete(self->elements);
+	R_Type_DeleteAndNull(self->elements);
 	return self;
 }
 R_Type_Def(R_Dictionary, R_Dictionary_Constructor, R_Dictionary_Destructor, NULL);

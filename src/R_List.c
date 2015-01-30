@@ -38,7 +38,7 @@ struct R_List {
     void ** array;          //The actual array
     size_t arrayAllocationSize;//How large the internal array is. This is always as-large or larger than ArraySize.
     size_t arraySize;          //How many objects the user has added to the array.
-    unsigned int last_index_of_pointer_at_index; //Optimization for the 'each' operator
+    size_t last_index_of_pointer_at_index; //Optimization for the 'each' operator
 };
 
 static R_List* R_List_Constructor(R_List* self);
@@ -63,7 +63,7 @@ R_List* R_List_Destructor(R_List* self) {
     return self;
 }
 
-inline int R_List_size(R_List* self) {
+inline size_t R_List_size(R_List* self) {
     return self->arraySize;
 }
 
@@ -74,7 +74,7 @@ static void R_List_increaseAllocationIfRequired(R_List* self) { //increase by 1 
     self->array[self->arrayAllocationSize - 1] = NULL;
 }
 
-inline void* R_List_pointerAtIndex(R_List* self, unsigned int index) {
+inline void* R_List_pointerAtIndex(R_List* self, size_t index) {
     if (self == NULL || index >= R_List_length(self)) return NULL;
     self->last_index_of_pointer_at_index = index;
     return self->array[index];
@@ -88,7 +88,7 @@ void* R_List_first(R_List* self) {
 	return R_List_pointerAtIndex(self, 0);
 }
 
-int R_List_indexOfPointer(R_List* self, void* pointer) {
+size_t R_List_indexOfPointer(R_List* self, void* pointer) {
     if (self == NULL || pointer == NULL) return -1;
     //last_index_of_pointer_at_index is an optimization for the 'each' operator
     if (pointer == self->array[self->last_index_of_pointer_at_index]) return self->last_index_of_pointer_at_index;
@@ -124,13 +124,13 @@ void* R_List_addObjectOfType(R_List* self, const R_Type* type) {
     return newPointer;
 }
 
-void R_List_removeIndex(R_List* self, unsigned int index) {
+void R_List_removeIndex(R_List* self, size_t index) {
     if (self == NULL || index>=self->arraySize) return;
 
     void* pointerToDelete = R_List_pointerAtIndex(self, index);
     R_Type_Delete(pointerToDelete);
 
-    for (int i=index; i<self->arraySize-1; i++) {
+    for (size_t i=index; i<self->arraySize-1; i++) {
         self->array[i] = self->array[i+1];
     }
     self->arraySize--;

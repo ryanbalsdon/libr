@@ -234,7 +234,7 @@ R_ByteArray* R_ByteArray_appendUInt32AsBCD(R_ByteArray* self, uint32_t value) {
 		R_ByteArray_appendByte(reversed, (left_digit << 4) | right_digit);
 	} while (value > 0);
 
-	for (int i=R_ByteArray_size(reversed)-1; i>=0; i--) {
+	for (int i=(int)R_ByteArray_size(reversed)-1; i>=0; i--) {
 		R_ByteArray_appendByte(self, R_ByteArray_byte(reversed, i));
 	}
 

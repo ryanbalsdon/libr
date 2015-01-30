@@ -233,4 +233,6 @@ int main(void) {
   test_float();
 
   printf("Pass\n");
+
+  return 0;
 }
