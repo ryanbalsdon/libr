@@ -24,7 +24,7 @@ objects/%.test: objects/%
 	./$<
 
 objects/%.valgrind: objects/%
-	valgrind --leak-check=full --suppressions=valgrind-osx.suppressions $<
+	valgrind --error-exitcode=1 --leak-check=full --suppressions=valgrind-osx.suppressions $<
 
 objects/%: %.c ../objects/libr.a
 	$(CC) $(CFLAGS) $(INCLUDES) $< -o $@ ../objects/libr.a
