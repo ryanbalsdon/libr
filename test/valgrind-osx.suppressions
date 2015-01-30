@@ -1,7 +1,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:malloc
    fun:_Znwm
@@ -18,7 +18,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:__setenv
    fun:setenv
@@ -35,7 +35,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:malloc
    fun:_Znwm
@@ -52,7 +52,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:_ZL17buildProtocolListP13category_listPK15protocol_list_tPS3_
    fun:_ZL12realizeClassP10objc_class
@@ -69,7 +69,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:_ZL17buildProtocolListP13category_listPK15protocol_list_tPS3_
    fun:_ZL12realizeClassP10objc_class
@@ -86,7 +86,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:_owned_ptr_alloc
    fun:setenv
@@ -120,7 +120,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:strdup
    fun:dispatch_queue_create_with_target
@@ -137,7 +137,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:NXCreateMapTableFromZone
    fun:NXCreateMapTable
@@ -154,7 +154,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:NXCreateMapTableFromZone
    fun:_read_images
@@ -171,7 +171,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:NXCreateMapTableFromZone
    fun:_ZL15remappedClassesa
@@ -188,7 +188,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:NXCreateMapTableFromZone
    fun:_ZL18futureNamedClassesv
@@ -205,7 +205,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:NXCreateMapTableFromZone
    fun:_ZL9protocolsv
@@ -222,7 +222,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:NXCreateMapTableFromZone
    fun:_ZL20unattachedCategoriesv
@@ -273,7 +273,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:strdup
    fun:dispatch_queue_create_with_target
@@ -290,7 +290,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:NXCreateHashTableFromZone
    fun:NXCreateHashTable
@@ -307,7 +307,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:NXCreateHashTableFromZone
    fun:NXCreateHashTable
@@ -324,7 +324,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:NXCreateHashTableFromZone
    fun:NXCreateHashTable
@@ -341,7 +341,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:NXCreateMapTableFromZone
    fun:NXCreateMapTable
@@ -358,7 +358,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:NXCreateHashTableFromZone
    fun:_read_images
@@ -375,7 +375,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:NXCreateHashTableFromZone
    fun:_read_images
@@ -392,7 +392,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:NXCreateHashTableFromZone
    fun:_read_images
@@ -409,7 +409,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:NXCreateMapTableFromZone
    fun:_ZL15remappedClassesa
@@ -426,7 +426,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:_memdup_internal
    fun:_ZL15fixupMethodListP13method_list_tbb
@@ -443,7 +443,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:malloc
    fun:_Znwm
@@ -477,7 +477,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_calloc
    fun:_NXHashRehashToCapacity
    fun:NXHashInsert
@@ -494,7 +494,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_calloc
    fun:_NXHashRehashToCapacity
    fun:NXHashInsert
@@ -511,7 +511,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:_ZL17buildProtocolListP13category_listPK15protocol_list_tPS3_
    fun:_ZL12realizeClassP10objc_class
@@ -528,7 +528,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:_ZL17buildProtocolListP13category_listPK15protocol_list_tPS3_
    fun:_ZL12realizeClassP10objc_class
@@ -545,7 +545,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:calloc
    fun:class_createInstance
    fun:_os_object_alloc_realized
@@ -562,7 +562,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:recursive_mutex_init
    fun:_objc_init
@@ -579,7 +579,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_calloc
    fun:_ZL12realizeClassP10objc_class
    fun:_ZL12realizeClassP10objc_class
@@ -596,7 +596,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_calloc
    fun:_ZL12realizeClassP10objc_class
    fun:_ZL12realizeClassP10objc_class
@@ -613,7 +613,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_calloc
    fun:_ZL12realizeClassP10objc_class
    fun:_ZL12realizeClassP10objc_class
@@ -630,7 +630,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_calloc
    fun:_ZL12realizeClassP10objc_class
    fun:_ZL12realizeClassP10objc_class
@@ -647,7 +647,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:calloc
    fun:_xpc_calloc
    fun:xpc_array_create
@@ -664,7 +664,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:_owned_ptr_alloc
    fun:setenv
@@ -681,7 +681,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:calloc
    fun:class_createInstance
    fun:_os_object_alloc_realized
@@ -732,7 +732,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:_ZL17buildPropertyListPK15property_list_tP13category_lista
    fun:_ZL12realizeClassP10objc_class
@@ -749,7 +749,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:calloc
    fun:class_createInstance
    fun:_os_object_alloc_realized
@@ -783,7 +783,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:calloc
    fun:class_createInstance
    fun:_os_object_alloc_realized
@@ -800,7 +800,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:calloc
    fun:class_createInstance
    fun:_os_object_alloc_realized
@@ -834,7 +834,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_calloc
    fun:map_images_nolock
    fun:map_images
@@ -851,7 +851,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:_memdup_internal
    fun:_ZL15fixupMethodListP13method_list_tbb
@@ -868,7 +868,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_calloc
    fun:_ZL12realizeClassP10objc_class
    fun:_ZL12realizeClassP10objc_class
@@ -885,7 +885,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_calloc
    fun:_ZL12realizeClassP10objc_class
    fun:_ZL12realizeClassP10objc_class
@@ -902,7 +902,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:calloc
    fun:class_createInstance
    fun:_os_object_alloc_realized
@@ -919,7 +919,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:calloc
    fun:class_createInstance
    fun:_os_object_alloc_realized
@@ -953,7 +953,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:_xpc_malloc
    fun:_xpc_dictionary_insert
@@ -970,7 +970,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:strdup
    fun:xpc_string_create
@@ -987,7 +987,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:_xpc_malloc
    fun:_xpc_dictionary_insert
@@ -1004,7 +1004,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:calloc
    fun:class_createInstance
    fun:_os_object_alloc_realized
@@ -1021,7 +1021,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:_memdup_internal
    fun:_ZL15fixupMethodListP13method_list_tbb
@@ -1055,7 +1055,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:_memdup_internal
    fun:_ZL15fixupMethodListP13method_list_tbb
@@ -1072,7 +1072,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:_ZL17buildProtocolListP13category_listPK15protocol_list_tPS3_
    fun:_ZL12realizeClassP10objc_class
@@ -1089,7 +1089,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:_ZL17buildProtocolListP13category_listPK15protocol_list_tPS3_
    fun:_ZL12realizeClassP10objc_class
@@ -1123,7 +1123,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:_memdup_internal
    fun:_ZL15fixupMethodListP13method_list_tbb
@@ -1140,7 +1140,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_calloc
    fun:_NXHashRehashToCapacity
    fun:NXHashInsert
@@ -1157,7 +1157,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_calloc
    fun:_NXHashRehashToCapacity
    fun:NXHashInsert
@@ -1225,7 +1225,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:_memdup_internal
    fun:_ZL15fixupMethodListP13method_list_tbb
@@ -1242,7 +1242,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_malloc
    fun:_memdup_internal
    fun:_ZL15fixupMethodListP13method_list_tbb
@@ -1293,7 +1293,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_calloc
    fun:_ZL12realizeClassP10objc_class
    fun:_read_images
@@ -1310,7 +1310,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_calloc
    fun:_ZL12realizeClassP10objc_class
    fun:_ZL12realizeClassP10objc_class
@@ -1344,7 +1344,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc_zone_memalign
    fun:_ZN12_GLOBAL__N_119AutoreleasePoolPage17autoreleaseNoPageEP11objc_object
    fun:objc_autoreleasePoolPush
@@ -1361,7 +1361,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:__smakebuf
    fun:__swsetup
@@ -1374,7 +1374,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:__Balloc_D2A
    fun:__rv_alloc_D2A
@@ -1391,7 +1391,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:__Balloc_D2A
    fun:__d2b_D2A
@@ -1408,7 +1408,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:__Balloc_D2A
    fun:__d2b_D2A
@@ -1425,7 +1425,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:__parsefloat_buf
    fun:__svfscanf_l
@@ -1438,7 +1438,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:__Balloc_D2A
    fun:__rv_alloc_D2A
@@ -1455,7 +1455,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:__Balloc_D2A
    fun:__d2b_D2A
@@ -1472,7 +1472,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:__Balloc_D2A
    fun:__lshift_D2A
@@ -1489,7 +1489,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:__Balloc_D2A
    fun:__d2b_D2A
@@ -1506,7 +1506,7 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   match-leak-kinds: reachable
+
    fun:malloc
    fun:__parsefloat_buf
    fun:__svfscanf_l
