@@ -2,5 +2,7 @@ language: c
 compiler:
   - gcc
   - clang
-# Change this to your needs
-script: make && make test
+install:
+  - sudo apt-get update
+  - DEBIAN_FRONTEND=noninteractive sudo apt-get install -y valgrind
+script: make && make test && make valgrind
