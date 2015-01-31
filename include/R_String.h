@@ -30,12 +30,34 @@ R_String* R_String_reset(R_String* self);
 const char* R_String_getString(R_String* self);
 #define R_String_cstring R_String_getString
 
+/*  R_String_first
+    Returns the first character of the string.
+ */
 char R_String_first(const R_String* self);
+
+/*  R_String_shift
+    Removes the first character from the string.
+ */
 char R_String_shift(R_String* self);
+
+/*  R_String_first
+    Returns the last character of the string.
+ */
 char R_String_last(const R_String* self);
+
+/*  R_String_pop
+    Removes the last character from the string.
+ */
 char R_String_pop(R_String* self);
+
+/*  R_String_push
+    Apends one character to the end of the string.
+ */
 R_String* R_String_push(R_String* self, char character);
 
+/*  R_String_trim
+    Removes whitespace from the beginning and end of the string.
+ */
 R_String* R_String_trim(R_String* self);
 
 
@@ -119,6 +141,9 @@ bool R_String_isSame(R_String* self, R_String* comparor);
  */
 bool R_String_compare(R_String* self, const char* comparor);
 
+/*  R_String_appendStringAsJson
+    Formats string as a quoted JSON-formatted string value and appends it to self.
+ */
 R_String* R_String_appendStringAsJson(R_String* self, R_String* string);
 
 #endif /* R_String_h */

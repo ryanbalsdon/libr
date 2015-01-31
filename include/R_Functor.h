@@ -19,6 +19,9 @@ typedef struct {
 } R_Functor;
 R_Type_Declare(R_Functor);
 
+/*  R_Functor_call
+ Calls the functor.
+ */
 void* R_Functor_call(R_Functor*);
 
 #endif /*R_Functor_h*/

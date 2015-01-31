@@ -52,7 +52,6 @@ typedef struct {
 
 #define R_Type_Declare(Type) extern const R_Type* R_Type_Object(Type)
 
-
 /*  R_Type_New
     Allocates a new object of the given type. Allocates and nulls type->size bytes than calls type->ctor, if it isn't null.
  */

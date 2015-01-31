@@ -23,25 +23,18 @@ static void R_String_Copier(R_String* self, R_String* new);
 R_Type_Def(R_String, R_String_Constructor, R_String_Destructor, R_String_Copier);
 
 
-void R_String_increaseAllocationSize(R_String* self, size_t spaceNeeded);
-char* R_String_Strcpy(char* dest, const char* source);
-char* R_String_Strncpy(char* dest, const char* source, size_t num);
-char* R_String_Strcat(char* dest, const char* source);
-char* R_String_Strncat(char* dest, const char* source, size_t num);
-
-
-R_String* R_String_Constructor(R_String* self) {
+static R_String* R_String_Constructor(R_String* self) {
 	self->cstring = NULL;
 	self->array = R_Type_New(R_ByteArray);
 
 	return self;
 }
-R_String* R_String_Destructor(R_String* self) {
+static R_String* R_String_Destructor(R_String* self) {
 	free(self->cstring);
 	R_Type_Delete(self->array);
 	return self;
 }
-void R_String_Copier(R_String* self, R_String* new) {
+static void R_String_Copier(R_String* self, R_String* new) {
 	R_String_appendString(new, self);
 }
 
@@ -218,7 +211,7 @@ R_String* R_String_push(R_String* self, char character) {
 	return self;
 }
 
-bool R_String_trim_isWhiteSpace(char character);
+static bool R_String_trim_isWhiteSpace(char character);
 R_String* R_String_trim(R_String* self) {
 	if (self == NULL) return NULL;
 	while(R_String_length(self) > 0 && R_String_trim_isWhiteSpace(R_String_first(self))) R_String_shift(self);
@@ -226,7 +219,7 @@ R_String* R_String_trim(R_String* self) {
 	return self;
 }
 
-bool R_String_trim_isWhiteSpace(char character) {
+static bool R_String_trim_isWhiteSpace(char character) {
 	switch (character) {
 		case ' ':
 		case '\t':

@@ -20,15 +20,15 @@ typedef struct {
 	R_String* key;
 	void* value; //May be a string, integer, float, array of values or a dictionary
 } R_Dictionary_Element;
-R_Dictionary_Element* R_Dictionary_Element_Constructor(R_Dictionary_Element* self);
-R_Dictionary_Element* R_Dictionary_Element_Destructor(R_Dictionary_Element* self);
+static R_Dictionary_Element* R_Dictionary_Element_Constructor(R_Dictionary_Element* self);
+static R_Dictionary_Element* R_Dictionary_Element_Destructor(R_Dictionary_Element* self);
 
-R_Dictionary_Element* R_Dictionary_Element_Constructor(R_Dictionary_Element* self) {
+static R_Dictionary_Element* R_Dictionary_Element_Constructor(R_Dictionary_Element* self) {
 	self->key = R_Type_New(R_String);
 	return self;
 }
 
-R_Dictionary_Element* R_Dictionary_Element_Destructor(R_Dictionary_Element* self) {
+static R_Dictionary_Element* R_Dictionary_Element_Destructor(R_Dictionary_Element* self) {
 	R_Type_DeleteAndNull(self->key);
 	R_Type_DeleteAndNull(self->value);
 	return self;
@@ -39,21 +39,21 @@ struct R_Dictionary {
 	R_Type* type;
 	R_List* elements;
 };
-R_Dictionary* R_Dictionary_Constructor(R_Dictionary* self);
-R_Dictionary* R_Dictionary_Destructor(R_Dictionary* self);
+static R_Dictionary* R_Dictionary_Constructor(R_Dictionary* self);
+static R_Dictionary* R_Dictionary_Destructor(R_Dictionary* self);
 
-R_Dictionary* R_Dictionary_Constructor(R_Dictionary* self) {
+static R_Dictionary* R_Dictionary_Constructor(R_Dictionary* self) {
 	self->elements = R_Type_New(R_List);
 	return self;
 }
 
-R_Dictionary* R_Dictionary_Destructor(R_Dictionary* self) {
+static R_Dictionary* R_Dictionary_Destructor(R_Dictionary* self) {
 	R_Type_DeleteAndNull(self->elements);
 	return self;
 }
 R_Type_Def(R_Dictionary, R_Dictionary_Constructor, R_Dictionary_Destructor, NULL);
 
-R_Dictionary_Element* R_Dictionary_getElement(R_Dictionary* self, const char* key);
+static R_Dictionary_Element* R_Dictionary_getElement(R_Dictionary* self, const char* key);
 
 void* R_Dictionary_addObjectOfType(R_Dictionary* self, const char* key, const R_Type* type) {
 	if (self == NULL || key == NULL || type == NULL) return NULL;
@@ -106,7 +106,7 @@ void* R_Dictionary_get(R_Dictionary* self, const char* key) {
 	return element->value;
 }
 
-R_Dictionary_Element* R_Dictionary_getElement(R_Dictionary* self, const char* key) {
+static R_Dictionary_Element* R_Dictionary_getElement(R_Dictionary* self, const char* key) {
 	if (self == NULL || key == NULL) return NULL;
 	R_List_each(self->elements, R_Dictionary_Element, element) {
 		if (R_String_compare(element->key, key)) return element;
@@ -130,7 +130,7 @@ size_t R_Dictionary_size(R_Dictionary* self) {
 	return R_List_size(self->elements);
 }
 
-void R_Dictionary_toJson_writeValue(R_String* buffer, void* value);
+static void R_Dictionary_toJson_writeValue(R_String* buffer, void* value);
 R_String* R_Dictionary_toJson(R_Dictionary* self, R_String* buffer) {
 	if (self == NULL || R_Dictionary_size(self) == 0 || buffer == NULL || R_String_reset(buffer) == NULL) return NULL;
 	R_String_appendCString(buffer, "{");
@@ -146,7 +146,7 @@ R_String* R_Dictionary_toJson(R_Dictionary* self, R_String* buffer) {
 	return buffer;
 }
 
-void R_Dictionary_toJson_writeValue(R_String* buffer, void* value) {
+static void R_Dictionary_toJson_writeValue(R_String* buffer, void* value) {
 	if (R_Type_IsOf(value, R_String)) R_String_appendStringAsJson(buffer, value);
 	else if (R_Type_IsOf(value, R_Integer)) R_String_appendInt(buffer, R_Integer_get(value));
 	else if (R_Type_IsOf(value, R_Float)) R_String_appendFloat(buffer, R_Float_get(value));
@@ -170,11 +170,12 @@ void R_Dictionary_toJson_writeValue(R_String* buffer, void* value) {
 	else R_String_appendCString(buffer, "\"Unknown Type\"");
 }
 
-R_String* R_Dictionary_fromJson_moveQuotedString(R_String* source, R_String* dest);
-void* R_Dictionary_fromJson_readNumber(R_String* source);
-void* R_Dictionary_fromJson_readValue(R_String* string);
-R_Dictionary* R_Dictionary_fromJson_readObject(R_Dictionary* object, R_String* string);
-R_String* R_Dictionary_fromJson_advanceToNextNonWhitespace(R_String* string);
+static R_String* R_Dictionary_fromJson_moveQuotedString(R_String* source, R_String* dest);
+static void* R_Dictionary_fromJson_readNumber(R_String* source);
+static void* R_Dictionary_fromJson_readValue(R_String* string);
+static R_Dictionary* R_Dictionary_fromJson_readObject(R_Dictionary* object, R_String* string);
+static R_String* R_Dictionary_fromJson_advanceToNextNonWhitespace(R_String* string);
+static R_List* R_Dictionary_fromJson_readArray(R_String* string);
 R_Dictionary* R_Dictionary_fromJson(R_Dictionary* self, R_String* buffer) {
 	if (self == NULL || buffer == NULL) return NULL;
 	R_Dictionary_removeAll(self);
@@ -188,7 +189,7 @@ R_Dictionary* R_Dictionary_fromJson(R_Dictionary* self, R_String* buffer) {
 	return self;
 }
 
-R_String* R_Dictionary_fromJson_moveQuotedString(R_String* source, R_String* dest) {
+static R_String* R_Dictionary_fromJson_moveQuotedString(R_String* source, R_String* dest) {
 	if (source == NULL || dest == NULL) return NULL;
 	if (R_String_first(source) != '"') return NULL;
 	R_String_shift(source);
@@ -213,7 +214,7 @@ R_String* R_Dictionary_fromJson_moveQuotedString(R_String* source, R_String* des
 	return NULL;
 }
 
-R_Dictionary* R_Dictionary_fromJson_readObject(R_Dictionary* object, R_String* string) {
+static R_Dictionary* R_Dictionary_fromJson_readObject(R_Dictionary* object, R_String* string) {
 	if (R_String_first(string) != '{') return NULL;
 	R_Dictionary_fromJson_advanceToNextNonWhitespace(string);
 	while (R_String_length(string) > 0) {
@@ -243,13 +244,13 @@ R_Dictionary* R_Dictionary_fromJson_readObject(R_Dictionary* object, R_String* s
 	return object;
 }
 
-R_String* R_Dictionary_fromJson_advanceToNextNonWhitespace(R_String* string) {
+static R_String* R_Dictionary_fromJson_advanceToNextNonWhitespace(R_String* string) {
 	R_String_shift(string);
 	R_String_trim(string);
 	return string;
 }
 
-void* R_Dictionary_fromJson_readValue(R_String* string) {
+static void* R_Dictionary_fromJson_readValue(R_String* string) {
 	if (R_String_first(string) == '"') {//value is a string
 		R_String* value = R_Type_New(R_String);
 		if (R_Dictionary_fromJson_moveQuotedString(string, value) == NULL) return R_Type_Delete(value), NULL;
@@ -277,27 +278,33 @@ void* R_Dictionary_fromJson_readValue(R_String* string) {
 		else return child;
 	}
 	else if (R_String_first(string) == '[') {
-		R_List* array = R_Type_New(R_List);
-		R_Dictionary_fromJson_advanceToNextNonWhitespace(string);
-		while (R_String_length(string) > 0) {
-			void* value = R_Dictionary_fromJson_readValue(string);
-			if (value == NULL || R_List_transferOwnership(array, value) == NULL) return R_Type_Delete(array), NULL;
-			R_String_trim(string);
-			if (R_String_first(string) == ',') {
-				R_Dictionary_fromJson_advanceToNextNonWhitespace(string);
-				continue;
-			}
-			else if (R_String_first(string) == ']') {
-				R_Dictionary_fromJson_advanceToNextNonWhitespace(string);
-				return array;
-			}
-			else return R_Type_Delete(array), NULL;
-		}
+		return R_Dictionary_fromJson_readArray(string);
 	}
 	return NULL;
 }
 
-void* R_Dictionary_fromJson_readNumber(R_String* source) {
+static R_List* R_Dictionary_fromJson_readArray(R_String* string) {
+	if (R_String_first(string) != '[') return NULL;
+	R_List* array = R_Type_New(R_List);
+	R_Dictionary_fromJson_advanceToNextNonWhitespace(string);
+	while (R_String_length(string) > 0) {
+		void* value = R_Dictionary_fromJson_readValue(string);
+		if (value == NULL || R_List_transferOwnership(array, value) == NULL) return R_Type_Delete(array), NULL;
+		R_String_trim(string);
+		if (R_String_first(string) == ',') {
+			R_Dictionary_fromJson_advanceToNextNonWhitespace(string);
+			continue;
+		}
+		else if (R_String_first(string) == ']') {
+			R_Dictionary_fromJson_advanceToNextNonWhitespace(string);
+			return array;
+		}
+		else return R_Type_Delete(array), NULL;
+	}
+	return R_Type_Delete(array), NULL;
+}
+
+static void* R_Dictionary_fromJson_readNumber(R_String* source) {
 	if (source == NULL) return NULL;
 	R_String* value = R_Type_New(R_String);
 	bool isFloat = false;

@@ -48,7 +48,7 @@ R_Type_Def(R_List, R_List_Constructor, R_List_Destructor, NULL);
 
 static void R_List_increaseAllocationIfRequired(R_List* self);
 
-R_List* R_List_Constructor(R_List* self) {
+static R_List* R_List_Constructor(R_List* self) {
     self->array = NULL;
     self->arrayAllocationSize = 0;
     self->arraySize = 0;
@@ -56,7 +56,7 @@ R_List* R_List_Constructor(R_List* self) {
     return self;
 }
 
-R_List* R_List_Destructor(R_List* self) {
+static R_List* R_List_Destructor(R_List* self) {
     R_List_removeAll(self);
     free(self->array);
 

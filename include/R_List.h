@@ -20,6 +20,9 @@ typedef struct R_List R_List;
  */
 void* R_List_addObjectOfType(R_List* self, const R_Type* type);
 
+/*  R_List_transferOwnership
+    Adds the pointer to the list without copying the object. This is dangerous. The object must be on the heap.
+ */
 void* R_List_transferOwnership(R_List* self, void* object);
 
 /*  R_List_add
