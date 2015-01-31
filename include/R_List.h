@@ -20,6 +20,8 @@ typedef struct R_List R_List;
  */
 void* R_List_addObjectOfType(R_List* self, const R_Type* type);
 
+void* R_List_transferOwnership(R_List* self, void* object);
+
 /*  R_List_add
     Allocates an instance of the given type, appends it to the list and returns it.
  */

@@ -124,6 +124,16 @@ void* R_List_addObjectOfType(R_List* self, const R_Type* type) {
     return newPointer;
 }
 
+void* R_List_transferOwnership(R_List* self, void* object) {
+    if (self == NULL || object == NULL) return NULL;
+    R_List_increaseAllocationIfRequired(self);
+
+    self->array[self->arraySize] = object;
+    self->arraySize++;
+    
+    return object;
+}
+
 void* R_List_addCopy(R_List* self, const void* object) {
     if (object == NULL || self == NULL) return NULL;
     R_List_increaseAllocationIfRequired(self);

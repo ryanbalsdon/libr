@@ -141,7 +141,7 @@ void test_write_json_booleans(void) {
 	R_Type_Delete(dict);
 }
 
-void test_write_json_array(void) {
+void test_write_json_arrays(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
 	R_String* json = R_Type_New(R_String);
 
@@ -216,6 +216,58 @@ void test_read_json_booleans(void) {
 	R_Type_Delete(json);
 }
 
+void test_read_json_objects(void) {
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
+	R_String* json = R_String_appendCString(R_Type_New(R_String), "{\"upper\":{\"lower\":{\"int\":1}}}");
+
+	assert(R_Dictionary_fromJson(dict, json) == dict);
+	assert(R_Dictionary_get(dict, "upper") != NULL);
+	assert(R_Type_IsOf(R_Dictionary_get(dict, "upper"), R_Dictionary));
+	R_Dictionary* upper = R_Dictionary_get(dict, "upper");
+
+	assert(R_Dictionary_get(upper, "lower") != NULL);
+	assert(R_Type_IsOf(R_Dictionary_get(upper, "lower"), R_Dictionary));
+	R_Dictionary* lower = R_Dictionary_get(upper, "lower");
+
+	assert(R_Dictionary_get(lower, "int") != NULL);
+	assert(R_Type_IsOf(R_Dictionary_get(lower, "int"), R_Integer));
+	R_Integer* integer = R_Dictionary_get(lower, "int");
+	assert(R_Integer_get(integer) == 1);
+
+	R_Type_Delete(dict);
+	R_Type_Delete(json);
+}
+
+void test_read_json_arrays(void) {
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
+	R_String* json = R_String_appendCString(R_Type_New(R_String), "{\"array\":[0,1,2.02,3]}");
+
+	assert(R_Dictionary_fromJson(dict, json) == dict);
+	assert(R_Dictionary_get(dict, "array") != NULL);
+	assert(R_Type_IsOf(R_Dictionary_get(dict, "array"), R_List));
+	R_List* array = R_Dictionary_get(dict, "array");
+	assert(R_List_size(array) == 4);
+
+	assert(R_Type_IsOf(R_List_pointerAtIndex(array,0),R_Integer));
+	R_Integer* integer = R_List_pointerAtIndex(array,0);
+	assert(R_Integer_get(integer) == 0);
+
+	assert(R_Type_IsOf(R_List_pointerAtIndex(array,1),R_Integer));
+	integer = R_List_pointerAtIndex(array,1);
+	assert(R_Integer_get(integer) == 1);
+
+	assert(R_Type_IsOf(R_List_pointerAtIndex(array,2),R_Float));
+	R_Float* floater = R_List_pointerAtIndex(array,2);
+	assert(R_Float_get(floater) == 2.02f);
+
+	assert(R_Type_IsOf(R_List_pointerAtIndex(array,3),R_Integer));
+	integer = R_List_pointerAtIndex(array,3);
+	assert(R_Integer_get(integer) == 3);
+
+	R_Type_Delete(dict);
+	R_Type_Delete(json);
+}
+
 int main(void) {
 	assert(R_Type_BytesAllocated == 0);
 	test_allocation();
@@ -226,10 +278,12 @@ int main(void) {
 	test_write_json_numbers();
 	test_write_json_objects();
 	test_write_json_booleans();
-	test_write_json_array();
+	test_write_json_arrays();
 	test_read_json_strings();
 	test_read_json_numbers();
 	test_read_json_booleans();
+	test_read_json_objects();
+	test_read_json_arrays();
 
 	assert(R_Type_BytesAllocated == 0);
 	printf("Pass\n");
