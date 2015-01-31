@@ -10,7 +10,7 @@
  */
 
 #include <stddef.h>
-
+#include <stdbool.h>
 
 /*  R_Type_Constructor
     Function Pointer for an R_Type constructor. Input is an allocated space of memory. Output
@@ -121,7 +121,7 @@ unsigned int R_Unsigned_get(R_Unsigned* self);
 
 typedef struct R_Boolean R_Boolean;
 R_Type_Declare(R_Boolean);
-R_Boolean* R_Boolean_set(R_Boolean* self, uint8_t value);
-uint8_t R_Boolean_get(R_Boolean* self);
+R_Boolean* R_Boolean_set(R_Boolean* self, bool value);
+bool R_Boolean_get(R_Boolean* self);
 
 #endif

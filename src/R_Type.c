@@ -94,13 +94,13 @@ unsigned int R_Unsigned_get(R_Unsigned* self) {
   return self->Integer;
 }
 
-struct R_Boolean {R_Type* type; uint8_t Boolean;};
+struct R_Boolean {R_Type* type; bool Boolean;};
 R_Type_Def(R_Boolean, NULL, NULL, R_Type_shallowCopy);
-R_Boolean* R_Boolean_set(R_Boolean* self, uint8_t value) {
+R_Boolean* R_Boolean_set(R_Boolean* self, bool value) {
   if (self == NULL || (value != 0 && value != 1)) return NULL;
   self->Boolean = value; 
   return self;
 }
-uint8_t R_Boolean_get(R_Boolean* self) {
+bool R_Boolean_get(R_Boolean* self) {
   return self->Boolean;
 }
