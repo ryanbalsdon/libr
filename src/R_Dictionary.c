@@ -67,6 +67,20 @@ void* R_Dictionary_addObjectOfType(R_Dictionary* self, const char* key, const R_
 	element->value = R_Type_NewObjectOfType(type);
 	return element->value;
 }
+
+void* R_Dictionary_addCopy(R_Dictionary* self, const char* key, const void* object) {
+	if (self == NULL || key == NULL || object == NULL) return NULL;
+	R_Dictionary_Element* element = R_Dictionary_getElement(self, key);
+	if (element == NULL) {
+		element = R_List_add(self->elements, R_Dictionary_Element);
+		if (element == NULL) return NULL;
+		if (R_String_setString(element->key, key) == NULL) return NULL;
+	}
+	if (element->value != NULL) R_Type_Delete(element->value);
+	element->value = R_Type_Copy(object);
+	return element->value;
+}
+
 void R_Dictionary_remove(R_Dictionary* self, const char* key) {
 	if (self == NULL || key == NULL) return;
 	R_List_removePointer(self->elements, R_Dictionary_getElement(self, key));
@@ -144,18 +158,20 @@ void R_Dictionary_toJson_writeValue(R_String* buffer, void* value) {
 }
 
 R_String* R_Dictionary_fromJson_moveQuotedString(R_String* source, R_String* dest);
+void* R_Dictionary_fromJson_readNumber(R_String* source);
 R_Dictionary* R_Dictionary_fromJson(R_Dictionary* self, R_String* buffer) {
 	if (self == NULL || buffer == NULL) return NULL;
+	R_Dictionary_removeAll(self);
 	R_String* string = R_Type_Copy(buffer);
 	if (string == NULL) return NULL;
 	R_String_trim(string);
 	if (R_String_first(string) != '{') {
-		R_Type_delete(string);
+		R_Type_Delete(string);
 		return NULL;
 	}
 	R_String_shift(string);
 	R_String_trim(string);
-	while (1) {
+	while (R_String_length(string) > 0) {
 		R_String* key = R_Type_New(R_String);
 		if (R_Dictionary_fromJson_moveQuotedString(string, key) == NULL) {
 			R_Type_Delete(key);
@@ -178,20 +194,70 @@ R_Dictionary* R_Dictionary_fromJson(R_Dictionary* self, R_String* buffer) {
 				R_Type_Delete(string);
 				return NULL;
 			}
+			R_Dictionary_addCopy(self, R_String_cstring(key), value);
+			R_Type_Delete(value);
 		}
+		else if ((R_String_first(string) >= '0' && R_String_first(string) <= '9') || R_String_first(string) == '-') {//value is a number
+			void* number = R_Dictionary_fromJson_readNumber(string);
+			if (number == NULL) {
+				R_Type_Delete(number);
+				R_Type_Delete(key);
+				R_Type_Delete(string);
+				return NULL;
+			}
+			R_Dictionary_addCopy(self, R_String_cstring(key), number);
+			R_Type_Delete(number);
+		}
+		else if (R_String_first(string) == 't' || R_String_first(string) == 'f') {//value is a boolean (true)
+			const char* characters = R_String_cstring(string);
+			if (strstr(characters, "true") == characters) {
+				R_String_getSubstring(string, string, 4, 0);
+				R_Boolean* boolean = R_Dictionary_add(self, R_String_cstring(key), R_Boolean);
+				R_Boolean_set(boolean, true);
+			}
+			else if (strstr(characters, "false") == characters) {
+				R_String_getSubstring(string, string, 5, 0);
+				R_Boolean* boolean = R_Dictionary_add(self, R_String_cstring(key), R_Boolean);
+				R_Boolean_set(boolean, false);
+			}
+			else {
+				R_Type_Delete(key);
+				R_Type_Delete(string);
+				return NULL;
+			}
+		}
+		else {//unknown type
+			R_Type_Delete(key);
+			R_Type_Delete(string);
+			return NULL;
+		}
+		R_Type_Delete(key);
+		R_String_trim(string);
+		if (R_String_first(string) == ',') {
+			R_String_shift(string);
+			R_String_trim(string);
+			continue;
+		}
+		if (R_String_first(string) == '}') break;
 	}
 
-	return R_Dictionary_fromJson_readObject(self, string);
+	if (R_String_first(string) != '}') {
+		R_Type_Delete(string);
+		return NULL;
+	}
+
+	R_Type_Delete(string);
+	return self;
 }
 
 R_String* R_Dictionary_fromJson_moveQuotedString(R_String* source, R_String* dest) {
 	if (source == NULL || dest == NULL) return NULL;
-	if (R_String_first(string) != '"') return NULL;
+	if (R_String_first(source) != '"') return NULL;
 	R_String_shift(source);
 	while (R_String_length(source) > 0) {
 		char character = R_String_shift(source);
 		if (character == '\\' && R_String_length(source) > 0) {
-			char escaped = R_String_shift(string);
+			char escaped = R_String_shift(source);
 			if (escaped == '\\') R_String_appendCString(dest, "\\");
 			else if (escaped == '/') R_String_appendCString(dest, "/");
 			else if (escaped == 'b') R_String_appendCString(dest, "\b");
@@ -201,11 +267,67 @@ R_String* R_Dictionary_fromJson_moveQuotedString(R_String* source, R_String* des
 			else if (escaped == 't') R_String_appendCString(dest, "\t");
 		}
 		else if (character == '"') return dest;
-		else R_String_appendBytes(dest, &character, 1);
+		else R_String_push(dest, character);
 	}
 	return NULL;
 }
 
+void* R_Dictionary_fromJson_readNumber(R_String* source) {
+	if (source == NULL) return NULL;
+	R_String* value = R_Type_New(R_String);
+	bool isFloat = false;
+	bool isExponent = false;
+	while (R_String_length(source) > 0) {
+		if (R_String_first(source) >= '0' && R_String_first(source) <= '9') {
+			R_String_push(value, R_String_shift(source));
+			continue;
+		}
+		else if (R_String_first(source) == '.') {
+			R_String_push(value, R_String_shift(source));
+			isFloat = true;
+			continue;
+		}
+		else if (R_String_first(source) == 'e' || R_String_first(source) == 'E') {
+			R_String_push(value, R_String_shift(source));
+			isExponent = true;
+			isFloat = true;
+			continue;
+		}
+		else if (isExponent && (R_String_first(source) == '+' || R_String_first(source) == '-')) {
+			R_String_push(value, R_String_shift(source));
+			continue;
+		}
+		else if (R_String_length(value) == 0 && R_String_first(source) == '-') {
+			R_String_push(value, R_String_shift(source));
+			continue;
+		}
+		else break;
+	}
 
+	if (isFloat) {
+		float floater = 0.0f;
+		if (sscanf(R_String_cstring(value), "%f", &floater) != 1) {
+			R_Type_Delete(value);
+			return NULL;
+		}
+		R_Float* number = R_Type_New(R_Float);
+		R_Float_set(number, floater);
+		R_Type_Delete(value);
+		return number;
+	}
+	else { //is integer
+		int integer = 0;
+		if (sscanf(R_String_cstring(value), "%d", &integer) != 1) {
+			R_Type_Delete(value);
+			return NULL;
+		}
+		R_Integer* number = R_Type_New(R_Integer);
+		R_Integer_set(number, integer);
+		R_Type_Delete(value);
+		return number;
+	}
+	R_Type_Delete(value);
+	return NULL;
+}
 
 

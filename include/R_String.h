@@ -27,13 +27,14 @@ R_String* R_String_reset(R_String* self);
 /*  R_String_getString
     Returns a buffer to a C String. This buffer is not a copy!
  */
-const char* R_String_getString(const R_String* self);
+const char* R_String_getString(R_String* self);
 #define R_String_cstring R_String_getString
 
 char R_String_first(const R_String* self);
 char R_String_shift(R_String* self);
 char R_String_last(const R_String* self);
 char R_String_pop(R_String* self);
+R_String* R_String_push(R_String* self, char character);
 
 R_String* R_String_trim(R_String* self);
 
@@ -101,28 +102,7 @@ float R_String_getFloat(R_String* self);
 /*  R_String_getSubstring
     Sets the given output string to the substring in between the given indexes. The characters at the given indexes are included.
  */
-R_String* R_String_getSubstring(R_String* self, size_t startingIndex, size_t endingIndex, R_String* output);
-
-/*  R_String_getBracedString
-    Sets the given output string to the substring in between the given characters, matching scopes.
- */
-R_String* R_String_getBracedString(R_String* self, char beginningBrace, char finishingBrace, R_String* output);
-
-/*  R_String_getEnclosedString
-    Sets the given output string to the substring in between the given characters, matching scopes.
- */
-R_String* R_String_getEnclosedString(R_String* self, char beginningBrace, char finishingBrace, R_String* output);
-
-/*  R_String_findFirstToken
-    Returns the first character found of the given list.
- */
-char R_String_findFirstToken(R_String* self, char* tokens);
-
-/*  R_String_splitBracedString
-    Splits a string.
- */
-bool R_String_splitBracedString(R_String* self, char beginningBrace, char finishingBrace, 
-    R_String* beforeBraces, R_String* withBraces, R_String* insideBraces, R_String* afterBraces);
+R_String* R_String_getSubstring(R_String* self, R_String* output, size_t startingIndex, size_t length);
 
 /*  R_String_isEmpty
     Returns true if there are no characters in the string.

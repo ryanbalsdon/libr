@@ -22,10 +22,6 @@ void test_set_get(void) {
 	R_String_setString(string, "test 2");
 	assert(strcmp(R_String_getString(string), "test 2") == 0);
 
-	R_String_setString(string, "0123456789");
-	R_String_setString(string, R_String_getString(string)+2);
-	assert(strcmp(R_String_getString(string), "23456789") == 0);
-
 	assert(R_String_isEmpty(string) == false);
 	R_String_reset(string);
 	assert(R_String_isEmpty(string) == true);
@@ -55,10 +51,12 @@ void test_int_float_string(void) {
 	assert(strcmp("494857", R_String_getString(string)) == 0);
 	R_String_appendFloat(string, 3.141592653589793238462643383279502884);
 	assert(strcmp("4948573.14159", R_String_getString(string)) == 0);
+	assert(R_String_compare(string, "4948573.14159"));
 	R_String* appendage = R_Type_New(R_String);
 	R_String_setString(appendage, "appendage");
 	R_String_appendString(string, appendage);
 	assert(strcmp("4948573.14159appendage", R_String_getString(string)) == 0);
+	assert(R_String_compare(string, "4948573.14159appendage"));
 	R_Type_Delete(appendage);
 	R_String_reset(string);
 	R_String_appendInt(string, 494857);
@@ -69,41 +67,15 @@ void test_int_float_string(void) {
 	R_Type_Delete(string);
 }
 
-void test_getBraces(void) {
+void test_getSubString(void) {
 	R_String* string = R_Type_New(R_String);
 
 	R_String_setString(string, "if (killer) then {hide};");
 	R_String* substring = R_Type_New(R_String);
-	assert(R_String_getSubstring(string, 4, 9, substring) != NULL);
-	assert(strcmp(R_String_getString(R_String_getSubstring(string, 4, 9, substring)), "killer") == 0);
+	assert(R_String_getSubstring(string, substring, 4, 6) != NULL);
+	assert(strcmp(R_String_getString(R_String_getSubstring(string, substring, 4, 6)), "killer") == 0);
 	assert(R_String_length(substring) == 6);
-	assert(R_String_getBracedString(string, '{', '}', substring) != NULL);
-	assert(strcmp(R_String_getString(R_String_getBracedString(string, '{', '}', substring)), "{hide}") == 0);
 
-	R_String_setString(string, "hi{r{t}y{fg{h}vb}}qwe");
-	assert(R_String_getBracedString(string, '{', '}', substring) != NULL);
-	assert(strcmp(R_String_getString(R_String_getBracedString(string, '{', '}', substring)), "{r{t}y{fg{h}vb}}") == 0);
-	assert(R_String_getEnclosedString(string, '{', '}', substring) != NULL);
-	assert(strcmp(R_String_getString(R_String_getEnclosedString(string, '{', '}', substring)), "r{t}y{fg{h}vb}") == 0);
-	R_String* beforeBraces = R_Type_New(R_String);
-	R_String* withBraces = R_Type_New(R_String);
-	R_String* insideBraces = R_Type_New(R_String);
-	R_String* afterBraces = R_Type_New(R_String);
-	assert(R_String_splitBracedString(string, '{', '}', beforeBraces, withBraces, insideBraces, afterBraces) == true);
-	assert(strcmp(R_String_getString(beforeBraces), "hi") == 0);
-	assert(strcmp(R_String_getString(withBraces), "{r{t}y{fg{h}vb}}") == 0);
-	assert(strcmp(R_String_getString(insideBraces), "r{t}y{fg{h}vb}") == 0);
-	assert(strcmp(R_String_getString(afterBraces), "qwe") == 0);
-	R_Type_Delete(beforeBraces);
-	R_Type_Delete(withBraces);
-	R_Type_Delete(insideBraces);
-	R_Type_Delete(afterBraces);
-
-	R_String_setString(string, "command;not");
-	assert(R_String_getBracedString(string, '\0', ';', substring) != NULL);
-	assert(strcmp(R_String_getString(R_String_getBracedString(string, 0, ';', substring)), "command;") == 0);
-	assert(R_String_getBracedString(string, ';', '\0', substring) != NULL);
-	assert(strcmp(R_String_getString(R_String_getBracedString(string, ';', 0, substring)), ";not") == 0);
 	R_Type_Delete(substring);
 	R_Type_Delete(string);
 }
@@ -116,15 +88,6 @@ void test_setHex(void) {
 	assert(R_String_length(string) == 8);
 	assert(strcmp(R_String_getString(string), "01235AFF") == 0);
 	R_Type_Delete(testArray);
-	R_Type_Delete(string);
-}
-
-void test_find_token(void) {
-	R_String* string = R_Type_New(R_String);
-	R_String_setString(string, "a%%sdf#ht");
-	assert(R_String_findFirstToken(string, "%%fh") == '%');
-	assert(R_String_findFirstToken(string, "#fh") == 'f');
-	assert(R_String_findFirstToken(string, "s#d") == 's');
 	R_Type_Delete(string);
 }
 
@@ -188,6 +151,9 @@ void test_shift(void) {
 	assert(R_String_last(string) == '4');
 	assert(R_String_pop(string)  == '4');
 	assert(R_String_length(string) == 1);
+	assert(R_String_push(string, '6') == string);
+	assert(R_String_length(string) == 2);
+	assert(R_String_last(string) == '6');
 	R_Type_Delete(string);
 }
 
@@ -203,9 +169,8 @@ int main(void) {
 	test_set_get();
 	test_append_bytes();
 	test_int_float_string();
-	test_getBraces();
+	test_getSubString();
 	test_setHex();
-	test_find_token();
 	test_json_formatting();
 	test_shift();
 	test_trim();

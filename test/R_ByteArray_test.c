@@ -71,7 +71,7 @@ void test_push_pop(void) {
 	assert(R_ByteArray_bytes(array)[0] == 0x01);
 	assert(R_ByteArray_bytes(array)[1] == 0x02);
 	assert(R_ByteArray_bytes(array)[2] == 0x03);
-	R_ByteArray_shift(array, 0x00);
+	R_ByteArray_unshift(array, 0x00);
 	assert(R_ByteArray_size(array) == 4);
 	assert(R_ByteArray_bytes(array)[0] == 0x00);
 	assert(R_ByteArray_bytes(array)[1] == 0x01);
@@ -83,11 +83,11 @@ void test_push_pop(void) {
 	assert(R_ByteArray_byte(array, 3) == 0x03);
 	assert(R_ByteArray_pop(array) == 0x03);
 	assert(R_ByteArray_size(array) == 3);
-	assert(R_ByteArray_unshift(array) == 0x00);
+	assert(R_ByteArray_shift(array) == 0x00);
 	assert(R_ByteArray_size(array) == 2);
 	assert(R_ByteArray_pop(array) == 0x02);
 	assert(R_ByteArray_size(array) == 1);
-	assert(R_ByteArray_unshift(array) == 0x01);
+	assert(R_ByteArray_shift(array) == 0x01);
 	assert(R_ByteArray_size(array) == 0);
 	R_Type_Delete(array);
 }
@@ -107,7 +107,7 @@ void test_MoveSubArray(void) {
 	assert(R_ByteArray_bytes(array2)[2] == 0x02);
 	assert(R_ByteArray_bytes(array2)[3] == 0x03);
 	R_ByteArray_appendCArray(array, bytes, sizeof(bytes));
-	assert(R_ByteArray_moveSubArray(array2, array, 1, 3) == 2);
+	assert(R_ByteArray_moveSubArray(array2, array, 1, 2) == 2);
 	assert(R_ByteArray_size(array2) == 6);
 	assert(R_ByteArray_bytes(array2)[0] == 0x00);
 	assert(R_ByteArray_bytes(array2)[1] == 0x01);

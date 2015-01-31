@@ -194,6 +194,20 @@ void test_objectarray_each(void) {
   R_Type_Delete(array);
 }
 
+void test_copy(void) {
+  R_List* array = R_Type_New(R_List);
+
+  R_Integer* integer = R_List_add(array, R_Integer);
+  R_Integer_set(integer, 42);
+  integer = R_List_addCopy(array, integer);
+
+  assert(R_List_size(array) == 2);
+  assert(R_List_pointerAtIndex(array, 0) != R_List_pointerAtIndex(array, 1));
+  assert(R_Integer_get(R_List_pointerAtIndex(array, 0)) == R_Integer_get(R_List_pointerAtIndex(array, 1)));
+
+  R_Type_Delete(array);
+}
+
 int main(void) {
 	test_allocations();
 	test_integer();
@@ -202,6 +216,7 @@ int main(void) {
 	test_cleanup();
 	test_objectarray_iterator();
 	test_objectarray_each();
+	test_copy();
 
 	assert(R_Type_BytesAllocated == 0);
 	printf("Pass\n");

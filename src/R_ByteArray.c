@@ -83,21 +83,24 @@ const uint8_t* R_ByteArray_bytes(const R_ByteArray* self) {
 	return self->array;
 }
 
-void    R_ByteArray_push(R_ByteArray* self, uint8_t byte) {
-	R_ByteArray_appendByte(self, byte);
+R_ByteArray* R_ByteArray_push(R_ByteArray* self, uint8_t byte) {
+	return R_ByteArray_appendByte(self, byte);
 }
 uint8_t R_ByteArray_pop(R_ByteArray* self) {
 	return self->array[--self->arraySize];
 }
-void    R_ByteArray_shift(R_ByteArray* self, uint8_t byte) {
+R_ByteArray* R_ByteArray_unshift(R_ByteArray* self, uint8_t byte) {
+	if (self == NULL) return NULL;
 	R_ByteArray_increaseAllocationIfNeeded(self, sizeof(uint8_t));
 	for (int i=self->arraySize; i>0; i--) {
 		self->array[i] = self->array[i-1];
 	}
 	self->array[0] = byte;
 	self->arraySize++;
+
+	return self;
 }
-uint8_t R_ByteArray_unshift(R_ByteArray* self) {
+uint8_t R_ByteArray_shift(R_ByteArray* self) {
 	if (self->arraySize>0) {
 		uint8_t returnVal = self->array[0];
 		for (int i=0; i<self->arraySize-1; i++) {
@@ -109,20 +112,19 @@ uint8_t R_ByteArray_unshift(R_ByteArray* self) {
 	return 0x00;
 }
 
-size_t R_ByteArray_moveSubArray(R_ByteArray* self, R_ByteArray* array, size_t start, size_t end) {
-	if (start > end) return 0;
-	if (start >= R_ByteArray_size(array)) return 0;
-	size_t usableEnd = (end >= R_ByteArray_size(array))?R_ByteArray_size(array):end;
-	size_t subarrayLength = usableEnd-start;
-	R_ByteArray_appendCArray(self, R_ByteArray_bytes(array)+start, subarrayLength);
+size_t R_ByteArray_moveSubArray(R_ByteArray* self, R_ByteArray* array, size_t start, size_t length) {
+	if (self == NULL || array == NULL) return 0;
+	if (start+length > R_ByteArray_size(array)) return 0;
+	if (length == 0) length = R_ByteArray_size(array) - start;
+	R_ByteArray_appendCArray(self, R_ByteArray_bytes(array)+start, length);
 
-	size_t remainingBytes = R_ByteArray_size(array) - end;
+	size_t remainingBytes = R_ByteArray_size(array) - (start + length);
 	for (int i=0; i<remainingBytes; i++) {
-		array->array[start+i] = array->array[end+i];
+		array->array[start+i] = array->array[start+length+i];
 	}
-	array->arraySize-=subarrayLength;
+	array->arraySize-=length;
 
-	return subarrayLength;
+	return length;
 }
 
 uint8_t R_ByteArray_byte(const R_ByteArray* self, size_t index) {
@@ -160,7 +162,7 @@ R_ByteArray* R_ByteArray_appendHexCString(R_ByteArray* self, const char* hex) {
 	}
 	return self;
 }
-R_ByteArray* R_ByteArray_appendHexString(R_ByteArray* self, const R_String* hex) {
+R_ByteArray* R_ByteArray_appendHexString(R_ByteArray* self, R_String* hex) {
 	for (int i=0; i<R_String_length(hex); i+=2) {
 		if (R_String_length(hex) > i+1)
 			R_ByteArray_appendByte(self, hex_to_byte(R_String_getString(hex)[i], R_String_getString(hex)[i+1]));
@@ -197,7 +199,7 @@ R_ByteArray* R_ByteArray_setArray(R_ByteArray* self, const R_ByteArray* array) {
 	R_ByteArray_reset(self);
 	return R_ByteArray_appendArray(self, array);
 }
-R_ByteArray* R_ByteArray_setHexString(R_ByteArray* self, const R_String* hex) {
+R_ByteArray* R_ByteArray_setHexString(R_ByteArray* self, R_String* hex) {
 	if (self == NULL) return NULL;
 	R_ByteArray_reset(self);
 	return R_ByteArray_appendHexString(self, hex);

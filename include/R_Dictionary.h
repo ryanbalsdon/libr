@@ -18,6 +18,7 @@ R_Type_Declare(R_Dictionary);
 
 void* R_Dictionary_addObjectOfType(R_Dictionary* self, const char* key, const R_Type* type);
 #define R_Dictionary_add(self, key, Type) (Type*)R_Dictionary_addObjectOfType(self, key, R_Type_Object(Type))
+void* R_Dictionary_addCopy(R_Dictionary* self, const char* key, const void* object);
 void R_Dictionary_remove(R_Dictionary* self, const char* key);
 void* R_Dictionary_get(R_Dictionary* self, const char* key);
 

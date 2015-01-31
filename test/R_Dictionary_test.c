@@ -157,6 +157,65 @@ void test_write_json_array(void) {
 	R_Type_Delete(dict);
 }
 
+void test_read_json_strings(void) {
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
+	R_String* json1 = R_String_appendCString(R_Type_New(R_String), "{\"string key 1\":\"string value 1\"}");
+	R_String* json2 = R_String_appendCString(R_Type_New(R_String), "{\"string key 1\":\"string value 1\",\"string key 2\":\"string value 2\"}");
+	
+	assert(R_Dictionary_fromJson(dict, json1) == dict);
+	assert(R_Dictionary_get(dict, "string key 1") != NULL);
+	assert(R_Type_IsOf(R_Dictionary_get(dict, "string key 1"), R_String));
+	assert(R_String_compare(R_Dictionary_get(dict, "string key 1"), "string value 1"));
+
+	assert(R_Dictionary_fromJson(dict, json2) == dict);
+	assert(R_Dictionary_get(dict, "string key 1") != NULL);
+	assert(R_Type_IsOf(R_Dictionary_get(dict, "string key 1"), R_String));
+	assert(R_String_compare(R_Dictionary_get(dict, "string key 1"), "string value 1"));
+	assert(R_Dictionary_get(dict, "string key 2") != NULL);
+	assert(R_Type_IsOf(R_Dictionary_get(dict, "string key 2"), R_String));
+	assert(R_String_compare(R_Dictionary_get(dict, "string key 2"), "string value 2"));
+
+	R_Type_Delete(dict);
+	R_Type_Delete(json1);
+	R_Type_Delete(json2);
+}
+
+void test_read_json_numbers(void) {
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
+	R_String* json = R_String_appendCString(R_Type_New(R_String), "{\"int\":-42,\"float\":1.4e-12}");
+
+	assert(R_Dictionary_fromJson(dict, json) == dict);
+	assert(R_Dictionary_get(dict, "int") != NULL);
+	assert(R_Type_IsOf(R_Dictionary_get(dict, "int"), R_Integer));
+	R_Integer* integer = R_Dictionary_get(dict, "int");
+	assert(R_Integer_get(integer) == -42);
+	assert(R_Dictionary_get(dict, "float") != NULL);
+	assert(R_Type_IsOf(R_Dictionary_get(dict, "float"), R_Float));
+	R_Float* floater = R_Dictionary_get(dict, "float");
+	assert(R_Float_get(floater) == 1.4e-12f);
+
+	R_Type_Delete(dict);
+	R_Type_Delete(json);
+}
+
+void test_read_json_booleans(void) {
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
+	R_String* json = R_String_appendCString(R_Type_New(R_String), "{\"pass\":true,\"fail\":false}");
+
+	assert(R_Dictionary_fromJson(dict, json) == dict);
+	assert(R_Dictionary_get(dict, "pass") != NULL);
+	assert(R_Type_IsOf(R_Dictionary_get(dict, "pass"), R_Boolean));
+	R_Boolean* boolean = R_Dictionary_get(dict, "pass");
+	assert(R_Boolean_get(boolean) == true);
+	assert(R_Dictionary_get(dict, "fail") != NULL);
+	assert(R_Type_IsOf(R_Dictionary_get(dict, "fail"), R_Boolean));
+	boolean = R_Dictionary_get(dict, "fail");
+	assert(R_Boolean_get(boolean) == false);
+
+	R_Type_Delete(dict);
+	R_Type_Delete(json);
+}
+
 int main(void) {
 	assert(R_Type_BytesAllocated == 0);
 	test_allocation();
@@ -168,6 +227,9 @@ int main(void) {
 	test_write_json_objects();
 	test_write_json_booleans();
 	test_write_json_array();
+	test_read_json_strings();
+	test_read_json_numbers();
+	test_read_json_booleans();
 
 	assert(R_Type_BytesAllocated == 0);
 	printf("Pass\n");

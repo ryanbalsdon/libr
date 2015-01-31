@@ -13,9 +13,8 @@
 
 struct R_String {
 	R_Type* type;
-	char* string;               //The allocated buffer
-	size_t stringAllocationSize;//How large the internal buffer is. This is always larger than stringSize.
-	size_t stringSize;          //How many characters are in the string. Does not include the null-terminator.
+	char* cstring;              //A buffer to store a cstring conversion, if it's needed
+	R_ByteArray* array;         //Array of characters
 };
 
 static R_String* R_String_Constructor(R_String* self);
@@ -32,15 +31,14 @@ char* R_String_Strncat(char* dest, const char* source, size_t num);
 
 
 R_String* R_String_Constructor(R_String* self) {
-	self->string = (char*)malloc(128);
-	memset(self->string, '\0', 128);
-	self->stringAllocationSize = 128;
-	self->stringSize = 0;
+	self->cstring = NULL;
+	self->array = R_Type_New(R_ByteArray);
 
 	return self;
 }
 R_String* R_String_Destructor(R_String* self) {
-	free(self->string);
+	free(self->cstring);
+	R_Type_Delete(self->array);
 	return self;
 }
 void R_String_Copier(R_String* self, R_String* new) {
@@ -49,16 +47,21 @@ void R_String_Copier(R_String* self, R_String* new) {
 
 
 R_String* R_String_reset(R_String* self) {
-	self->string = (char*)realloc(self->string, 128);
-	memset(self->string, '\0', 128);
-	self->stringAllocationSize = 128;
-	self->stringSize = 0;
+	if (self == NULL) return NULL;
+	free(self->cstring);
+	self->cstring = NULL;
+	R_ByteArray_reset(self->array);
 
 	return self;
 }
 
-const char* R_String_getString(const R_String* self) {
-	return self->string;
+const char* R_String_getString(R_String* self) {
+	if (self == NULL) return NULL;
+	if (self->cstring != NULL) free(self->cstring);
+	self->cstring = malloc((R_ByteArray_size(self->array)+1)*sizeof(char));
+	memcpy(self->cstring, R_ByteArray_bytes(self->array), R_ByteArray_size(self->array));
+	self->cstring[R_ByteArray_size(self->array)] = '\0';
+	return self->cstring;
 }
 
 R_String* R_String_appendCString(R_String* self, const char* string) {
@@ -66,72 +69,58 @@ R_String* R_String_appendCString(R_String* self, const char* string) {
 }
 
 R_String* R_String_appendBytes(R_String* self, const char* bytes, size_t byteCount) {
-	R_String_increaseAllocationSize(self, self->stringSize+byteCount);
-	memcpy(self->string + self->stringSize, bytes, byteCount);
-	self->stringSize += byteCount;
-	if ((self->string)[self->stringSize] != '\0')
-		(self->string)[self->stringSize] = '\0';
+	if (self == NULL || bytes == NULL) return NULL;
+	if (R_ByteArray_appendCArray(self->array, (const uint8_t*)bytes, byteCount) == NULL) return NULL;
 	return self;
 }
 
 R_String* R_String_appendArray(R_String* self, const R_ByteArray* array) {
-	return R_String_appendBytes(self, (char*)R_ByteArray_bytes(array), R_ByteArray_size(array));
+	if (self == NULL || array == NULL) return NULL;
+	if (R_ByteArray_appendArray(self->array, array) == NULL) return NULL;
+	return self;
 }
 
 size_t R_String_length(const R_String* self) {
-	return self->stringSize;
-}
-
-void R_String_increaseAllocationSize(R_String* self, size_t spaceNeeded) {
-	size_t allocationNeeded = spaceNeeded + 1; //Extra character is the null-terminator
-	if (allocationNeeded < self->stringAllocationSize)
-		return;
-
-	size_t newSize = (self->stringAllocationSize == 0)?1:self->stringAllocationSize;
-	do {newSize*=2;} while (allocationNeeded > newSize);
-	self->string = (char*)realloc(self->string, newSize);
-	memset(self->string + self->stringAllocationSize, '\0', newSize - self->stringAllocationSize);
-	self->stringAllocationSize = newSize;
+	if (self == NULL) return 0;
+	return R_ByteArray_size(self->array);
 }
 
 R_String* R_String_setString(R_String* self, const char* string) {
-	size_t length = strlen(string);
-	R_String_increaseAllocationSize(self, length);
-	R_String_Strcpy(self->string, string);
-	self->stringSize = length;
-	return self;
+	if (self == NULL || string == NULL) return NULL;
+	R_String_reset(self);
+	return R_String_appendCString(self, string);
 }
 
 R_String* R_String_setSizedString(R_String* self, const char* string, size_t stringLength) {
+	if (self == NULL || string == NULL) return NULL;
+	R_String_reset(self);
 	size_t length = strlen(string);
-	if (length > stringLength) length = stringLength;
-	R_String_increaseAllocationSize(self, length);
-	R_String_Strncpy(self->string, string, length);
-	self->string[length] = '\0';
-	self->stringSize = length;
-	return self;
+	length = (length > stringLength) ? stringLength : length;
+	return R_String_appendBytes(self, string, length);
 }
 
 R_String* R_String_appendInt(R_String* self, int value) {
-	int length = snprintf(NULL, 0, "%d", value);
-	R_String_increaseAllocationSize(self, self->stringSize+length);
-	self->stringSize += sprintf(self->string+self->stringSize, "%d", value);
-	return self;
+	if (self == NULL) return NULL;
+	char characters[snprintf(NULL, 0, "%d", value)];
+	sprintf(characters, "%d", value);
+	return R_String_appendCString(self, characters);
 }
 
 R_String* R_String_appendFloat(R_String* self, float value) {
-	int length = snprintf(NULL, 0, "%g", value);
-	R_String_increaseAllocationSize(self, self->stringSize+length);
-	self->stringSize += sprintf(self->string+self->stringSize, "%g", value);
-	return self;
+	if (self == NULL) return NULL;
+	char characters[snprintf(NULL, 0, "%g", value)];
+	sprintf(characters, "%g", value);
+	return R_String_appendCString(self, characters);
 }
 
 R_String* R_String_appendString(R_String* self, R_String* string) {
-	return R_String_appendCString(self, R_String_getString(string));
+	if (self == NULL || string == NULL) return NULL;
+	if (R_ByteArray_appendArray(self->array, string->array) == NULL) return NULL;
+	return self;
 }
 
 R_String* R_String_appendArrayAsHex(R_String* self, const R_ByteArray* array) {
-	if (array == NULL) return self;
+	if (self == NULL || array == NULL) return NULL;
 	for (int i=0; i<R_ByteArray_size(array); i++) {
 		char hexDigitF0 = (R_ByteArray_byte(array,i) & 0xF0) >> 4;
 		char hexDigit0F = (R_ByteArray_byte(array,i) & 0x0F);
@@ -139,142 +128,43 @@ R_String* R_String_appendArrayAsHex(R_String* self, const R_ByteArray* array) {
 		else if (hexDigitF0 >= 0xa && hexDigitF0 <= 0xf) hexDigitF0 += ('A' - 0xA);
 		if (hexDigit0F >= 0x0 && hexDigit0F <= 0x9) hexDigit0F += ('0' - 0x0);
 		else if (hexDigit0F >= 0xa && hexDigit0F <= 0xf) hexDigit0F += ('A' - 0xA);
-		R_String_appendBytes(self, &hexDigitF0, 1);
-		R_String_appendBytes(self, &hexDigit0F, 1);
+		R_ByteArray_push(self->array, hexDigitF0);
+		R_ByteArray_push(self->array, hexDigit0F);
 	}
 
 	return self;
 }
 
 int R_String_getInt(R_String* self) {
+	if (self == NULL) return 0;
 	int output = 0;
-	if (sscanf(self->string, "%d", &output) == 1) return output;
+	if (sscanf(R_String_getString(self), "%d", &output) == 1) return output;
 	return 0;
 }
 float R_String_getFloat(R_String* self) {
+	if (self == NULL) return 0.0f;
 	float output = 0.0f;
-	if (sscanf(self->string, "%g", &output) == 1) return output;
+	if (sscanf(R_String_getString(self), "%g", &output) == 1) return output;
 	return 0.0f;
 }
 
-R_String* R_String_getSubstring(R_String* self, size_t startingIndex, size_t endingIndex, R_String* output) {
+R_String* R_String_getSubstring(R_String* self, R_String* output, size_t startingIndex, size_t length) {
 	if (self == NULL || output == NULL) return NULL;
-	if (endingIndex == 0 || endingIndex < startingIndex) endingIndex = self->stringSize - 1;
-	size_t substring_length = endingIndex-startingIndex + 1; //both ends are included!
+	R_ByteArray* to_copy = R_Type_Copy(self->array);
 	R_String_reset(output);
-	R_String_increaseAllocationSize(output, output->stringSize+substring_length);
-	R_String_Strncpy(output->string, self->string+startingIndex, substring_length);
-	output->string[substring_length] = '\0';
-	output->stringSize = substring_length;
+	R_ByteArray_moveSubArray(output->array, to_copy, startingIndex, length);
+	R_Type_Delete(to_copy);
 	return output;
-}
-
-R_String* R_String_getBracedString(R_String* self, char beginningBrace, char finishingBrace, R_String* output) {
-	if (R_String_splitBracedString(self, beginningBrace, finishingBrace, NULL, output, NULL, NULL))
-		return output;
-	return NULL;
-}
-
-R_String* R_String_getEnclosedString(R_String* self, char beginningBrace, char finishingBrace, R_String* output) {
-	if (R_String_splitBracedString(self, beginningBrace, finishingBrace, NULL, NULL, output, NULL))
-		return output;
-	return NULL;
-
-}
-
-bool R_String_splitBracedString(R_String* self, char beginningBrace, char finishingBrace, 
-	R_String* beforeBraces, R_String* withBraces, R_String* insideBraces, R_String* afterBraces)
-{
-	R_String* input = R_Type_Copy(self);
-	if (beforeBraces != NULL) R_String_reset(beforeBraces);
-	if (withBraces != NULL) R_String_reset(withBraces);
-	if (insideBraces != NULL) R_String_reset(insideBraces);
-	if (afterBraces != NULL) R_String_reset(afterBraces);
-
-	int depth = 0;
-	for (int i=0; i<strlen(input->string); i++) {
-		if (beginningBrace == '\0' || input->string[i] == beginningBrace) {
-			if (finishingBrace == '\0') {
-				if (beforeBraces != NULL) R_String_setSizedString(beforeBraces, input->string, i);
-				if (withBraces != NULL) R_String_getSubstring(input, (beginningBrace != 0)?i:i, strlen(input->string), withBraces);
-				if (insideBraces != NULL) R_String_getSubstring(input, (beginningBrace != 0)?i+1:i, strlen(input->string), insideBraces);
-				R_Type_Delete(input);
-				return true;
-			}
-			for (int j=i+1; j<strlen(input->string)+1; j++) {
-				if (input->string[j] == finishingBrace) {
-					if (depth == 0) {
-						if (beforeBraces != NULL) R_String_setSizedString(beforeBraces, input->string, i);
-						if (withBraces != NULL) R_String_getSubstring(input, (beginningBrace != 0)?i:i, j, withBraces);
-						if (insideBraces != NULL) R_String_getSubstring(input, (beginningBrace != 0)?i+1:i, j-1, insideBraces);
-						if (afterBraces != NULL) R_String_setString(afterBraces, input->string+j+1);
-						R_Type_Delete(input);
-						return true;
-					}
-					else {
-						depth--;
-					}
-				}
-				else if (input->string[j] == beginningBrace) {
-					depth++;
-				}
-			}
-		}
-	}
-
-	R_Type_Delete(input);
-	return false;
-
-}
-
-char R_String_findFirstToken(R_String* self, char* tokens) {
-	if (tokens == NULL) return '\0';
-	for (int i=0; i<strlen(self->string); i++) {
-		for (int j=0; j<strlen(tokens); j++) {
-			if (self->string[i] == tokens[j]) {
-				return tokens[j];
-			}
-		}
-	}
-	return '\0';
 }
 
 bool R_String_isSame(R_String* self, R_String* comparor) {
 	if (self == NULL || comparor == NULL) return false;
-	if (R_String_length(self) != R_String_length(comparor)) return false;
-	if (strncmp(R_String_getString(self), R_String_getString(comparor), R_String_length(self)) != 0) return false;
+	if (R_ByteArray_compare(self->array, comparor->array) != 0) return false;
 	return true;
 }
 
-char* R_String_Strcpy(char* dest, const char* source) {
-	
-	for (int i=0; ; i++) {
-		dest[i] = source[i];
-		if (source[i] == '\0')
-			return dest;
-	}
-	return dest;
-}
-char* R_String_Strncpy(char* dest, const char* source, size_t num) {
-	
-	for (int i=0; i<num; i++) {
-		dest[i] = source[i];
-		if (source[i] == '\0')
-			return dest;
-	}
-	return dest;
-}
-char* R_String_Strcat(char* dest, const char* source) {
-	char* copyStart = dest + strlen(dest);
-	return R_String_Strcpy(copyStart, source);
-}
-char* R_String_Strncat(char* dest, const char* source, size_t num) {
-	char* copyStart = dest + strlen(dest);
-	return R_String_Strncpy(copyStart, source, num);
-}
-
 bool R_String_isEmpty(R_String* self) {
-	if (self->stringSize == 0) return true;
+	if (R_String_length(self) == 0) return true;
 	return false;
 }
 
@@ -307,27 +197,25 @@ R_String* R_String_appendStringAsJson(R_String* self, R_String* string) {
 }
 
 char R_String_first(const R_String* self) {
-	if (self == NULL || R_String_length(self) == 0) return '\0';
-	return *R_String_getString(self);
+	if (self == NULL) return '\0';
+	return R_ByteArray_first(self->array);
 }
 char R_String_shift(R_String* self) {
 	if (self == NULL) return '\0';
-	char ret = R_String_first(self);
-	R_String* copy = R_Type_Copy(self);
-	R_String_getSubstring(copy, 1, 0, self);
-	R_Type_Delete(copy);
-	return ret;
+	return R_ByteArray_shift(self->array);
 }
 char R_String_last(const R_String* self) {
-	if (self == NULL || R_String_length(self) == 0) return '\0';
-	return R_String_getString(self)[R_String_length(self)-1];
+	if (self == NULL) return '\0';
+	return R_ByteArray_last(self->array);
 }
 char R_String_pop(R_String* self) {
-	if (self == NULL || self->stringSize == 0) return '\0';
-	char ret = R_String_last(self);
-	self->stringSize--;
-	self->string[self->stringSize] = '\0';
-	return ret;
+	if (self == NULL) return '\0';
+	return R_ByteArray_pop(self->array);
+}
+R_String* R_String_push(R_String* self, char character) {
+	if (self == NULL) return NULL;
+	if (R_ByteArray_push(self->array, character) == NULL) return NULL;
+	return self;
 }
 
 bool R_String_trim_isWhiteSpace(char character);

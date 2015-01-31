@@ -124,6 +124,19 @@ void* R_List_addObjectOfType(R_List* self, const R_Type* type) {
     return newPointer;
 }
 
+void* R_List_addCopy(R_List* self, const void* object) {
+    if (object == NULL || self == NULL) return NULL;
+    R_List_increaseAllocationIfRequired(self);
+
+    void* copy = R_Type_Copy(object);
+    if (copy == NULL) return NULL;
+
+    self->array[self->arraySize] = copy;
+    self->arraySize++;
+    
+    return copy;
+}
+
 void R_List_removeIndex(R_List* self, size_t index) {
     if (self == NULL || index>=self->arraySize) return;
 

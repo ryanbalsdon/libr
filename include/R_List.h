@@ -25,6 +25,12 @@ void* R_List_addObjectOfType(R_List* self, const R_Type* type);
  */
 #define R_List_add(self, Type) (Type*)R_List_addObjectOfType(self, R_Type_Object(Type))
 
+/*  R_List_addCopy
+    Copies the given object, appends it to the list and returns it. If the object hasn't defined 
+    an R_Type_Copier, this will fail.
+ */
+void* R_List_addCopy(R_List* self, const void* object);
+
 /*  R_List_removeIndex
     Removes the object at the given index and destroys it.
  */

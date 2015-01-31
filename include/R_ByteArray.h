@@ -41,7 +41,7 @@ R_ByteArray* R_ByteArray_setArray(R_ByteArray* self, const R_ByteArray* array);
 /*  R_ByteArray_setHexString
     Empties the array and appends the given string, after converting the string from hex to binary. ie. "0F01" is [15, 1].
 */
-R_ByteArray* R_ByteArray_setHexString(R_ByteArray* self, const R_String* hex);
+R_ByteArray* R_ByteArray_setHexString(R_ByteArray* self, R_String* hex);
 
 /*  R_ByteArray_setHexCString
     Empties the array and appends the given string, after converting the string from hex to binary. ie. "0F01" is [15, 1].
@@ -76,7 +76,7 @@ R_ByteArray* R_ByteArray_appendArray(R_ByteArray* self, const R_ByteArray* array
 /*  R_ByteArray_appendHexString
     Appends the given string to the end of the array, after converting the string from hex to binary. ie. "0F01" is [15, 1]. More memory is allocated if required.
 */
-R_ByteArray* R_ByteArray_appendHexString(R_ByteArray* self, const R_String* hex);
+R_ByteArray* R_ByteArray_appendHexString(R_ByteArray* self, R_String* hex);
 
 /*  R_ByteArray_appendHexCString
     Appends the given string to the end of the array, after converting the string from hex to binary. ie. "0F01" is [15, 1]. More memory is allocated if required.
@@ -122,27 +122,27 @@ uint8_t R_ByteArray_last(const R_ByteArray* self);
 /*  R_ByteArray_push
     Appends the given byte to the end of the array.
  */
-void    R_ByteArray_push(R_ByteArray* self, uint8_t byte);
+R_ByteArray* R_ByteArray_push(R_ByteArray* self, uint8_t byte);
 
 /*  R_ByteArray_pop
     Removes the last byte from the array and returns it.
  */
 uint8_t R_ByteArray_pop(R_ByteArray* self);
 
-/*  R_ByteArray_shift
+/*  R_ByteArray_unshift
     Adds the given byte to the beginning of the array.
  */
-void    R_ByteArray_shift(R_ByteArray* self, uint8_t byte);
+R_ByteArray* R_ByteArray_unshift(R_ByteArray* self, uint8_t byte);
 
-/*  R_ByteArray_push
+/*  R_ByteArray_shift
     Removes the first byte from the array and returns it.
  */
-uint8_t R_ByteArray_unshift(R_ByteArray* self);
+uint8_t R_ByteArray_shift(R_ByteArray* self);
 
 /*  R_ByteArray_moveSubArray
     Removes the given number of bytes from the second param and appends them to the first.
  */
-size_t R_ByteArray_moveSubArray(R_ByteArray* self, R_ByteArray* array, size_t start, size_t end);
+size_t R_ByteArray_moveSubArray(R_ByteArray* self, R_ByteArray* array, size_t start, size_t length);
 
 /*  R_ByteArray_compare
     Returns 0 if both arrays are the same length and have identical contents.
