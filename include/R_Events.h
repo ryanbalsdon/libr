@@ -22,27 +22,32 @@ typedef void (*R_Events_Callback)(void* target, const char* event_key, void* pay
 /* R_Events_Register
    Register an event handler.
  */
-R_Events* R_Events_Register(R_Events* self, const char* event_key, void* target, R_Events_Callback callback);
+R_Events* R_Events_register(R_Events* self, const char* event_key, void* target, R_Events_Callback callback);
+
+/* R_Events_RegisterOnce
+   Register an event handler that will only be called once.
+ */
+R_Events* R_Events_registerOnce(R_Events* self, const char* event_key, void* target, R_Events_Callback callback);
 
 /* R_Events_Remove
    Remove an event handler.
  */
-R_Events* R_Events_Remove(R_Events* self, const char* event_key, const void* target, R_Events_Callback callback);
+R_Events* R_Events_remove(R_Events* self, const char* event_key, const void* target, R_Events_Callback callback);
 
 /* R_Events_RemoveTarget
    Removes all events registered by the given target. Useful for object destructors.
  */
-R_Events* R_Events_RemoveTarget(R_Events* self, const void* target);
+R_Events* R_Events_removeTarget(R_Events* self, const void* target);
 
 /* R_Events_Notify
    Send an event notification to all registered receivers.
  */
-R_Events* R_Events_Notify(R_Events* self, const char* event_key, void* payload);
+R_Events* R_Events_notify(R_Events* self, const char* event_key, void* payload);
 
 /* R_Events_IsRegistered
    Returns true if the event handler has been registered or false if not. Returns false on error.
  */
-bool R_Events_IsRegistered(R_Events* self, const char* event_key, void* target, R_Events_Callback callback);
+bool R_Events_isRegistered(R_Events* self, const char* event_key, void* target, R_Events_Callback callback);
 
 
 #endif /* R_Events_h */
