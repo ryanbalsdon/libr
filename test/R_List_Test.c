@@ -151,18 +151,28 @@ void test_objectarray_iterator(void) {
   integer = R_List_add(array, R_Integer);
   R_Integer_set(integer, 2);
 
+  bool integer0_found = false;
+  bool integer1_found = false;
+  bool integer2_found = false;
+
   R_Functor* iterator = R_List_Iterator(R_Type_New(R_Functor), array);
-  R_Integer* element = R_Functor_call(iterator);
-  assert(R_Type_IsOf(element, R_Integer));
-  assert(R_Integer_get(element) == 0);
-  element = R_Functor_call(iterator);
-  assert(R_Type_IsOf(element, R_Integer));
-  assert(R_Integer_get(element) == 1);
-  element = R_Functor_call(iterator);
-  assert(R_Type_IsOf(element, R_Integer));
-  assert(R_Integer_get(element) == 2);
-  element = R_Functor_call(iterator);
-  assert(element == NULL);
+  R_Integer* element = NULL;
+  while ((element = R_Functor_call(iterator)) != NULL) {
+  	assert(R_Type_IsOf(element, R_Integer));
+  	if (R_Integer_get(element) == 0) integer0_found = true;
+  	if (R_Integer_get(element) == 1) integer1_found = true;
+  	if (R_Integer_get(element) == 2) integer2_found = true;
+  }
+
+  assert(integer0_found);
+  assert(integer1_found);
+  assert(integer2_found);
+
+  iterator = R_List_Iterator(iterator, array);
+  while ((element = R_Functor_call(iterator)) != NULL) {
+    R_List_removePointer(array, element);
+  }
+  assert(R_List_size(array) == 0);
 
   R_Type_Delete(iterator);
   R_Type_Delete(array);
@@ -182,6 +192,7 @@ void test_objectarray_each(void) {
   bool integer2_found = false;
 
   R_List_each(array, R_Integer, value) {
+  	assert(R_Type_IsOf(value, R_Integer));
   	if (R_Integer_get(value) == 0) integer0_found = true;
   	if (R_Integer_get(value) == 1) integer1_found = true;
   	if (R_Integer_get(value) == 2) integer2_found = true;

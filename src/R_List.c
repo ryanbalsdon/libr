@@ -12,27 +12,6 @@
 #include "R_List.h"
 
 
-typedef struct {
-    R_Type* type;
-    unsigned int next_index;
-    R_List* list; //This is not a copy. Do not call R_Type_Delete on it!
-} R_List_Iterator_State;
-R_Type_Def(R_List_Iterator_State, NULL, NULL, NULL);
-
-static void* R_List_iterator(R_List_Iterator_State* state) {
-    if (state->next_index >= R_List_size(state->list)) return NULL;
-    return R_List_pointerAtIndex(state->list, state->next_index++);
-}
-
-R_Functor* R_List_Iterator(R_Functor* functor, R_List* list) {
-    R_List_Iterator_State* state = R_Type_New(R_List_Iterator_State);
-    state->list = list;
-    state->next_index = 0;
-    functor->state = state;
-    functor->function = (R_Functor_Function)R_List_iterator;
-    return functor;
-}
-
 struct R_List {
     R_Type* type;
     void ** array;          //The actual array
@@ -175,4 +154,27 @@ void R_List_removeAll(R_List* self) {
     if (self == NULL) return;
     for (int i=0; i<self->arraySize; i++) R_Type_Delete(self->array[i]);
     self->arraySize = 0;
+}
+
+typedef struct {
+    R_Type* type;
+    unsigned int previous_index;
+    R_List* list; //This is not a copy. Do not call R_Type_Delete on it!
+} R_List_Iterator_State;
+R_Type_Def(R_List_Iterator_State, NULL, NULL, NULL);
+
+static void* R_List_iterator(R_List_Iterator_State* state) {
+    if (state->previous_index == 0) return NULL;
+    return R_List_pointerAtIndex(state->list, --state->previous_index);
+}
+
+R_Functor* R_List_Iterator(R_Functor* functor, R_List* list) {
+    if (functor == NULL || list == NULL) return NULL;
+    R_Type_Delete(functor->state);
+    R_List_Iterator_State* state = R_Type_New(R_List_Iterator_State);
+    state->list = list;
+    state->previous_index = R_List_size(list);
+    functor->state = state;
+    functor->function = (R_Functor_Function)R_List_iterator;
+    return functor;
 }

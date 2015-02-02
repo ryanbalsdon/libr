@@ -12,6 +12,8 @@
 #include <stdbool.h>
 #include "R_Type.h"
 #include "R_String.h"
+#include "R_Functor.h"
+ 
 
 typedef struct R_Dictionary R_Dictionary;
 R_Type_Declare(R_Dictionary);
@@ -60,6 +62,11 @@ bool R_Dictionary_isPresent(R_Dictionary* self, const char* key);
     Returns false if the key exists in the dictionary or true if it isn't.
  */
 bool R_Dictionary_isNotPresent(R_Dictionary* self, const char* key);
+
+/*  R_Dictionary_ValueIterator
+    Initializes a functor that can be used to iterate over the dictionary values.
+ */
+R_Functor* R_Dictionary_ValueIterator(R_Functor* functor, R_Dictionary* dictionary);
 
 /*  R_Dictionary_size
     Returns the number of keys in the dictionary.

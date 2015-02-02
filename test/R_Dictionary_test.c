@@ -78,6 +78,36 @@ void test_mixed(void) {
 	R_Type_Delete(dict);
 }
 
+void test_iterator(void) {
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
+	R_Integer* integer = R_Dictionary_add(dict, "0", R_Integer);
+	R_Integer_set(integer, 0);
+	integer = R_Dictionary_add(dict, "2", R_Integer);
+	R_Integer_set(integer, 2);
+	integer = R_Dictionary_add(dict, "1", R_Integer);
+	R_Integer_set(integer, 1);
+
+	bool integer0_found = false;
+	bool integer1_found = false;
+	bool integer2_found = false;
+
+	R_Functor* iterator = R_Dictionary_ValueIterator(R_Type_New(R_Functor), dict);
+	R_Integer* element = NULL;
+	while ((element = R_Functor_call(iterator)) != NULL) {
+		assert(R_Type_IsOf(element, R_Integer));
+		if (R_Integer_get(element) == 0) integer0_found = true;
+		if (R_Integer_get(element) == 1) integer1_found = true;
+		if (R_Integer_get(element) == 2) integer2_found = true;
+	}
+
+	assert(integer0_found);
+	assert(integer1_found);
+	assert(integer2_found);
+
+	R_Type_Delete(iterator);
+	R_Type_Delete(dict);
+}
+
 void test_write_json_strings(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
 	R_String* json = R_Type_New(R_String);
@@ -274,6 +304,7 @@ int main(void) {
 	test_key_creation();
 	test_integers();
 	test_mixed();
+	test_iterator();
 	test_write_json_strings();
 	test_write_json_numbers();
 	test_write_json_objects();

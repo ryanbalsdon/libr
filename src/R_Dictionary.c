@@ -354,3 +354,25 @@ static void* R_Dictionary_fromJson_readNumber(R_String* source) {
 }
 
 
+typedef struct {
+    R_Type* type;
+    unsigned int previous_index;
+    R_Dictionary* dictionary; //This is not a copy. Do not call R_Type_Delete on it!
+} R_Dictionary_Iterator_State;
+R_Type_Def(R_Dictionary_Iterator_State, NULL, NULL, NULL);
+
+static void* R_Dictionary_valueIterator(R_Dictionary_Iterator_State* state) {
+    if (state->previous_index == 0) return NULL;
+    R_Dictionary_Element* element = R_List_pointerAtIndex(state->dictionary->elements, --state->previous_index);
+    if (element == NULL) return NULL;
+    return element->value;
+}
+
+R_Functor* R_Dictionary_ValueIterator(R_Functor* functor, R_Dictionary* dictionary) {
+    R_Dictionary_Iterator_State* state = R_Type_New(R_Dictionary_Iterator_State);
+    state->dictionary = dictionary;
+    state->previous_index = R_List_size(dictionary->elements);
+    functor->state = state;
+    functor->function = (R_Functor_Function)R_Dictionary_valueIterator;
+    return functor;
+}
