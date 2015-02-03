@@ -158,7 +158,7 @@ void R_List_removeAll(R_List* self) {
 
 typedef struct {
     R_Type* type;
-    unsigned int previous_index;
+    size_t previous_index;
     R_List* list; //This is not a copy. Do not call R_Type_Delete on it!
 } R_List_Iterator_State;
 R_Type_Def(R_List_Iterator_State, NULL, NULL, NULL);

@@ -356,7 +356,7 @@ static void* R_Dictionary_fromJson_readNumber(R_String* source) {
 
 typedef struct {
     R_Type* type;
-    unsigned int previous_index;
+    size_t previous_index;
     R_Dictionary* dictionary; //This is not a copy. Do not call R_Type_Delete on it!
 } R_Dictionary_Iterator_State;
 R_Type_Def(R_Dictionary_Iterator_State, NULL, NULL, NULL);

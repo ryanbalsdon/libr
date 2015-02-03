@@ -15,8 +15,8 @@
 struct R_ByteArray {
   R_Type* type;
   uint8_t * array;       //The actual array
-  int arrayAllocationSize;//How large the internal array is. This is always as-large or larger than ArraySize.
-  int arraySize;          //How many objects the user has added to the array.
+  size_t arrayAllocationSize;//How large the internal array is. This is always as-large or larger than ArraySize.
+  size_t arraySize;          //How many objects the user has added to the array.
 };
 
 static R_ByteArray* R_ByteArray_Constructor(R_ByteArray* self);
