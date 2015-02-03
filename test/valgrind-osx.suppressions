@@ -1369,7 +1369,6 @@
    fun:__xvprintf
    fun:vfprintf_l
    fun:printf
-   fun:main
 }
 {
    <insert_a_suppression_name_here>
@@ -1384,9 +1383,6 @@
    fun:_vsnprintf
    fun:vsnprintf
    fun:__snprintf_chk
-   fun:R_String_appendFloat
-   fun:test_int_float_string
-   fun:main
 }
 {
    <insert_a_suppression_name_here>
@@ -1401,9 +1397,6 @@
    fun:_vsnprintf
    fun:vsnprintf
    fun:__snprintf_chk
-   fun:R_String_appendFloat
-   fun:test_int_float_string
-   fun:main
 }
 {
    <insert_a_suppression_name_here>
@@ -1418,9 +1411,6 @@
    fun:_vsnprintf
    fun:vsnprintf
    fun:__snprintf_chk
-   fun:R_String_appendFloat
-   fun:test_int_float_string
-   fun:main
 }
 {
    <insert_a_suppression_name_here>
@@ -1431,9 +1421,6 @@
    fun:__svfscanf_l
    fun:vsscanf_l
    fun:sscanf
-   fun:R_String_getFloat
-   fun:test_int_float_string
-   fun:main
 }
 {
    <insert_a_suppression_name_here>
@@ -1448,9 +1435,6 @@
    fun:_vsnprintf
    fun:vsnprintf
    fun:__snprintf_chk
-   fun:R_String_appendFloat
-   fun:R_Dictionary_setFloat
-   fun:test_floats
 }
 {
    <insert_a_suppression_name_here>
@@ -1465,9 +1449,6 @@
    fun:_vsnprintf
    fun:vsnprintf
    fun:__snprintf_chk
-   fun:R_String_appendFloat
-   fun:R_Dictionary_setFloat
-   fun:test_floats
 }
 {
    <insert_a_suppression_name_here>
@@ -1482,9 +1463,6 @@
    fun:__svfscanf_l
    fun:vsscanf_l
    fun:sscanf
-   fun:R_String_getFloat
-   fun:R_Dictionary_getFloat
-   fun:test_floats
 }
 {
    <insert_a_suppression_name_here>
@@ -1499,9 +1477,6 @@
    fun:_vsnprintf
    fun:vsnprintf
    fun:__snprintf_chk
-   fun:R_String_appendFloat
-   fun:R_Dictionary_setFloat
-   fun:test_floats
 }
 {
    <insert_a_suppression_name_here>
@@ -1512,10 +1487,6 @@
    fun:__svfscanf_l
    fun:vsscanf_l
    fun:sscanf
-   fun:R_String_getFloat
-   fun:R_Dictionary_getFloat
-   fun:test_floats
-   fun:main
 }
 {
    <insert_a_suppression_name_here>
