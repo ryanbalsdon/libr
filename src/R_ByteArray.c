@@ -92,7 +92,7 @@ uint8_t R_ByteArray_pop(R_ByteArray* self) {
 R_ByteArray* R_ByteArray_unshift(R_ByteArray* self, uint8_t byte) {
 	if (self == NULL) return NULL;
 	R_ByteArray_increaseAllocationIfNeeded(self, sizeof(uint8_t));
-	for (int i=self->arraySize; i>0; i--) {
+	for (size_t i=self->arraySize; i>0; i--) {
 		self->array[i] = self->array[i-1];
 	}
 	self->array[0] = byte;
