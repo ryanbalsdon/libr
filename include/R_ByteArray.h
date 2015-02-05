@@ -142,7 +142,7 @@ uint8_t R_ByteArray_shift(R_ByteArray* self);
 /*  R_ByteArray_moveSubArray
     Removes the given number of bytes from the second param and appends them to the first.
  */
-size_t R_ByteArray_moveSubArray(R_ByteArray* self, R_ByteArray* array, size_t start, size_t length);
+R_ByteArray* R_ByteArray_moveSubArray(R_ByteArray* self, R_ByteArray* array, size_t start, size_t length);
 
 /*  R_ByteArray_compare
     Returns 0 if both arrays are the same length and have identical contents.

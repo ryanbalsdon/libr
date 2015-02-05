@@ -112,9 +112,9 @@ uint8_t R_ByteArray_shift(R_ByteArray* self) {
 	return 0x00;
 }
 
-size_t R_ByteArray_moveSubArray(R_ByteArray* self, R_ByteArray* array, size_t start, size_t length) {
-	if (self == NULL || array == NULL) return 0;
-	if (start+length > R_ByteArray_size(array)) return 0;
+R_ByteArray* R_ByteArray_moveSubArray(R_ByteArray* self, R_ByteArray* array, size_t start, size_t length) {
+	if (self == NULL || array == NULL) return NULL;
+	if (start+length > R_ByteArray_size(array)) return NULL;
 	if (length == 0) length = R_ByteArray_size(array) - start;
 	R_ByteArray_appendCArray(self, R_ByteArray_bytes(array)+start, length);
 
@@ -124,7 +124,7 @@ size_t R_ByteArray_moveSubArray(R_ByteArray* self, R_ByteArray* array, size_t st
 	}
 	array->arraySize-=length;
 
-	return length;
+	return self;
 }
 
 uint8_t R_ByteArray_byte(const R_ByteArray* self, size_t index) {
