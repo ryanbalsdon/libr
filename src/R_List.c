@@ -22,8 +22,8 @@ struct R_List {
 
 static R_List* R_List_Constructor(R_List* self);
 static R_List* R_List_Destructor(R_List* self);
-//static void R_List_Copier(R_List* self, R_List* new);
-R_Type_Def(R_List, R_List_Constructor, R_List_Destructor, NULL);
+static R_List* R_List_Copier(R_List* self, R_List* new);
+R_Type_Def(R_List, R_List_Constructor, R_List_Destructor, R_List_Copier);
 
 static void R_List_increaseAllocationIfRequired(R_List* self);
 
@@ -40,6 +40,15 @@ static R_List* R_List_Destructor(R_List* self) {
     free(self->array);
 
     return self;
+}
+
+static R_List* R_List_Copier(R_List* self, R_List* new) {
+    R_List_each(self, void, object) {
+        void* copy = R_Type_Copy(object);
+        if (copy == NULL) return R_Type_Delete(new), NULL;
+        R_List_transferOwnership(new, copy);
+    }
+    return new;
 }
 
 inline size_t R_List_size(R_List* self) {

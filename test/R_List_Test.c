@@ -205,7 +205,7 @@ void test_objectarray_each(void) {
   R_Type_Delete(array);
 }
 
-void test_copy(void) {
+void test_add_copy(void) {
   R_List* array = R_Type_New(R_List);
 
   R_Integer* integer = R_List_add(array, R_Integer);
@@ -232,6 +232,29 @@ void test_transfer(void) {
   R_Type_Delete(array);
 }
 
+void test_copy(void) {
+  R_List* array = R_Type_New(R_List);
+  R_Integer* integer = R_List_add(array, R_Integer);
+  R_Integer_set(integer, 0);
+  integer = R_List_add(array, R_Integer);
+  R_Integer_set(integer, 1);
+  integer = R_List_add(array, R_Integer);
+  R_Integer_set(integer, 2);
+  integer = R_List_add(array, R_Integer);
+  R_Integer_set(integer, 3);
+
+  R_List* array_copy = R_Type_Copy(array);
+  assert(array_copy != NULL);
+  assert(R_List_size(array_copy) == 4);
+  assert(R_Integer_get(R_List_pointerAtIndex(array_copy, 0)) == 0);
+  assert(R_Integer_get(R_List_pointerAtIndex(array_copy, 1)) == 1);
+  assert(R_Integer_get(R_List_pointerAtIndex(array_copy, 2)) == 2);
+  assert(R_Integer_get(R_List_pointerAtIndex(array_copy, 3)) == 3);
+
+  R_Type_Delete(array);
+  R_Type_Delete(array_copy);
+}
+
 int main(void) {
 	test_allocations();
 	test_integer();
@@ -240,8 +263,9 @@ int main(void) {
 	test_cleanup();
 	test_objectarray_iterator();
 	test_objectarray_each();
-	test_copy();
+	test_add_copy();
 	test_transfer();
+	test_copy();
 
 	assert(R_Type_BytesAllocated == 0);
 	printf("Pass\n");

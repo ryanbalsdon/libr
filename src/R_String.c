@@ -19,7 +19,7 @@ struct R_String {
 
 static R_String* R_String_Constructor(R_String* self);
 static R_String* R_String_Destructor(R_String* self);
-static void R_String_Copier(R_String* self, R_String* new);
+static R_String* R_String_Copier(R_String* self, R_String* new);
 R_Type_Def(R_String, R_String_Constructor, R_String_Destructor, R_String_Copier);
 
 
@@ -34,8 +34,9 @@ static R_String* R_String_Destructor(R_String* self) {
 	R_Type_Delete(self->array);
 	return self;
 }
-static void R_String_Copier(R_String* self, R_String* new) {
+static R_String* R_String_Copier(R_String* self, R_String* new) {
 	R_String_appendString(new, self);
+	return new;
 }
 
 

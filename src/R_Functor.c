@@ -12,7 +12,7 @@
 #include "R_Functor.h"
 
 static R_Functor* R_Functor_Destructor(R_Functor* self);
-static void R_Functor_Copier(R_Functor* self, R_Functor* new);
+static R_Functor* R_Functor_Copier(R_Functor* self, R_Functor* new);
 R_Type_Def(R_Functor, NULL, R_Functor_Destructor, R_Functor_Copier);
 
 static R_Functor* R_Functor_Destructor(R_Functor* self) {
@@ -20,9 +20,10 @@ static R_Functor* R_Functor_Destructor(R_Functor* self) {
 	return self;
 }
 
-static void R_Functor_Copier(R_Functor* self, R_Functor* new) {
+static R_Functor* R_Functor_Copier(R_Functor* self, R_Functor* new) {
 	new->function = self->function;
 	new->state = R_Type_Copy(self->state);
+	return new;
 }
 
 void* R_Functor_call(R_Functor* self) {

@@ -29,7 +29,7 @@ typedef void* (*R_Type_Destructor)(void* object);
     Function Pointer for an R_Type copier. Used to deep-copy an object. object_input is the
    object to copy. object_output is a newly allocated and inited object of the same type.
 */
-typedef void (*R_Type_Copier)(const void* object_input, void* object_output);
+typedef void* (*R_Type_Copier)(const void* object_input, void* object_output);
 
 /*  R_Type
     Struct used to describe an object.

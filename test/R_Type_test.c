@@ -37,9 +37,10 @@ Testor* Testor_Destructor(Testor* testor) {
 }
 
 int Testor_Copier_Called = 0;
-void Testor_Copier(Testor* testor, Testor* new_testor) {
+Testor* Testor_Copier(Testor* testor, Testor* new_testor) {
   Testor_Copier_Called++;
   new_testor->test = testor->test;
+  return new_testor;
 }
 
 R_Type_Def(Testor, NULL, NULL, NULL);

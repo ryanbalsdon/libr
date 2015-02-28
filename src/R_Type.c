@@ -38,8 +38,8 @@ void* R_Type_Copy(const void* object) {
   if (type->copy == NULL) return NULL;
 
   void* new_object = R_Type_NewObjectOfType(type);
-  if (new_object != NULL) type->copy(object, new_object);
-  return new_object;
+  if (new_object != NULL) return type->copy(object, new_object);
+  return NULL;
 }
 
 int R_Type_IsObjectOfType(const void* object, const R_Type* type) {

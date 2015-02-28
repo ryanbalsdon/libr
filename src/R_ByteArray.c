@@ -21,7 +21,7 @@ struct R_ByteArray {
 
 static R_ByteArray* R_ByteArray_Constructor(R_ByteArray* self);
 static R_ByteArray* R_ByteArray_Destructor(R_ByteArray* self);
-static void R_ByteArray_Copier(R_ByteArray* self, R_ByteArray* new);
+static R_ByteArray* R_ByteArray_Copier(R_ByteArray* self, R_ByteArray* new);
 R_Type_Def(R_ByteArray, R_ByteArray_Constructor, R_ByteArray_Destructor, R_ByteArray_Copier);
 
 static void R_ByteArray_increaseAllocationIfNeeded(R_ByteArray* self, size_t spaceNeeded);
@@ -37,8 +37,9 @@ static R_ByteArray* R_ByteArray_Destructor(R_ByteArray* self) {
 	free(self->array);
 	return self;
 }
-static void R_ByteArray_Copier(R_ByteArray* self, R_ByteArray* new) {
+static R_ByteArray* R_ByteArray_Copier(R_ByteArray* self, R_ByteArray* new) {
 	R_ByteArray_appendArray(new, self);
+	return new;
 }
 
 R_ByteArray* R_ByteArray_reset(R_ByteArray* self) {
