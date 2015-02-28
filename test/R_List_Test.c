@@ -244,6 +244,8 @@ void test_copy(void) {
   R_Integer_set(integer, 3);
 
   R_List* array_copy = R_Type_Copy(array);
+  R_Type_Delete(array);
+
   assert(array_copy != NULL);
   assert(R_List_size(array_copy) == 4);
   assert(R_Integer_get(R_List_pointerAtIndex(array_copy, 0)) == 0);
@@ -251,7 +253,6 @@ void test_copy(void) {
   assert(R_Integer_get(R_List_pointerAtIndex(array_copy, 2)) == 2);
   assert(R_Integer_get(R_List_pointerAtIndex(array_copy, 3)) == 3);
 
-  R_Type_Delete(array);
   R_Type_Delete(array_copy);
 }
 

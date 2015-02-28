@@ -78,6 +78,28 @@ void test_mixed(void) {
 	R_Type_Delete(dict);
 }
 
+void test_copy(void) {
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
+
+	R_Integer_set(R_Dictionary_add(dict, "integer", R_Integer), 12);
+	R_Float_set(R_Dictionary_add(dict, "float", R_Float), 3.14f);
+
+	R_Dictionary* copy = R_Type_Copy(dict);
+	R_Type_Delete(dict);
+
+	R_Integer* integer = R_Dictionary_get(copy, "integer");
+	assert(integer != NULL);
+	assert(R_Type_IsOf(integer, R_Integer));
+	assert(R_Integer_get(integer) == 12);
+
+	R_Float* floater = R_Dictionary_get(copy, "float");
+	assert(floater != NULL);
+	assert(R_Type_IsOf(floater, R_Float));
+	assert(R_Float_get(floater) == 3.14f);
+
+	R_Type_Delete(copy);
+}
+
 void test_iterator(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
 	R_Integer* integer = R_Dictionary_add(dict, "0", R_Integer);

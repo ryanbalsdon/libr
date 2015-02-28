@@ -22,6 +22,7 @@ typedef struct {
 } R_Dictionary_Element;
 static R_Dictionary_Element* R_Dictionary_Element_Constructor(R_Dictionary_Element* self);
 static R_Dictionary_Element* R_Dictionary_Element_Destructor(R_Dictionary_Element* self);
+static R_Dictionary_Element* R_Dictionary_Element_Copier(R_Dictionary_Element* self, R_Dictionary_Element* new);
 
 static R_Dictionary_Element* R_Dictionary_Element_Constructor(R_Dictionary_Element* self) {
 	self->key = R_Type_New(R_String);
@@ -33,7 +34,15 @@ static R_Dictionary_Element* R_Dictionary_Element_Destructor(R_Dictionary_Elemen
 	R_Type_DeleteAndNull(self->value);
 	return self;
 }
-R_Type_Def(R_Dictionary_Element, R_Dictionary_Element_Constructor, R_Dictionary_Element_Destructor, NULL);
+
+static R_Dictionary_Element* R_Dictionary_Element_Copier(R_Dictionary_Element* self, R_Dictionary_Element* new) {
+	new->value = R_Type_Copy(self->value);
+	if (new->value == NULL) return R_Type_Delete(new), NULL;
+	R_String_appendString(new->key, self->key);
+	return new;
+}
+
+R_Type_Def(R_Dictionary_Element, R_Dictionary_Element_Constructor, R_Dictionary_Element_Destructor, R_Dictionary_Element_Copier);
 
 struct R_Dictionary {
 	R_Type* type;
@@ -41,6 +50,7 @@ struct R_Dictionary {
 };
 static R_Dictionary* R_Dictionary_Constructor(R_Dictionary* self);
 static R_Dictionary* R_Dictionary_Destructor(R_Dictionary* self);
+static R_Dictionary* R_Dictionary_Copier(R_Dictionary* self, R_Dictionary* new);
 
 static R_Dictionary* R_Dictionary_Constructor(R_Dictionary* self) {
 	self->elements = R_Type_New(R_List);
@@ -51,7 +61,13 @@ static R_Dictionary* R_Dictionary_Destructor(R_Dictionary* self) {
 	R_Type_DeleteAndNull(self->elements);
 	return self;
 }
-R_Type_Def(R_Dictionary, R_Dictionary_Constructor, R_Dictionary_Destructor, NULL);
+static R_Dictionary* R_Dictionary_Copier(R_Dictionary* self, R_Dictionary* new) {
+	R_Type_Delete(new->elements);
+	new->elements = R_Type_Copy(self->elements);
+	if (new->elements == NULL) return R_Type_Delete(new), NULL;
+	return new;
+}
+R_Type_Def(R_Dictionary, R_Dictionary_Constructor, R_Dictionary_Destructor, R_Dictionary_Copier);
 
 static R_Dictionary_Element* R_Dictionary_getElement(R_Dictionary* self, const char* key);
 
