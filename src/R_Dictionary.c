@@ -62,9 +62,7 @@ static R_Dictionary* R_Dictionary_Destructor(R_Dictionary* self) {
 	return self;
 }
 static R_Dictionary* R_Dictionary_Copier(R_Dictionary* self, R_Dictionary* new) {
-	R_Type_Delete(new->elements);
-	new->elements = R_Type_Copy(self->elements);
-	if (new->elements == NULL) return R_Type_Delete(new), NULL;
+	if (R_List_appendList(new->elements, self->elements) == NULL) return R_Type_Delete(new), NULL;
 	return new;
 }
 R_Type_Def(R_Dictionary, R_Dictionary_Constructor, R_Dictionary_Destructor, R_Dictionary_Copier);

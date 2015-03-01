@@ -158,10 +158,10 @@ void test_objectarray_iterator(void) {
   R_Functor* iterator = R_List_Iterator(R_Type_New(R_Functor), array);
   R_Integer* element = NULL;
   while ((element = R_Functor_call(iterator)) != NULL) {
-  	assert(R_Type_IsOf(element, R_Integer));
-  	if (R_Integer_get(element) == 0) integer0_found = true;
-  	if (R_Integer_get(element) == 1) integer1_found = true;
-  	if (R_Integer_get(element) == 2) integer2_found = true;
+    assert(R_Type_IsOf(element, R_Integer));
+    if (R_Integer_get(element) == 0) integer0_found = true;
+    if (R_Integer_get(element) == 1) integer1_found = true;
+    if (R_Integer_get(element) == 2) integer2_found = true;
   }
 
   assert(integer0_found);
@@ -192,10 +192,10 @@ void test_objectarray_each(void) {
   bool integer2_found = false;
 
   R_List_each(array, R_Integer, value) {
-  	assert(R_Type_IsOf(value, R_Integer));
-  	if (R_Integer_get(value) == 0) integer0_found = true;
-  	if (R_Integer_get(value) == 1) integer1_found = true;
-  	if (R_Integer_get(value) == 2) integer2_found = true;
+    assert(R_Type_IsOf(value, R_Integer));
+    if (R_Integer_get(value) == 0) integer0_found = true;
+    if (R_Integer_get(value) == 1) integer1_found = true;
+    if (R_Integer_get(value) == 2) integer2_found = true;
   }
 
   assert(integer0_found);
@@ -228,6 +228,8 @@ void test_transfer(void) {
 
   assert(R_List_size(array) == 1);
   assert(R_List_pointerAtIndex(array, 0) == integer);
+  assert(R_Type_IsOf(integer, R_Integer));
+  assert(R_Integer_get(integer) == 42);
 
   R_Type_Delete(array);
 }
@@ -256,17 +258,46 @@ void test_copy(void) {
   R_Type_Delete(array_copy);
 }
 
+void test_append(void) {
+  R_List* list_a = R_Type_New(R_List);
+  R_List* list_b = R_Type_New(R_List);
+  R_Integer_set(R_List_add(list_a, R_Integer), 0);
+  R_Integer_set(R_List_add(list_a, R_Integer), 1);
+  R_Integer_set(R_List_add(list_b, R_Integer), 10);
+  R_Integer_set(R_List_add(list_b, R_Integer), 11);
+
+  assert(R_List_appendList(list_a, list_b) == list_a);
+  assert(R_List_size(list_a) == 4);
+  assert(R_Integer_get(R_List_pointerAtIndex(list_a, 0)) == 0);
+  assert(R_Integer_get(R_List_pointerAtIndex(list_a, 1)) == 1);
+  assert(R_Integer_get(R_List_pointerAtIndex(list_a, 2)) == 10);
+  assert(R_Integer_get(R_List_pointerAtIndex(list_a, 3)) == 11);
+
+  assert(R_List_appendList(list_b, list_b) == list_b);
+  assert(R_List_size(list_b) == 4);
+  assert(R_Integer_get(R_List_pointerAtIndex(list_b, 0)) == 10);
+  assert(R_Integer_get(R_List_pointerAtIndex(list_b, 1)) == 11);
+  assert(R_Integer_get(R_List_pointerAtIndex(list_b, 2)) == 10);
+  assert(R_Integer_get(R_List_pointerAtIndex(list_b, 3)) == 11);
+
+  assert(R_List_pointerAtIndex(list_b, 2) != R_List_pointerAtIndex(list_b, 0));
+
+  R_Type_Delete(list_a);
+  R_Type_Delete(list_b);
+}
+
 int main(void) {
 	test_allocations();
 	test_integer();
 	test_pop();
 	test_swap();
 	test_cleanup();
+	test_transfer();
 	test_objectarray_iterator();
 	test_objectarray_each();
 	test_add_copy();
-	test_transfer();
 	test_copy();
+	test_append();
 
 	assert(R_Type_BytesAllocated == 0);
 	printf("Pass\n");

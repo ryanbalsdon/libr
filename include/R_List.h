@@ -36,6 +36,11 @@ void* R_List_transferOwnership(R_List* self, void* object);
  */
 void* R_List_addCopy(R_List* self, const void* object);
 
+/*  R_List_appendList
+    Appends the given list by adding a copy of every element. Returns NULL on the first failed copy.
+ */
+void* R_List_appendList(R_List* self, R_List* list);
+
 /*  R_List_removeIndex
     Removes the object at the given index and destroys it.
  */

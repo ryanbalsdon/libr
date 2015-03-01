@@ -43,12 +43,7 @@ static R_List* R_List_Destructor(R_List* self) {
 }
 
 static R_List* R_List_Copier(R_List* self, R_List* new) {
-    R_List_each(self, void, object) {
-        void* copy = R_Type_Copy(object);
-        if (copy == NULL) return R_Type_Delete(new), NULL;
-        R_List_transferOwnership(new, copy);
-    }
-    return new;
+    return R_List_appendList(new, self);
 }
 
 inline size_t R_List_size(R_List* self) {
@@ -73,7 +68,7 @@ void* R_List_last(R_List* self) {
 }
 
 void* R_List_first(R_List* self) {
-	return R_List_pointerAtIndex(self, 0);
+    return R_List_pointerAtIndex(self, 0);
 }
 
 size_t R_List_indexOfPointer(R_List* self, void* pointer) {
@@ -110,6 +105,19 @@ void* R_List_addObjectOfType(R_List* self, const R_Type* type) {
     self->arraySize++;
     
     return newPointer;
+}
+
+void* R_List_appendList(R_List* self, R_List* list) {
+    if (R_Type_IsNotOf(self, R_List) || R_Type_IsNotOf(list, R_List)) return NULL;
+    R_Functor* iterator = R_List_Iterator(R_Type_New(R_Functor), list);
+    void* object = NULL;
+    while ((object = R_Functor_call(iterator)) != NULL) {
+        if (R_List_addCopy(self, object) == NULL) {
+            return R_Type_Delete(iterator), NULL;
+        }
+    }
+    R_Type_Delete(iterator);
+    return self;
 }
 
 void* R_List_transferOwnership(R_List* self, void* object) {
@@ -167,22 +175,35 @@ void R_List_removeAll(R_List* self) {
 
 typedef struct {
     R_Type* type;
-    size_t previous_index;
-    R_List* list; //This is not a copy. Do not call R_Type_Delete on it!
+    size_t next_index;
+    R_List* list;
 } R_List_Iterator_State;
-R_Type_Def(R_List_Iterator_State, NULL, NULL, NULL);
+R_List_Iterator_State* R_List_Iterator_State_Destructor(R_List_Iterator_State* self);
+R_Type_Def(R_List_Iterator_State, NULL, R_List_Iterator_State_Destructor, NULL);
+R_List_Iterator_State* R_List_Iterator_State_Destructor(R_List_Iterator_State* self) {
+    self->list->arraySize = 0;
+    R_Type_DeleteAndNull(self->list);
+    return self;
+}
 
 static void* R_List_iterator(R_List_Iterator_State* state) {
-    if (state->previous_index == 0) return NULL;
-    return R_List_pointerAtIndex(state->list, --state->previous_index);
+    return R_List_pointerAtIndex(state->list, state->next_index++);
 }
 
 R_Functor* R_List_Iterator(R_Functor* functor, R_List* list) {
     if (functor == NULL || list == NULL) return NULL;
     R_Type_Delete(functor->state);
     R_List_Iterator_State* state = R_Type_New(R_List_Iterator_State);
-    state->list = list;
-    state->previous_index = R_List_size(list);
+
+    state->list = R_Type_New(R_List);
+    R_List_each(list, void, object) {
+        R_List_increaseAllocationIfRequired(state->list);
+        state->list->array[state->list->arraySize] = object;
+        state->list->arraySize++;
+    }
+
+    state->next_index = 0;
+
     functor->state = state;
     functor->function = (R_Functor_Function)R_List_iterator;
     return functor;
