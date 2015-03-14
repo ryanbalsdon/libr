@@ -151,6 +151,13 @@ R_String* R_String_getSubstring(R_String* self, R_String* output, size_t startin
 	return output;
 }
 
+R_String* R_String_moveSubstring(R_String* self, R_String* output, size_t startingIndex, size_t length) {
+	if (self == NULL || output == NULL) return NULL;
+	R_String_reset(output);
+	R_ByteArray_moveSubArray(output->array, self->array, startingIndex, length);
+	return output;
+}
+
 bool R_String_isSame(R_String* self, R_String* comparor) {
 	if (self == NULL || comparor == NULL) return false;
 	if (R_ByteArray_compare(self->array, comparor->array) != 0) return false;
@@ -162,10 +169,9 @@ bool R_String_isEmpty(R_String* self) {
 	return false;
 }
 
-bool R_String_compare(R_String* self, const char* comparor) {
-	if (self == NULL || comparor == NULL) return false;
-	if (strcmp(R_String_getString(self), comparor) != 0) return false;
-	return true;
+bool R_String_compare(const R_String* self, const char* comparor) {
+	if (R_Type_IsNotOf(self, R_String) || comparor == NULL) return false;
+	return (R_ByteArray_compareWithCArray(self->array, (uint8_t*)comparor, strlen(comparor)) == 0);
 }
 
 R_String* R_String_appendStringAsJson(R_String* self, R_String* string) {
@@ -212,6 +218,12 @@ R_String* R_String_push(R_String* self, char character) {
 	return self;
 }
 
+char R_String_character(R_String* self, size_t index) {
+	if (R_Type_IsNotOf(self, R_String)) return '\0';
+	if (index >= R_String_length(self)) return '\0';
+	return (char)R_ByteArray_byte(self->array, index);
+}
+
 static bool R_String_trim_isWhiteSpace(char character);
 R_String* R_String_trim(R_String* self) {
 	if (self == NULL) return NULL;
@@ -230,3 +242,51 @@ static bool R_String_trim_isWhiteSpace(char character) {
 	}
 	return false;
 }
+
+const R_ByteArray* R_String_bytes(R_String* self) {
+	if (R_Type_IsNotOf(self, R_String)) return NULL;
+	return self->array;
+}
+
+int R_String_find(R_String* self, const char* substring) {
+	if (R_Type_IsNotOf(self, R_String) || substring == NULL) return -1;
+	const char* string = R_String_cstring(self);
+	char* result = strstr(string, substring);
+	if (result == NULL) return -1;
+	return (result - string);
+}
+
+R_List* R_String_split(R_String* self, const char* seperator, R_List* output) {
+	if (R_Type_IsNotOf(self, R_String) || R_Type_IsNotOf(output, R_List)) return NULL;
+	if (R_String_length(self) == 0) return NULL;
+	if (seperator == NULL) seperator = "\n";
+
+	R_String* copy = R_Type_Copy(self);
+
+	while (R_String_length(copy) > 0) {
+		R_String* this_splice = R_List_add(output, R_String);
+		int splice_length = R_String_find(copy, seperator);
+		if (splice_length < 0) {
+			R_String_appendString(this_splice, copy);
+			R_Type_Delete(copy);
+			return output;
+		}
+		if (splice_length > 0) R_String_moveSubstring(copy, this_splice, 0, splice_length);
+		for (int i=0; i<strlen(seperator); i++) R_String_shift(copy);
+	}
+
+	R_Type_Delete(copy);
+	return output;
+}
+
+R_String* R_String_join(R_String* self, const char* seperator, R_List* input) {
+	if (R_Type_IsNotOf(self, R_String) || R_Type_IsNotOf(input, R_List)) return NULL;
+	if (seperator == NULL) seperator = "";
+	R_List_each(input, R_String, string) {
+		if (R_Type_IsNotOf(string, R_String)) continue;
+		R_String_appendString(self, string);
+		if (string != R_List_last(input)) R_String_appendCString(self, seperator);
+	}
+	return self;
+}
+

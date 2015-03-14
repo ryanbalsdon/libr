@@ -102,11 +102,11 @@ void test_copy(void) {
 
 void test_iterator(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
-	R_Integer* integer = R_Dictionary_add(dict, "0", R_Integer);
+	R_Integer* integer = R_Dictionary_add(dict, "first", R_Integer);
 	R_Integer_set(integer, 0);
-	integer = R_Dictionary_add(dict, "2", R_Integer);
+	integer = R_Dictionary_add(dict, "second", R_Integer);
 	R_Integer_set(integer, 2);
-	integer = R_Dictionary_add(dict, "1", R_Integer);
+	integer = R_Dictionary_add(dict, "third", R_Integer);
 	R_Integer_set(integer, 1);
 
 	bool integer0_found = false;
@@ -120,6 +120,25 @@ void test_iterator(void) {
 		if (R_Integer_get(element) == 0) integer0_found = true;
 		if (R_Integer_get(element) == 1) integer1_found = true;
 		if (R_Integer_get(element) == 2) integer2_found = true;
+	}
+
+	assert(integer0_found);
+	assert(integer1_found);
+	assert(integer2_found);
+
+	R_Type_Delete(iterator);
+
+	integer0_found = false;
+	integer1_found = false;
+	integer2_found = false;
+
+	iterator = R_Dictionary_KeyIterator(R_Type_New(R_Functor), dict);
+	R_String* key = NULL;
+	while ((key = R_Functor_call(iterator)) != NULL) {
+		assert(R_Type_IsOf(key, R_String));
+		if (R_String_compare(key, "first")) integer0_found = true;
+		if (R_String_compare(key, "second")) integer1_found = true;
+		if (R_String_compare(key, "third")) integer2_found = true;
 	}
 
 	assert(integer0_found);

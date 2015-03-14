@@ -180,6 +180,17 @@ void test_appendHexString(void) {
 	assert(R_ByteArray_size(array2) == 4);
 	assert(R_ByteArray_compare(array, array2) == 0);
 
+	R_ByteArray_setHexCString(array2, "c");
+	assert(R_ByteArray_size(array2) == 1);
+	assert(R_ByteArray_first(array2) == 0x0C);
+	assert(R_ByteArray_getUInt32(array2) == 0x0C);
+
+	R_ByteArray_setHexCString(array2, "aec");
+	assert(R_ByteArray_size(array2) == 2);
+	assert(R_ByteArray_byte(array2, 0) == 0x0A);
+	assert(R_ByteArray_byte(array2, 1) == 0xEC);
+	assert(R_ByteArray_getUInt32(array2) == 0x0AEC);
+
 	R_Type_Delete(array);
 	R_Type_Delete(array2);
 }
@@ -201,18 +212,22 @@ void test_append_integers(void) {
 	R_ByteArray* comparor = R_ByteArray_appendBytes(R_Type_New(R_ByteArray), 0x01);
 	assert(R_ByteArray_appendUInt32(array, 0x01) == array);
 	assert(R_ByteArray_compare(array, comparor) == 0);
+	assert(R_ByteArray_getUInt32(array) == 0x01);
 
 	R_ByteArray_setBytes(comparor, 0x20, 0x01);
 	assert(R_ByteArray_setUInt32(array, 0x2001) == array);
 	assert(R_ByteArray_compare(array, comparor) == 0);
+	assert(R_ByteArray_getUInt32(array) == 0x2001);
 
 	R_ByteArray_setBytes(comparor, 0x20, 0x00, 0x01);
 	assert(R_ByteArray_setUInt32(array, 0x200001) == array);
 	assert(R_ByteArray_compare(array, comparor) == 0);
+	assert(R_ByteArray_getUInt32(array) == 0x200001);
 
 	R_ByteArray_setBytes(comparor, 0xFF, 0x20, 0x00, 0x01);
 	assert(R_ByteArray_setUInt32(array, 0xFF200001) == array);
 	assert(R_ByteArray_compare(array, comparor) == 0);
+	assert(R_ByteArray_getUInt32(array) == 0xFF200001);
 
 	R_Type_Delete(array);
 	R_Type_Delete(comparor);

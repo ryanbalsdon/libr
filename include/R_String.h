@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include "R_Type.h"
+#include "R_List.h"
 
 typedef struct R_String R_String;
 
@@ -49,6 +50,11 @@ char R_String_last(const R_String* self);
     Removes the last character from the string.
  */
 char R_String_pop(R_String* self);
+
+/*  R_String_character
+    Gets the character at the given index or 0 on error.
+ */
+char R_String_character(R_String* self, size_t index);
 
 /*  R_String_push
     Apends one character to the end of the string.
@@ -100,6 +106,7 @@ R_String* R_String_setSizedString(R_String* self, const char* string, size_t str
     Returns the number of characters in the string.
  */
 size_t R_String_length(const R_String* self);
+#define R_String_size R_String_length
 
 /*  R_String_appendInt
     Converts the given integer to a string and appends it.
@@ -126,6 +133,11 @@ float R_String_getFloat(R_String* self);
  */
 R_String* R_String_getSubstring(R_String* self, R_String* output, size_t startingIndex, size_t length);
 
+/*  R_String_moveSubstring
+    Sets the given output string to the substring in between the given indexes. The characters at the given indexes are included.
+ */
+R_String* R_String_moveSubstring(R_String* self, R_String* output, size_t startingIndex, size_t length);
+
 /*  R_String_isEmpty
     Returns true if there are no characters in the string.
  */
@@ -139,11 +151,32 @@ bool R_String_isSame(R_String* self, R_String* comparor);
 /*  R_String_compare
     Returns true if the output of strcmp would be 0
  */
-bool R_String_compare(R_String* self, const char* comparor);
+bool R_String_compare(const R_String* self, const char* comparor);
 
 /*  R_String_appendStringAsJson
     Formats string as a quoted JSON-formatted string value and appends it to self.
  */
 R_String* R_String_appendStringAsJson(R_String* self, R_String* string);
+
+/*  R_String_bytes
+    The raw bytes in the string. This array is not null-terminated!
+ */
+const R_ByteArray* R_String_bytes(R_String* self);
+
+/*  R_String_bytes
+    Returns the first index of the given substring or -1.
+ */
+int R_String_find(R_String* self, const char* substring);
+
+/*  R_String_split
+    Splits the string into lines (seperated by the given seperator) and adds each line as a string to the output list.
+ */
+R_List* R_String_split(R_String* self, const char* seperator, R_List* output);
+
+/* R_String_join
+   Appends the strings in the given list to self, seperated by the seperator
+ */
+R_String* R_String_join(R_String* self, const char* seperator, R_List* input);
+
 
 #endif /* R_String_h */

@@ -120,6 +120,10 @@ void* R_Dictionary_get(R_Dictionary* self, const char* key) {
 	return element->value;
 }
 
+void* R_Dictionary_getFromString(R_Dictionary* self, R_String* key) {
+	return R_Dictionary_get(self, R_String_cstring(key));
+}
+
 static R_Dictionary_Element* R_Dictionary_getElement(R_Dictionary* self, const char* key) {
 	if (self == NULL || key == NULL) return NULL;
 	R_List_each(self->elements, R_Dictionary_Element, element) {
@@ -388,5 +392,21 @@ R_Functor* R_Dictionary_ValueIterator(R_Functor* functor, R_Dictionary* dictiona
     state->previous_index = R_List_size(dictionary->elements);
     functor->state = state;
     functor->function = (R_Functor_Function)R_Dictionary_valueIterator;
+    return functor;
+}
+
+static void* R_Dictionary_keyIterator(R_Dictionary_Iterator_State* state) {
+    if (state->previous_index == 0) return NULL;
+    R_Dictionary_Element* element = R_List_pointerAtIndex(state->dictionary->elements, --state->previous_index);
+    if (element == NULL) return NULL;
+    return element->key;
+}
+
+R_Functor* R_Dictionary_KeyIterator(R_Functor* functor, R_Dictionary* dictionary) {
+    R_Dictionary_Iterator_State* state = R_Type_New(R_Dictionary_Iterator_State);
+    state->dictionary = dictionary;
+    state->previous_index = R_List_size(dictionary->elements);
+    functor->state = state;
+    functor->function = (R_Functor_Function)R_Dictionary_keyIterator;
     return functor;
 }

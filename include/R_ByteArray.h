@@ -58,6 +58,11 @@ R_ByteArray* R_ByteArray_setHexCString(R_ByteArray* self, const char* hex);
 */
 R_ByteArray* R_ByteArray_setUInt32(R_ByteArray* self, uint32_t value);
 
+/*  R_ByteArray_getUInt32
+    Returns the array as an integer, assuming network byte order. Returns 0 on error.
+*/
+uint32_t R_ByteArray_getUInt32(R_ByteArray* self);
+
 /*  R_ByteArray_appendByte
     Appends the given byte to the end of the array, allocating more memory if required.
 */
@@ -147,6 +152,12 @@ R_ByteArray* R_ByteArray_moveSubArray(R_ByteArray* self, R_ByteArray* array, siz
 /*  R_ByteArray_compare
     Returns 0 if both arrays are the same length and have identical contents.
  */
-int R_ByteArray_compare(R_ByteArray* self, const R_ByteArray* comparor);
+int R_ByteArray_compare(const R_ByteArray* self, const R_ByteArray* comparor);
+
+/*  R_ByteArray_compare
+    Returns 0 if both arrays are the same length and have identical contents.
+ */
+int R_ByteArray_compareWithCArray(const R_ByteArray* self, const uint8_t* comparor, size_t bytes);
+
 
 #endif /* R_ByteArray_h */

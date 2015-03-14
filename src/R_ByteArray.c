@@ -14,7 +14,7 @@
 
 struct R_ByteArray {
   R_Type* type;
-  uint8_t * array;       //The actual array
+  uint8_t* array;       //The actual array
   size_t arrayAllocationSize;//How large the internal array is. This is always as-large or larger than ArraySize.
   size_t arraySize;          //How many objects the user has added to the array.
 };
@@ -142,33 +142,35 @@ uint8_t R_ByteArray_last(const R_ByteArray* self) {
 }
 
 
-int R_ByteArray_compare(R_ByteArray* self, const R_ByteArray* comparor) {
-	size_t lowerSize = (R_ByteArray_size(self) < R_ByteArray_size(comparor)) ? R_ByteArray_size(self) : R_ByteArray_size(comparor);
-	int decision = memcmp(R_ByteArray_bytes(self), R_ByteArray_bytes(comparor), lowerSize);
-	if (decision != 0) return decision;
-	if (R_ByteArray_size(self) == R_ByteArray_size(comparor)) return 0;
-	if (R_ByteArray_size(self) == lowerSize) return -1;
-	return 1;
+int R_ByteArray_compare(const R_ByteArray* self, const R_ByteArray* comparor) {
+	return R_ByteArray_compareWithCArray(self, R_ByteArray_bytes(comparor), R_ByteArray_size(comparor));
+}
+
+int R_ByteArray_compareWithCArray(const R_ByteArray* self, const uint8_t* comparor, size_t bytes) {
+	if (R_Type_IsNotOf(self, R_ByteArray) || comparor == NULL) return -1;
+	if (R_ByteArray_size(self) < bytes) return -1;
+	if (R_ByteArray_size(self) > bytes) return -1;
+	return memcmp(R_ByteArray_bytes(self), comparor, bytes);
 }
 
 static uint8_t hex_to_byte(char hex1, char hex2);
 static uint8_t hex_to_nibble(char hex);
 R_ByteArray* R_ByteArray_appendHexCString(R_ByteArray* self, const char* hex) {
+	if (R_Type_IsNotOf(self, R_ByteArray) || hex == NULL) return NULL;
 	size_t length = strlen(hex);
-	for (int i=0; i<length; i+=2) {
-		if (length > i+1)
-			R_ByteArray_appendByte(self, hex_to_byte(hex[i], hex[i+1]));
-		else
-			R_ByteArray_appendByte(self, hex_to_byte(hex[i], '0'));
+	int odd_offset = length%2;
+	if (odd_offset) R_ByteArray_appendByte(self, hex_to_byte('0', hex[0]));
+	for (int i=odd_offset; i<length; i+=2) {
+		R_ByteArray_appendByte(self, hex_to_byte(hex[i], hex[i+1]));
 	}
 	return self;
 }
 R_ByteArray* R_ByteArray_appendHexString(R_ByteArray* self, R_String* hex) {
-	for (int i=0; i<R_String_length(hex); i+=2) {
-		if (R_String_length(hex) > i+1)
-			R_ByteArray_appendByte(self, hex_to_byte(R_String_getString(hex)[i], R_String_getString(hex)[i+1]));
-		else
-			R_ByteArray_appendByte(self, hex_to_byte(R_String_getString(hex)[i], '0'));
+	if (R_Type_IsNotOf(self, R_ByteArray) || R_Type_IsNotOf(hex, R_String)) return NULL;
+	int odd_offset = R_String_length(hex)%2;
+	if (odd_offset) R_ByteArray_appendByte(self, hex_to_byte('0', R_String_getString(hex)[0]));
+	for (int i=odd_offset; i<R_String_length(hex); i+=2) {
+		R_ByteArray_appendByte(self, hex_to_byte(R_String_getString(hex)[i], R_String_getString(hex)[i+1]));
 	}
 	return self;
 }
@@ -223,6 +225,15 @@ R_ByteArray* R_ByteArray_appendUInt32(R_ByteArray* self, uint32_t value) {
 	if ((value & 0xFFFFFF00) != 0) R_ByteArray_appendByte(self, (value & 0x0000FF00) >>  8);
 	if ((value & 0xFFFFFFFF) != 0) R_ByteArray_appendByte(self, (value & 0x000000FF) >>  0);
 	return self;
+}
+
+uint32_t R_ByteArray_getUInt32(R_ByteArray* self) {
+	if (R_Type_IsNotOf(self, R_ByteArray)) return 0;
+	uint32_t integer = (uint32_t)R_ByteArray_byte(self, 0);
+	if (R_ByteArray_size(self) > 1) integer = R_ByteArray_byte(self, 1) + (integer << 8);
+	if (R_ByteArray_size(self) > 2) integer = R_ByteArray_byte(self, 2) + (integer << 8);
+	if (R_ByteArray_size(self) > 3) integer = R_ByteArray_byte(self, 3) + (integer << 8);
+	return integer;
 }
 
 R_ByteArray* R_ByteArray_appendUInt32AsBCD(R_ByteArray* self, uint32_t value) {

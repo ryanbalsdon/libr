@@ -48,6 +48,11 @@ void R_Dictionary_remove(R_Dictionary* self, const char* key);
  */
 void* R_Dictionary_get(R_Dictionary* self, const char* key);
 
+/*  R_Dictionary_getFromString
+    Fetches the object with the given key. Returns NULL if it doesn't exist.
+ */
+void* R_Dictionary_getFromString(R_Dictionary* self, R_String* key);
+
 /*  R_Dictionary_removeAll
     Removes all objects from the dictionary.
  */
@@ -57,11 +62,17 @@ void R_Dictionary_removeAll(R_Dictionary* self);
     Returns true if the key exists in the dictionary or false if it isn't.
  */
 bool R_Dictionary_isPresent(R_Dictionary* self, const char* key);
+#define R_Dictionary_hasKey R_Dictionary_isPresent
 
 /*  R_Dictionary_isNotPresent
     Returns false if the key exists in the dictionary or true if it isn't.
  */
 bool R_Dictionary_isNotPresent(R_Dictionary* self, const char* key);
+
+/*  R_Dictionary_ValueIterator
+    Initializes a functor that can be used to iterate over the dictionary keys.
+ */
+R_Functor* R_Dictionary_KeyIterator(R_Functor* functor, R_Dictionary* dictionary);
 
 /*  R_Dictionary_ValueIterator
     Initializes a functor that can be used to iterate over the dictionary values.

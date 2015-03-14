@@ -38,6 +38,9 @@ void test_append_bytes(void) {
 	assert(R_String_length(string) == 4);
 	R_String_appendCString(string, " of awesomeness");
 	assert(R_String_length(string) == 19);
+	assert(R_String_character(string, 0) == 't');
+	assert(R_String_character(string, 8) == 'a');
+	assert(R_String_character(string, 19) == '\0');
 	assert(strcmp(R_String_getString(string), "test") != 0);
 	assert(strcmp(R_String_getString(string), "test of awesomeness") == 0);
 	R_String_appendBytes(string, " of awesomeness", 11);
@@ -75,8 +78,15 @@ void test_getSubString(void) {
 	assert(R_String_getSubstring(string, substring, 4, 6) != NULL);
 	assert(strcmp(R_String_getString(R_String_getSubstring(string, substring, 4, 6)), "killer") == 0);
 	assert(R_String_length(substring) == 6);
-
+	assert(R_String_compare(string, "if (killer) then {hide};"));
 	R_Type_Delete(substring);
+
+	substring = R_Type_New(R_String);
+	assert(R_String_moveSubstring(string, substring, 4, 6) != NULL);
+	assert(R_String_compare(substring, "killer"));
+	assert(R_String_compare(string, "if () then {hide};"));
+	R_Type_Delete(substring);
+
 	R_Type_Delete(string);
 }
 
@@ -164,6 +174,34 @@ void test_trim(void) {
 	R_Type_Delete(string);
 }
 
+void test_split(void) {
+	R_String* string = R_String_appendCString(R_Type_New(R_String), "qweHEREasdHEREzxcHEREHERE");
+	assert(R_String_find(string, "HERE") == 3);
+	R_List* split = R_Type_New(R_List);
+	assert(R_String_split(string, "HERE", split) == split);
+	assert(R_List_length(split) == 4);
+
+	assert(R_Type_IsOf(R_List_pointerAtIndex(split, 0), R_String));
+	assert(R_String_compare(R_List_pointerAtIndex(split, 0), "qwe"));
+
+	assert(R_Type_IsOf(R_List_pointerAtIndex(split, 1), R_String));
+	assert(R_String_compare(R_List_pointerAtIndex(split, 1), "asd"));
+
+	assert(R_Type_IsOf(R_List_pointerAtIndex(split, 2), R_String));
+	assert(R_String_compare(R_List_pointerAtIndex(split, 2), "zxc"));
+
+	assert(R_Type_IsOf(R_List_pointerAtIndex(split, 3), R_String));
+	assert(R_String_compare(R_List_pointerAtIndex(split, 3), ""));
+
+	R_String* joined = R_Type_New(R_String);
+	assert(R_String_join(joined, "!", split) == joined);
+	assert(R_String_compare(joined, "qwe!asd!zxc!"));
+
+	R_Type_Delete(joined);
+	R_Type_Delete(split);
+	R_Type_Delete(string);
+}
+
 int main(void) {
 	assert(R_Type_BytesAllocated == 0);
 	test_set_get();
@@ -174,6 +212,7 @@ int main(void) {
 	test_json_formatting();
 	test_shift();
 	test_trim();
+	test_split();
 	assert(R_Type_BytesAllocated == 0);
 	printf("Pass\n");
 }
