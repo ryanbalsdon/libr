@@ -290,3 +290,37 @@ R_String* R_String_join(R_String* self, const char* seperator, R_List* input) {
 	return self;
 }
 
+static uint8_t R_String_appendArrayAsBase64_base64FromIndex(uint8_t index);
+R_String* R_String_appendArrayAsBase64(R_String* self, const R_ByteArray* array) {
+	if (R_Type_IsNotOf(self, R_String) || R_Type_IsNotOf(array, R_ByteArray)) return NULL;
+	for(int i=0; i<R_ByteArray_size(array); i+=3) {
+		uint8_t byte1 = ((R_ByteArray_byte(array,   i) & 0xFC) >> 2);
+		uint8_t byte2 = ((R_ByteArray_byte(array,   i) & 0x03) << 4) + ((R_ByteArray_byte(array, i+1) & 0xF0) >> 4);
+		uint8_t byte3 = ((R_ByteArray_byte(array, i+1) & 0x0F) << 2) + ((R_ByteArray_byte(array, i+2) & 0xC0) >> 6);
+		uint8_t byte4 = (R_ByteArray_byte(array, i+2) & 0x3F);
+		if (R_String_push(self, R_String_appendArrayAsBase64_base64FromIndex(byte1)) == NULL) return NULL;
+		if (R_String_push(self, R_String_appendArrayAsBase64_base64FromIndex(byte2)) == NULL) return NULL;
+		if (R_ByteArray_length(array) > i+1) {
+			if (R_String_push(self, R_String_appendArrayAsBase64_base64FromIndex(byte3)) == NULL) return NULL;
+		}
+		else {
+			if (R_String_push(self, '=') == NULL) return NULL;
+		}
+		if (R_ByteArray_length(array) > i+2) {
+			if (R_String_push(self, R_String_appendArrayAsBase64_base64FromIndex(byte4)) == NULL) return NULL;
+		}
+		else {
+			if (R_String_push(self, '=') == NULL) return NULL;
+		}
+	}
+	return self;
+}
+
+static uint8_t R_String_appendArrayAsBase64_base64FromIndex(uint8_t index) {
+	if (index <= 25) return 'A'+index;
+	if (index <= 51) return 'a'+(index-26);
+	if (index <= 61) return '0'+(index-52);
+	if (index == 62) return '+';
+	if (index == 63) return '/';
+	return '=';
+}

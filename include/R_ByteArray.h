@@ -103,6 +103,7 @@ R_ByteArray* R_ByteArray_appendUInt32AsBCD(R_ByteArray* self, uint32_t value);
     Returns the number of bytes currently in the array, not the total amount of allocated memory.
  */
 size_t R_ByteArray_size(const R_ByteArray* self);
+#define R_ByteArray_length R_ByteArray_size
 
 /*  R_ByteArray_bytes
     Returns a C Array pointer to the byte array. This is not a copy!

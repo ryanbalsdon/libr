@@ -178,5 +178,7 @@ R_List* R_String_split(R_String* self, const char* seperator, R_List* output);
  */
 R_String* R_String_join(R_String* self, const char* seperator, R_List* input);
 
+R_String* R_String_appendArrayAsBase64(R_String* self, const R_ByteArray* array);
+
 
 #endif /* R_String_h */

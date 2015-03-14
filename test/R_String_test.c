@@ -202,6 +202,21 @@ void test_split(void) {
 	R_Type_Delete(string);
 }
 
+void test_base64(void) {
+	R_String* ascii = R_String_setString(R_Type_New(R_String), "20bb4f55f37cb435ea793ecb1012083a:1d4c592428c12368fdbfbbc6e35887ae");
+	R_String* base64 = R_Type_New(R_String);
+	assert(R_String_appendArrayAsBase64(base64, R_String_bytes(ascii)) == base64);
+	assert(R_String_compare(base64, "MjBiYjRmNTVmMzdjYjQzNWVhNzkzZWNiMTAxMjA4M2E6MWQ0YzU5MjQyOGMxMjM2OGZkYmZiYmM2ZTM1ODg3YWU="));
+
+	R_String_setString(ascii, "Hello World");
+	R_String_reset(base64);
+	assert(R_String_appendArrayAsBase64(base64, R_String_bytes(ascii)) == base64);
+	assert(R_String_compare(base64, "SGVsbG8gV29ybGQ="));
+
+	R_Type_Delete(base64);
+	R_Type_Delete(ascii);
+}
+
 int main(void) {
 	assert(R_Type_BytesAllocated == 0);
 	test_set_get();
@@ -213,6 +228,8 @@ int main(void) {
 	test_shift();
 	test_trim();
 	test_split();
+	test_base64();
+
 	assert(R_Type_BytesAllocated == 0);
 	printf("Pass\n");
 }
