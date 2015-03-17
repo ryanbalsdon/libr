@@ -100,6 +100,27 @@ void test_copy(void) {
 	R_Type_Delete(copy);
 }
 
+void test_merge(void) {
+	R_Dictionary* dict_a = R_Type_New(R_Dictionary);
+	R_Dictionary* dict_b = R_Type_New(R_Dictionary);
+	R_Integer_set(R_Dictionary_add(dict_a, "integer", R_Integer), 12);
+	R_Float_set(R_Dictionary_add(dict_b, "float", R_Float), 3.14f);
+
+	assert(R_Dictionary_merge(dict_a, dict_b) == dict_a);
+
+	assert(R_Type_IsOf(R_Dictionary_get(dict_a, "integer"), R_Integer));
+	assert(R_Integer_get(R_Dictionary_get(dict_a, "integer")) == 12);
+	assert(R_Type_IsOf(R_Dictionary_get(dict_a, "float"), R_Float));
+	assert(R_Float_get(R_Dictionary_get(dict_a, "float")) == 3.14f);
+
+	assert(R_Dictionary_get(dict_b, "integer") == NULL);
+	assert(R_Type_IsOf(R_Dictionary_get(dict_b, "float"), R_Float));
+	assert(R_Float_get(R_Dictionary_get(dict_b, "float")) == 3.14f);
+
+	R_Type_Delete(dict_a);
+	R_Type_Delete(dict_b);
+}
+
 void test_iterator(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
 	R_Integer* integer = R_Dictionary_add(dict, "first", R_Integer);
@@ -343,6 +364,8 @@ int main(void) {
 	assert(R_Type_BytesAllocated == 0);
 	test_allocation();
 	test_key_creation();
+	test_copy();
+	test_merge();
 	test_integers();
 	test_mixed();
 	test_iterator();

@@ -86,6 +86,10 @@ void R_List_pop(R_List* self) {
     R_List_removeIndex(self, R_List_size(self)-1);
 }
 
+void R_List_shift(R_List* self) {
+    R_List_removeIndex(self, 0);
+}
+
 void R_List_swap(R_List* self, int indexA, int indexB) {
     if (indexA > self->arraySize || indexB > self->arraySize || indexA < 0 || indexB < 0)
         return;

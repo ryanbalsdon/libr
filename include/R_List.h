@@ -87,6 +87,11 @@ size_t R_List_size(R_List* self);
  */
 void R_List_pop(R_List* self);
 
+/*  R_List_shift
+    Removes the first object in the list and destroys it.
+ */
+void R_List_shift(R_List* self);
+
 /*  R_List_swap
     Swaps the locations of the two objects at the given indexes.
  */

@@ -33,6 +33,12 @@ void* R_Dictionary_addObjectOfType(R_Dictionary* self, const char* key, const R_
  */
 void* R_Dictionary_addCopy(R_Dictionary* self, const char* key, const void* object);
 
+/*  R_Dictionary_merge
+    Copies the given dictionary into self.
+ */
+R_Dictionary* R_Dictionary_merge(R_Dictionary* self, R_Dictionary* dictionary_to_copy);
+
+
 /*  R_Dictionary_transferOwnership
     Adds the pointer to the dictionary without copying the object. This is dangerous. The object must be on the heap.
  */

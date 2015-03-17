@@ -95,6 +95,14 @@ void* R_Dictionary_addCopy(R_Dictionary* self, const char* key, const void* obje
 	return element->value;
 }
 
+R_Dictionary* R_Dictionary_merge(R_Dictionary* self, R_Dictionary* dictionary_to_copy) {
+	if (R_Type_IsNotOf(self, R_Dictionary) || R_Type_IsNotOf(dictionary_to_copy, R_Dictionary)) return NULL;
+	R_List_each(dictionary_to_copy->elements, R_Dictionary_Element, element) {
+		if (R_Dictionary_addCopy(self, R_String_cstring(element->key), element->value) == NULL) return NULL;
+	}
+	return self;
+}
+
 void* R_Dictionary_transferOwnership(R_Dictionary* self, const char* key, void* object) {
 	if (self == NULL || key == NULL || object == NULL) return NULL;
 	R_Dictionary_Element* element = R_Dictionary_getElement(self, key);
