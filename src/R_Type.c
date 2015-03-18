@@ -104,3 +104,7 @@ R_Boolean* R_Boolean_set(R_Boolean* self, bool value) {
 bool R_Boolean_get(R_Boolean* self) {
   return self->Boolean;
 }
+
+struct R_Null {R_Type* type;};
+R_Type_Def(R_Null, NULL, NULL, R_Type_shallowCopy);
+

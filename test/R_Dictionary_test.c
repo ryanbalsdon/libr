@@ -360,6 +360,71 @@ void test_read_json_arrays(void) {
 	R_Type_Delete(json);
 }
 
+void test_json_nulls(void) {
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
+	R_String* json = R_String_appendCString(R_Type_New(R_String), "{\"this\":null}");
+
+	assert(R_Dictionary_fromJson(dict, json) == dict);
+	assert(R_Dictionary_get(dict, "this") != NULL);
+	assert(R_Type_IsOf(R_Dictionary_get(dict, "this"), R_Null));
+
+	R_String_reset(json);
+	assert(R_Dictionary_toJson(dict, json) == json);
+	assert(R_String_compare(json, "{\"this\":null}"));
+
+	R_Type_Delete(json);
+	R_Type_Delete(dict);
+}
+
+void test_empty_array(void) {
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
+	R_String* json = R_String_appendCString(R_Type_New(R_String), "{\"array\":[]}");
+	assert(R_Dictionary_fromJson(dict, json) == dict);
+	assert(R_Dictionary_get(dict, "array") != NULL);
+	assert(R_Type_IsOf(R_Dictionary_get(dict, "array"), R_List));
+	R_List* array = R_Dictionary_get(dict, "array");
+	assert(R_List_size(array) == 0);
+
+	R_String_reset(json);
+	assert(R_Dictionary_toJson(dict, json) == json);
+	assert(R_String_compare(json, "{\"array\":[]}"));
+
+	R_Type_Delete(json);
+	R_Type_Delete(dict);
+}
+
+void test_array_with_one_object(void) {
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
+	R_String* json = R_String_appendCString(R_Type_New(R_String), "{\"some_product\":[{\"price\":\"26.61\",\"tax\":0.13,\"name\":\"bugs\"}]}");
+	assert(R_Dictionary_fromJson(dict, json) == dict);
+	assert(R_Dictionary_get(dict, "some_product") != NULL);
+	assert(R_Type_IsOf(R_Dictionary_get(dict, "some_product"), R_List));
+	R_List* array = R_Dictionary_get(dict, "some_product");
+	assert(R_List_size(array) == 1);
+
+	R_String_reset(json);
+	assert(R_Dictionary_toJson(dict, json) == json);
+	assert(R_String_compare(json, "{\"some_product\":[{\"price\":\"26.61\",\"tax\":0.13,\"name\":\"bugs\"}]}"));
+
+	R_Type_Delete(json);
+	R_Type_Delete(dict);
+}
+
+void test_empty_object(void) {
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
+	R_String* json = R_String_appendCString(R_Type_New(R_String), "{\"object\":{}}");
+	assert(R_Dictionary_fromJson(dict, json) == dict);
+	assert(R_Dictionary_get(dict, "object") != NULL);
+	assert(R_Type_IsOf(R_Dictionary_get(dict, "object"), R_Dictionary));
+
+	R_String_reset(json);
+	assert(R_Dictionary_toJson(dict, json) == json);
+	assert(R_String_compare(json, "{\"object\":{}}"));
+
+	R_Type_Delete(json);
+	R_Type_Delete(dict);
+}
+
 int main(void) {
 	assert(R_Type_BytesAllocated == 0);
 	test_allocation();
@@ -379,6 +444,10 @@ int main(void) {
 	test_read_json_booleans();
 	test_read_json_objects();
 	test_read_json_arrays();
+	test_json_nulls();
+	test_empty_array();
+	test_array_with_one_object();
+	test_empty_object();
 
 	assert(R_Type_BytesAllocated == 0);
 	printf("Pass\n");

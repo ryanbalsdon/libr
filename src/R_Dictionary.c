@@ -70,7 +70,7 @@ R_Type_Def(R_Dictionary, R_Dictionary_Constructor, R_Dictionary_Destructor, R_Di
 static R_Dictionary_Element* R_Dictionary_getElement(R_Dictionary* self, const char* key);
 
 void* R_Dictionary_addObjectOfType(R_Dictionary* self, const char* key, const R_Type* type) {
-	if (self == NULL || key == NULL || type == NULL) return NULL;
+	if (R_Type_IsNotOf(self, R_Dictionary) || key == NULL || type == NULL) return NULL;
 	R_Dictionary_Element* element = R_Dictionary_getElement(self, key);
 	if (element == NULL) {
 		element = R_List_add(self->elements, R_Dictionary_Element);
@@ -83,7 +83,7 @@ void* R_Dictionary_addObjectOfType(R_Dictionary* self, const char* key, const R_
 }
 
 void* R_Dictionary_addCopy(R_Dictionary* self, const char* key, const void* object) {
-	if (self == NULL || key == NULL || object == NULL) return NULL;
+	if (R_Type_IsNotOf(self, R_Dictionary) || key == NULL || object == NULL) return NULL;
 	R_Dictionary_Element* element = R_Dictionary_getElement(self, key);
 	if (element == NULL) {
 		element = R_List_add(self->elements, R_Dictionary_Element);
@@ -104,7 +104,7 @@ R_Dictionary* R_Dictionary_merge(R_Dictionary* self, R_Dictionary* dictionary_to
 }
 
 void* R_Dictionary_transferOwnership(R_Dictionary* self, const char* key, void* object) {
-	if (self == NULL || key == NULL || object == NULL) return NULL;
+	if (R_Type_IsNotOf(self, R_Dictionary) || key == NULL) return NULL;
 	R_Dictionary_Element* element = R_Dictionary_getElement(self, key);
 	if (element == NULL) {
 		element = R_List_add(self->elements, R_Dictionary_Element);
@@ -158,7 +158,7 @@ size_t R_Dictionary_size(R_Dictionary* self) {
 
 static void R_Dictionary_toJson_writeValue(R_String* buffer, void* value);
 R_String* R_Dictionary_toJson(R_Dictionary* self, R_String* buffer) {
-	if (self == NULL || R_Dictionary_size(self) == 0 || buffer == NULL || R_String_reset(buffer) == NULL) return NULL;
+	if (R_Type_IsNotOf(self, R_Dictionary) || buffer == NULL || R_String_reset(buffer) == NULL) return NULL;
 	R_String_appendCString(buffer, "{");
 
 	R_List_each(self->elements, R_Dictionary_Element, element) {
@@ -193,6 +193,7 @@ static void R_Dictionary_toJson_writeValue(R_String* buffer, void* value) {
 		}
 		R_String_appendCString(buffer, "]");
 	}
+	else if (R_Type_IsOf(value, R_Null)) R_String_appendCString(buffer, "null");
 	else R_String_appendCString(buffer, "\"Unknown Type\"");
 }
 
@@ -244,6 +245,7 @@ static R_Dictionary* R_Dictionary_fromJson_readObject(R_Dictionary* object, R_St
 	if (R_String_first(string) != '{') return NULL;
 	R_Dictionary_fromJson_advanceToNextNonWhitespace(string);
 	while (R_String_length(string) > 0) {
+		if (R_String_first(string) == '}') break;
 		//find the key as a quoted string
 		R_String* key = R_Type_New(R_String);
 		if (R_Dictionary_fromJson_moveQuotedString(string, key) == NULL) return R_Type_Delete(key), NULL;
@@ -267,6 +269,7 @@ static R_Dictionary* R_Dictionary_fromJson_readObject(R_Dictionary* object, R_St
 	}
 
 	if (R_String_first(string) != '}') return NULL;
+	R_Dictionary_fromJson_advanceToNextNonWhitespace(string);
 	return object;
 }
 
@@ -296,6 +299,13 @@ static void* R_Dictionary_fromJson_readValue(R_String* string) {
 			return R_Boolean_set(R_Type_New(R_Boolean), false);
 		}
 	}
+	else if (R_String_first(string) == 'n') {//value is a null
+		const char* characters = R_String_cstring(string);
+		if (strstr(characters, "null") == characters) {
+			R_String_getSubstring(string, string, 4, 0);
+			return R_Type_New(R_Null);
+		}
+	}
 	else if (R_String_first(string) == '{') {
 		R_Dictionary* child = R_Type_New(R_Dictionary);
 		if (R_Dictionary_fromJson_readObject(child, string) == NULL) {
@@ -314,6 +324,10 @@ static R_List* R_Dictionary_fromJson_readArray(R_String* string) {
 	R_List* array = R_Type_New(R_List);
 	R_Dictionary_fromJson_advanceToNextNonWhitespace(string);
 	while (R_String_length(string) > 0) {
+		if (R_String_first(string) == ']') {
+			R_Dictionary_fromJson_advanceToNextNonWhitespace(string);
+			return array;
+		}
 		void* value = R_Dictionary_fromJson_readValue(string);
 		if (value == NULL || R_List_transferOwnership(array, value) == NULL) return R_Type_Delete(array), NULL;
 		R_String_trim(string);

@@ -50,7 +50,7 @@ R_String* R_String_reset(R_String* self) {
 }
 
 const char* R_String_getString(R_String* self) {
-	if (self == NULL) return NULL;
+	if (R_Type_IsNotOf(self, R_String)) return NULL;
 	if (self->cstring != NULL) free(self->cstring);
 	self->cstring = malloc((R_ByteArray_size(self->array)+1)*sizeof(char));
 	memcpy(self->cstring, R_ByteArray_bytes(self->array), R_ByteArray_size(self->array));

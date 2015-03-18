@@ -118,9 +118,18 @@ R_Type_Declare(R_Unsigned);
 R_Unsigned* R_Unsigned_set(R_Unsigned* self, unsigned int value);
 unsigned int R_Unsigned_get(R_Unsigned* self);
 
+/* R_Boolean
+   A basic boolean type.
+ */
 typedef struct R_Boolean R_Boolean;
 R_Type_Declare(R_Boolean);
 R_Boolean* R_Boolean_set(R_Boolean* self, bool value);
 bool R_Boolean_get(R_Boolean* self);
+
+/* R_Null
+   A useless type.
+ */
+typedef struct R_Null R_Null;
+R_Type_Declare(R_Null);
 
 #endif
