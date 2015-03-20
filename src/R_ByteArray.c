@@ -14,9 +14,10 @@
 
 struct R_ByteArray {
   R_Type* type;
-  uint8_t* array;       //The actual array
-  size_t arrayAllocationSize;//How large the internal array is. This is always as-large or larger than ArraySize.
-  size_t arraySize;          //How many objects the user has added to the array.
+  uint8_t* buffer;
+  uint8_t* head;
+  size_t buffer_size;
+  size_t array_size;
 };
 
 static R_ByteArray* R_ByteArray_Constructor(R_ByteArray* self);
@@ -27,14 +28,14 @@ R_Type_Def(R_ByteArray, R_ByteArray_Constructor, R_ByteArray_Destructor, R_ByteA
 static void R_ByteArray_increaseAllocationIfNeeded(R_ByteArray* self, size_t spaceNeeded);
 
 static R_ByteArray* R_ByteArray_Constructor(R_ByteArray* self) {
-	self->array = NULL;
-	self->arrayAllocationSize = 0;
-	self->arraySize = 0;
-
+	self->head = self->buffer = NULL;
+	self->buffer_size = self->array_size = 0;
 	return self;
 }
 static R_ByteArray* R_ByteArray_Destructor(R_ByteArray* self) {
-	free(self->array);
+	free(self->buffer);
+	self->head = self->buffer = NULL;
+	self->buffer_size = self->array_size = 0;
 	return self;
 }
 static R_ByteArray* R_ByteArray_Copier(R_ByteArray* self, R_ByteArray* new) {
@@ -43,94 +44,102 @@ static R_ByteArray* R_ByteArray_Copier(R_ByteArray* self, R_ByteArray* new) {
 }
 
 R_ByteArray* R_ByteArray_reset(R_ByteArray* self) {
-	self->array = (uint8_t*)realloc(self->array, 128*sizeof(uint8_t));
-	memset(self->array, 0, 128*sizeof(uint8_t));
-	self->arrayAllocationSize = 128;
-	self->arraySize = 0;
-
+	if (R_Type_IsNotOf(self, R_ByteArray)) return NULL;
+	self->head = self->buffer = (uint8_t*)realloc(self->buffer, 128*sizeof(uint8_t));
+	//memset(self->buffer, 0, 128*sizeof(uint8_t));
+	self->buffer_size = 128;
+	self->array_size = 0;
 	return self;
 }
 
-static void R_ByteArray_increaseAllocationIfNeeded(R_ByteArray* self, size_t spaceNeeded) {
-	if (self->arrayAllocationSize < self->arraySize + spaceNeeded) {
-		self->arrayAllocationSize = self->arraySize + spaceNeeded;
-		self->array = (uint8_t*)realloc(self->array, self->arrayAllocationSize);
+static void R_ByteArray_increaseAllocationIfNeeded(R_ByteArray* self, size_t space_needed) {
+	if (R_Type_IsNotOf(self, R_ByteArray)) return;
+	size_t bytes_used_in_buffer = (size_t)(self->head - self->buffer) + self->array_size;
+	if (self->buffer_size < bytes_used_in_buffer + space_needed) {
+		self->buffer_size = bytes_used_in_buffer + space_needed;
+		size_t head_offset = self->head - self->buffer;
+		self->buffer = (uint8_t*)realloc(self->buffer, self->buffer_size);
+		self->head = self->buffer + head_offset;
 	}
 }
 
 R_ByteArray* R_ByteArray_appendByte(R_ByteArray* self, uint8_t byte) {
+	if (R_Type_IsNotOf(self, R_ByteArray)) return NULL;
 	R_ByteArray_increaseAllocationIfNeeded(self, sizeof(uint8_t));
-	self->array[self->arraySize++] = byte;
+	self->head[self->array_size++] = byte;
 	return self;
 }
 R_ByteArray* R_ByteArray_appendCArray(R_ByteArray* self, const uint8_t* bytes, size_t count) {
-	if (self == NULL || bytes == NULL || count == 0) return self;
+	if (R_Type_IsNotOf(self, R_ByteArray) || bytes == NULL || count == 0) return NULL;
 	R_ByteArray_increaseAllocationIfNeeded(self, count*sizeof(uint8_t));
-	memcpy(self->array+self->arraySize, bytes, count*sizeof(uint8_t));
-	self->arraySize+=count*sizeof(uint8_t);
+	memcpy(self->head+self->array_size, bytes, count*sizeof(uint8_t));
+	self->array_size+=count*sizeof(uint8_t);
 	return self;
 }
 R_ByteArray* R_ByteArray_appendArray(R_ByteArray* self, const R_ByteArray* array) {
-	if (array == NULL || self == NULL) return self;
+	if (R_Type_IsNotOf(self, R_ByteArray) || R_Type_IsNotOf(array, R_ByteArray)) return NULL;
 	return R_ByteArray_appendCArray(self, R_ByteArray_bytes(array), R_ByteArray_size(array));
 }
 
 size_t R_ByteArray_size(const R_ByteArray* self) {
-	if (self == NULL) return 0;
-	return self->arraySize;
+	if (R_Type_IsNotOf(self, R_ByteArray)) return 0;
+	return self->array_size;
 }
 const uint8_t* R_ByteArray_bytes(const R_ByteArray* self) {
-	if (self == NULL) return NULL;
-	return self->array;
+	if (R_Type_IsNotOf(self, R_ByteArray)) return NULL;
+	return self->head;
 }
 
 R_ByteArray* R_ByteArray_push(R_ByteArray* self, uint8_t byte) {
 	return R_ByteArray_appendByte(self, byte);
 }
 uint8_t R_ByteArray_pop(R_ByteArray* self) {
-	return self->array[--self->arraySize];
+	if (R_Type_IsNotOf(self, R_ByteArray)) return 0x00;
+	return self->head[--self->array_size];
 }
 R_ByteArray* R_ByteArray_unshift(R_ByteArray* self, uint8_t byte) {
-	if (self == NULL) return NULL;
-	R_ByteArray_increaseAllocationIfNeeded(self, sizeof(uint8_t));
-	for (size_t i=self->arraySize; i>0; i--) {
-		self->array[i] = self->array[i-1];
+	if (R_Type_IsNotOf(self, R_ByteArray)) return NULL;
+	if (self->head > self->buffer) {
+		self->buffer--;
+		*self->buffer = byte;
 	}
-	self->array[0] = byte;
-	self->arraySize++;
-
+	else {
+		R_ByteArray_increaseAllocationIfNeeded(self, sizeof(uint8_t));
+		for (size_t i=self->array_size; i>0; i--) {
+			self->head[i] = self->head[i-1];
+		}
+		self->head[0] = byte;
+		self->array_size++;
+	}
 	return self;
 }
 uint8_t R_ByteArray_shift(R_ByteArray* self) {
-	if (self->arraySize>0) {
-		uint8_t returnVal = self->array[0];
-		for (int i=0; i<self->arraySize-1; i++) {
-			self->array[i] = self->array[i+1];
-		}
-		self->arraySize--;
-		return returnVal;
-	}
-	return 0x00;
+	if (R_Type_IsNotOf(self, R_ByteArray) || self->array_size == 0) return 0x00;
+	uint8_t byte = *self->head;
+	self->head++;
+	self->array_size--;
+	if (self->array_size == 0) self->head = self->buffer;
+	return byte;
 }
 
 R_ByteArray* R_ByteArray_moveSubArray(R_ByteArray* self, R_ByteArray* array, size_t start, size_t length) {
-	if (self == NULL || array == NULL) return NULL;
+	if (R_Type_IsNotOf(self, R_ByteArray) || R_Type_IsNotOf(array, R_ByteArray)) return NULL;
 	if (start+length > R_ByteArray_size(array)) return NULL;
 	if (length == 0) length = R_ByteArray_size(array) - start;
 	R_ByteArray_appendCArray(self, R_ByteArray_bytes(array)+start, length);
 
 	size_t remainingBytes = R_ByteArray_size(array) - (start + length);
 	for (int i=0; i<remainingBytes; i++) {
-		array->array[start+i] = array->array[start+length+i];
+		array->head[start+i] = array->head[start+length+i];
 	}
-	array->arraySize-=length;
+	array->array_size-=length;
 
 	return self;
 }
 
 uint8_t R_ByteArray_byte(const R_ByteArray* self, size_t index) {
-	if (self == NULL || index >= self->arraySize) return 0;
-	return self->array[index];
+	if (R_Type_IsNotOf(self, R_ByteArray) || index >= self->array_size) return 0;
+	return self->head[index];
 }
 
 uint8_t R_ByteArray_first(const R_ByteArray* self) {
@@ -138,7 +147,7 @@ uint8_t R_ByteArray_first(const R_ByteArray* self) {
 }
 
 uint8_t R_ByteArray_last(const R_ByteArray* self) {
-	return R_ByteArray_byte(self, self->arraySize - 1);
+	return R_ByteArray_byte(self, self->array_size - 1);
 }
 
 
@@ -188,38 +197,38 @@ static uint8_t hex_to_nibble(char hex) {
 }
 
 R_ByteArray* R_ByteArray_setByte(R_ByteArray* self, uint8_t byte) {
-	if (self == NULL) return NULL;
+	if (R_Type_IsNotOf(self, R_ByteArray)) return NULL;
 	R_ByteArray_reset(self);
 	return R_ByteArray_appendByte(self, byte);
 }
 R_ByteArray* R_ByteArray_setCArray(R_ByteArray* self, const uint8_t* bytes, size_t count) {
-	if (self == NULL) return NULL;
+	if (R_Type_IsNotOf(self, R_ByteArray)) return NULL;
 	R_ByteArray_reset(self);
 	return R_ByteArray_appendCArray(self, bytes, count);
 }
 R_ByteArray* R_ByteArray_setArray(R_ByteArray* self, const R_ByteArray* array) {
-	if (self == NULL) return NULL;
+	if (R_Type_IsNotOf(self, R_ByteArray)) return NULL;
 	R_ByteArray_reset(self);
 	return R_ByteArray_appendArray(self, array);
 }
 R_ByteArray* R_ByteArray_setHexString(R_ByteArray* self, R_String* hex) {
-	if (self == NULL) return NULL;
+	if (R_Type_IsNotOf(self, R_ByteArray)) return NULL;
 	R_ByteArray_reset(self);
 	return R_ByteArray_appendHexString(self, hex);
 }
 R_ByteArray* R_ByteArray_setHexCString(R_ByteArray* self, const char* hex) {
-	if (self == NULL) return NULL;
+	if (R_Type_IsNotOf(self, R_ByteArray)) return NULL;
 	R_ByteArray_reset(self);
 	return R_ByteArray_appendHexCString(self, hex);
 }
 R_ByteArray* R_ByteArray_setUInt32(R_ByteArray* self, uint32_t value) {
-	if (self == NULL) return NULL;
+	if (R_Type_IsNotOf(self, R_ByteArray)) return NULL;
 	R_ByteArray_reset(self);
 	return R_ByteArray_appendUInt32(self, value);
 }
 
 R_ByteArray* R_ByteArray_appendUInt32(R_ByteArray* self, uint32_t value) {
-	if (self == NULL) return NULL;
+	if (R_Type_IsNotOf(self, R_ByteArray)) return NULL;
 	if ((value & 0xFF000000) != 0) R_ByteArray_appendByte(self, (value & 0xFF000000) >> 24);
 	if ((value & 0xFFFF0000) != 0) R_ByteArray_appendByte(self, (value & 0x00FF0000) >> 16);
 	if ((value & 0xFFFFFF00) != 0) R_ByteArray_appendByte(self, (value & 0x0000FF00) >>  8);
