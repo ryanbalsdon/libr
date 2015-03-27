@@ -176,16 +176,26 @@ void test_full(void) {
   Testor_Destructor_Called = 0;
 }
 
+bool BadConstructorTestor_Constructor_Called = false;
+bool BadConstructorTestor_Destructor_Called = false;
 typedef struct Testor BadConstructorTestor;
-BadConstructorTestor* Bad_Constructor(BadConstructorTestor* testor) {
-  //Assume some setup goes wrong. Clean it up then:
-  return NULL;
+BadConstructorTestor* Bad_Constructor(BadConstructorTestor* self) {
+  BadConstructorTestor_Constructor_Called = true;
+  if (1 /* there is an error */)
+    return NULL;
 }
-R_Type_Def(BadConstructorTestor, Bad_Constructor, NULL, NULL);
+BadConstructorTestor* Bad_Constructor_Destructor(BadConstructorTestor* self) {
+  BadConstructorTestor_Destructor_Called = true;
+  //Generic clean-up...
+  return self;
+}
+R_Type_Def(BadConstructorTestor, Bad_Constructor, Bad_Constructor_Destructor, NULL);
 
 void test_bad_constructor(void) {
   BadConstructorTestor* testor = R_Type_New(BadConstructorTestor);
   assert(testor == NULL);
+  assert(BadConstructorTestor_Constructor_Called);
+  assert(BadConstructorTestor_Destructor_Called);
 }
 
 void test_integer(void) {

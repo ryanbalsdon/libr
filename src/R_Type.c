@@ -15,11 +15,14 @@ size_t R_Type_BytesAllocated = 0;
 void* R_Type_NewObjectOfType(const R_Type* type) {
   if (type->size < sizeof(R_Type*)) return NULL; //If they were equal, this object would be useless. No good reason to limit that though...
   void* new_object = calloc(1, type->size);
-  if (new_object != NULL) *(const R_Type**)new_object = type;
-  if (new_object != NULL) R_Type_BytesAllocated += type->size;
-  if (new_object != NULL && type->ctor != NULL && type->ctor(new_object) == NULL) {
+  if (new_object == NULL) return NULL;
+  *(const R_Type**)new_object = type;
+  R_Type_BytesAllocated += type->size;
+  if (type->ctor != NULL && type->ctor(new_object) == NULL) {
+    //Constructor has failed
+    if (type->dtor != NULL) type->dtor(new_object);
     free(new_object);
-    new_object = NULL;
+    return NULL;
   }
   return new_object;
 }
