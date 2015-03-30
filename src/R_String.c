@@ -253,7 +253,7 @@ int R_String_find(R_String* self, const char* substring) {
 	const char* string = R_String_cstring(self);
 	char* result = strstr(string, substring);
 	if (result == NULL) return -1;
-	return (result - string);
+	return (int)(result - string);
 }
 
 R_List* R_String_split(R_String* self, const char* seperator, R_List* output) {
