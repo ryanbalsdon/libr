@@ -17,10 +17,12 @@
 
  int main(void) {
 #include "R_Dictionary_large_json.data"
-  clock_t begin = clock();
-
   R_Dictionary* dict = R_Type_New(R_Dictionary);
+
+  clock_t begin = clock();
   assert(R_Dictionary_fromJson(dict, large_json) == dict);
+  clock_t end = clock();
+
   R_List* orders = R_Dictionary_get(dict, "orders");
   assert(orders != NULL);
   assert(R_Type_IsOf(orders, R_List));
@@ -28,7 +30,6 @@
   R_Type_Delete(large_json);
   R_Type_Delete(dict);
 
-  clock_t end = clock();
   printf("Pass: %lu ticks\n", end-begin);
   return 0;
  }

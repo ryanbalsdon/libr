@@ -20,8 +20,13 @@ typedef struct {
 R_Type_Declare(R_Functor);
 
 /*  R_Functor_call
- Calls the functor.
+ Calls the functor once.
  */
 void* R_Functor_call(R_Functor*);
+
+/*  R_Functor_call
+ Loops the functor until it returns NULL.
+ */
+#define R_Functor_iterate(iterator, type, name) for (type* name = R_Functor_call(iterator); name != NULL; name = R_Functor_call(iterator))
 
 #endif /*R_Functor_h*/

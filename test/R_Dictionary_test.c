@@ -121,7 +121,7 @@ void test_merge(void) {
 	R_Type_Delete(dict_b);
 }
 
-void test_iterator(void) {
+void test_value_iterator(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
 	R_Integer* integer = R_Dictionary_add(dict, "first", R_Integer);
 	R_Integer_set(integer, 0);
@@ -148,18 +148,57 @@ void test_iterator(void) {
 	assert(integer2_found);
 
 	R_Type_Delete(iterator);
+	R_Type_Delete(dict);
+}
 
-	integer0_found = false;
-	integer1_found = false;
-	integer2_found = false;
+void test_key_iterator(void) {
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
+	R_Integer* integer = R_Dictionary_add(dict, "first", R_Integer);
+	R_Integer_set(integer, 0);
+	integer = R_Dictionary_add(dict, "second", R_Integer);
+	R_Integer_set(integer, 2);
+	integer = R_Dictionary_add(dict, "third", R_Integer);
+	R_Integer_set(integer, 1);
 
-	iterator = R_Dictionary_KeyIterator(R_Type_New(R_Functor), dict);
+	bool integer0_found = false;
+	bool integer1_found = false;
+	bool integer2_found = false;
+	R_Functor* iterator = R_Dictionary_KeyIterator(R_Type_New(R_Functor), dict);
 	R_String* key = NULL;
 	while ((key = R_Functor_call(iterator)) != NULL) {
 		assert(R_Type_IsOf(key, R_String));
 		if (R_String_compare(key, "first")) integer0_found = true;
 		if (R_String_compare(key, "second")) integer1_found = true;
 		if (R_String_compare(key, "third")) integer2_found = true;
+	}
+
+	assert(integer0_found);
+	assert(integer1_found);
+	assert(integer2_found);
+
+	R_Type_Delete(iterator);
+	R_Type_Delete(dict);
+}
+
+void test_sexy_iterator(void) {
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
+	R_Integer* integer = R_Dictionary_add(dict, "first", R_Integer);
+	R_Integer_set(integer, 0);
+	integer = R_Dictionary_add(dict, "second", R_Integer);
+	R_Integer_set(integer, 2);
+	integer = R_Dictionary_add(dict, "third", R_Integer);
+	R_Integer_set(integer, 1);
+
+	bool integer0_found = false;
+	bool integer1_found = false;
+	bool integer2_found = false;
+	R_Functor* iterator = R_Dictionary_KeyIterator(R_Type_New(R_Functor), dict);
+	R_Functor_iterate(iterator, R_String, key) {
+		assert(R_Type_IsOf(key, R_String));
+		if (R_String_compare(key, "first")) integer0_found = true;
+		else if (R_String_compare(key, "second")) integer1_found = true;
+		else if (R_String_compare(key, "third")) integer2_found = true;
+		else assert(NULL);
 	}
 
 	assert(integer0_found);
@@ -433,7 +472,9 @@ int main(void) {
 	test_merge();
 	test_integers();
 	test_mixed();
-	test_iterator();
+	test_value_iterator();
+	test_key_iterator();
+	test_sexy_iterator();
 	test_write_json_strings();
 	test_write_json_numbers();
 	test_write_json_objects();
