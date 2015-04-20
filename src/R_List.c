@@ -23,7 +23,7 @@ struct R_List {
 static R_List* R_List_Constructor(R_List* self);
 static R_List* R_List_Destructor(R_List* self);
 static R_List* R_List_Copier(R_List* self, R_List* new);
-R_Type_Def(R_List, R_List_Constructor, R_List_Destructor, R_List_Copier);
+R_Type_Def(R_List, R_List_Constructor, R_List_Destructor, R_List_Copier, NULL);
 
 static void R_List_increaseAllocationIfRequired(R_List* self);
 
@@ -183,7 +183,7 @@ typedef struct {
     R_List* list;
 } R_List_Iterator_State;
 R_List_Iterator_State* R_List_Iterator_State_Destructor(R_List_Iterator_State* self);
-R_Type_Def(R_List_Iterator_State, NULL, R_List_Iterator_State_Destructor, NULL);
+R_Type_Def(R_List_Iterator_State, NULL, R_List_Iterator_State_Destructor, NULL, NULL);
 R_List_Iterator_State* R_List_Iterator_State_Destructor(R_List_Iterator_State* self) {
     self->list->arraySize = 0;
     R_Type_DeleteAndNull(self->list);

@@ -65,7 +65,7 @@ void R_Type_shallowCopy(const void* object_input, void* object_output) {
 }
 
 struct R_Integer {R_Type* type; int Integer;};
-R_Type_Def(R_Integer, NULL, NULL, R_Type_shallowCopy);
+R_Type_Def(R_Integer, NULL, NULL, R_Type_shallowCopy, NULL);
 R_Integer* R_Integer_set(R_Integer* self, int value) {
   if (self == NULL) return NULL;
   self->Integer = value; 
@@ -76,7 +76,7 @@ int R_Integer_get(R_Integer* self) {
 }
 
 struct R_Float {R_Type* type; float Float;};
-R_Type_Def(R_Float, NULL, NULL, R_Type_shallowCopy);
+R_Type_Def(R_Float, NULL, NULL, R_Type_shallowCopy, NULL);
 R_Float* R_Float_set(R_Float* self, float value) {
   if (self == NULL) return NULL;
   self->Float = value; 
@@ -87,7 +87,7 @@ float R_Float_get(R_Float* self) {
 }
 
 struct R_Unsigned {R_Type* type; unsigned int Integer;};
-R_Type_Def(R_Unsigned, NULL, NULL, R_Type_shallowCopy);
+R_Type_Def(R_Unsigned, NULL, NULL, R_Type_shallowCopy, NULL);
 R_Unsigned* R_Unsigned_set(R_Unsigned* self, unsigned int value) {
   if (self == NULL) return NULL;
   self->Integer = value; 
@@ -98,7 +98,7 @@ unsigned int R_Unsigned_get(R_Unsigned* self) {
 }
 
 struct R_Boolean {R_Type* type; bool Boolean;};
-R_Type_Def(R_Boolean, NULL, NULL, R_Type_shallowCopy);
+R_Type_Def(R_Boolean, NULL, NULL, R_Type_shallowCopy, NULL);
 R_Boolean* R_Boolean_set(R_Boolean* self, bool value) {
   if (self == NULL || (value != 0 && value != 1)) return NULL;
   self->Boolean = value; 
@@ -109,5 +109,5 @@ bool R_Boolean_get(R_Boolean* self) {
 }
 
 struct R_Null {R_Type* type;};
-R_Type_Def(R_Null, NULL, NULL, R_Type_shallowCopy);
+R_Type_Def(R_Null, NULL, NULL, R_Type_shallowCopy, NULL);
 

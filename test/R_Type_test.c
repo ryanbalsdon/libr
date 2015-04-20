@@ -43,11 +43,11 @@ Testor* Testor_Copier(Testor* testor, Testor* new_testor) {
   return new_testor;
 }
 
-R_Type_Def(Testor, NULL, NULL, NULL);
-R_Type_Def(ConstructorTestor, Testor_Constructor, NULL, NULL);
-R_Type_Def(DestructorTestor, NULL, Testor_Destructor, NULL);
-R_Type_Def(CopierTestor, NULL, NULL, Testor_Copier);
-R_Type_Def(FullTestor, Testor_Constructor, Testor_Destructor, Testor_Copier);
+R_Type_Def(Testor, NULL, NULL, NULL, NULL);
+R_Type_Def(ConstructorTestor, Testor_Constructor, NULL, NULL, NULL);
+R_Type_Def(DestructorTestor, NULL, Testor_Destructor, NULL, NULL);
+R_Type_Def(CopierTestor, NULL, NULL, Testor_Copier, NULL);
+R_Type_Def(FullTestor, Testor_Constructor, Testor_Destructor, Testor_Copier, NULL);
 
 void test_simple(void) {
   assert(R_Type_Object(Testor)->size == sizeof(Testor));
@@ -189,7 +189,7 @@ BadConstructorTestor* Bad_Constructor_Destructor(BadConstructorTestor* self) {
   //Generic clean-up...
   return self;
 }
-R_Type_Def(BadConstructorTestor, Bad_Constructor, Bad_Constructor_Destructor, NULL);
+R_Type_Def(BadConstructorTestor, Bad_Constructor, Bad_Constructor_Destructor, NULL, NULL);
 
 void test_bad_constructor(void) {
   BadConstructorTestor* testor = R_Type_New(BadConstructorTestor);

@@ -11,6 +11,7 @@
 
 #include <stddef.h>
 #include <stdbool.h>
+#include "R_Face.h"
 
 /*  R_Type_Constructor
     Function Pointer for an R_Type constructor. Input is an allocated space of memory. Output
@@ -39,15 +40,17 @@ typedef struct {
   R_Type_Constructor ctor; //May be NULL. If not, it's called after alloc succeeds during 'new'.
   R_Type_Destructor dtor; //May be NULL. If not, free is called on its result during 'delete'.
   R_Type_Copier copy; //If set to NULL, 'copy' will always fail. If not NULL, it's called during 'copy' to do deep copying.
+  R_Face_JumpTable interfaces; //A jump table to define implemented interfaces.
 } R_Type;
 
 #define R_Type_Object(Type) R_Type__ ## Type
 
-#define R_Type_Def(Type, ctor, dtor, copier) const R_Type* R_Type_Object(Type) = &(R_Type){ \
+#define R_Type_Def(Type, ctor, dtor, copier, interfaces) const R_Type* R_Type_Object(Type) = &(R_Type){ \
     sizeof(Type), \
     (R_Type_Constructor)ctor, \
     (R_Type_Destructor)dtor, \
-    (R_Type_Copier)copier \
+    (R_Type_Copier)copier, \
+    interfaces \
   }
 
 #define R_Type_Declare(Type) extern const R_Type* R_Type_Object(Type)
@@ -83,6 +86,7 @@ int R_Type_IsObjectOfType(const void* object, const R_Type* type);
 int R_Type_IsObjectNotOfType(const void* object, const R_Type* type);
 #define R_Type_IsNotOf(object, Type) R_Type_IsObjectNotOfType(object, R_Type_Object(Type))
 
+#define R_Type_Call(object, interface, ...) R_Face_Call((*(R_Type**)object)->interfaces, interface, __VA_ARGS__)
 
 /*  R_Type_BytesAllocated
     Number of bytes currently in-use. Mostly just useful for testing or profiling.

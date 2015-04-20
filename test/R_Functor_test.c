@@ -44,7 +44,7 @@ typedef struct {
   size_t current;
   size_t max;
 } TestIterator;
-R_Type_Def(TestIterator, NULL, NULL, NULL);
+R_Type_Def(TestIterator, NULL, NULL, NULL, NULL);
 
 void* Iterator_Advancer(TestIterator* iterator) {
   iterator->current++;

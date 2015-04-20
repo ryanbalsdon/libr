@@ -42,7 +42,7 @@ static R_Dictionary_Element* R_Dictionary_Element_Copier(R_Dictionary_Element* s
 	return new;
 }
 
-R_Type_Def(R_Dictionary_Element, R_Dictionary_Element_Constructor, R_Dictionary_Element_Destructor, R_Dictionary_Element_Copier);
+R_Type_Def(R_Dictionary_Element, R_Dictionary_Element_Constructor, R_Dictionary_Element_Destructor, R_Dictionary_Element_Copier, NULL);
 
 struct R_Dictionary {
 	R_Type* type;
@@ -65,7 +65,7 @@ static R_Dictionary* R_Dictionary_Copier(R_Dictionary* self, R_Dictionary* new) 
 	if (R_List_appendList(new->elements, self->elements) == NULL) return R_Type_Delete(new), NULL;
 	return new;
 }
-R_Type_Def(R_Dictionary, R_Dictionary_Constructor, R_Dictionary_Destructor, R_Dictionary_Copier);
+R_Type_Def(R_Dictionary, R_Dictionary_Constructor, R_Dictionary_Destructor, R_Dictionary_Copier, NULL);
 
 static R_Dictionary_Element* R_Dictionary_getElement(R_Dictionary* self, const char* key);
 
@@ -399,7 +399,7 @@ typedef struct {
     size_t previous_index;
     R_Dictionary* dictionary; //This is not a copy. Do not call R_Type_Delete on it!
 } R_Dictionary_Iterator_State;
-R_Type_Def(R_Dictionary_Iterator_State, NULL, NULL, NULL);
+R_Type_Def(R_Dictionary_Iterator_State, NULL, NULL, NULL, NULL);
 
 static void* R_Dictionary_valueIterator(R_Dictionary_Iterator_State* state) {
     if (state->previous_index == 0) return NULL;

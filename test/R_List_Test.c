@@ -29,7 +29,7 @@ Integer* Integer_Destructor(Integer* integer) {
   Integer_Destructor_Called++;
   return integer;
 }
-R_Type_Def(Integer, Integer_Constructor, Integer_Destructor, NULL);
+R_Type_Def(Integer, Integer_Constructor, Integer_Destructor, NULL, NULL);
 
 void test_allocations(void) {
 	assert(R_Type_BytesAllocated == 0);

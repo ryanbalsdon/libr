@@ -13,7 +13,7 @@
 
 static R_Functor* R_Functor_Destructor(R_Functor* self);
 static R_Functor* R_Functor_Copier(R_Functor* self, R_Functor* new);
-R_Type_Def(R_Functor, NULL, R_Functor_Destructor, R_Functor_Copier);
+R_Type_Def(R_Functor, NULL, R_Functor_Destructor, R_Functor_Copier, NULL);
 
 static R_Functor* R_Functor_Destructor(R_Functor* self) {
 	R_Type_DeleteAndNull(self->state);

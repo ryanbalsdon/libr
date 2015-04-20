@@ -20,7 +20,7 @@ struct R_String {
 static R_String* R_String_Constructor(R_String* self);
 static R_String* R_String_Destructor(R_String* self);
 static R_String* R_String_Copier(R_String* self, R_String* new);
-R_Type_Def(R_String, R_String_Constructor, R_String_Destructor, R_String_Copier);
+R_Type_Def(R_String, R_String_Constructor, R_String_Destructor, R_String_Copier, NULL);
 
 
 static R_String* R_String_Constructor(R_String* self) {

@@ -21,7 +21,7 @@ struct R_Events {
 };
 static R_Events* R_Events_Constructor(R_Events* self);
 static R_Events* R_Events_Destructor(R_Events* self);
-R_Type_Def(R_Events, R_Events_Constructor, R_Events_Destructor, NULL);
+R_Type_Def(R_Events, R_Events_Constructor, R_Events_Destructor, NULL, NULL);
 
 typedef struct {
 	R_Type* type;
@@ -29,7 +29,7 @@ typedef struct {
 	R_Events_Callback callback;
 	bool run_once;
 } R_Events_NotificationDefinition;
-R_Type_Def(R_Events_NotificationDefinition, NULL, NULL, NULL);
+R_Type_Def(R_Events_NotificationDefinition, NULL, NULL, NULL, NULL);
 
 static R_Events* R_Events_Constructor(R_Events* self) {
 	self->events = R_Type_New(R_Dictionary);
