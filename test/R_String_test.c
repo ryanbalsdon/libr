@@ -217,6 +217,12 @@ void test_base64(void) {
 	R_Type_Delete(ascii);
 }
 
+void test_puts(void) {
+ 	R_String* pass = R_String_setString(R_Type_New(R_String), "Puts Test String");
+	R_Puts(pass);
+	R_Type_Delete(pass);
+}
+
 int main(void) {
 	assert(R_Type_BytesAllocated == 0);
 	test_set_get();
@@ -229,6 +235,7 @@ int main(void) {
 	test_trim();
 	test_split();
 	test_base64();
+	test_puts();
 
 	assert(R_Type_BytesAllocated == 0);
 	printf("Pass\n");

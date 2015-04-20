@@ -23,6 +23,8 @@ R_Type_Declare(R_ByteArray);
 */
 R_ByteArray* R_ByteArray_reset(R_ByteArray* self);
 
+void R_ByteArray_puts(R_ByteArray* self);
+
 /*  R_ByteArray_setByte
     Empties the array and appends a single byte.
 */

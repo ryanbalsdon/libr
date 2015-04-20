@@ -31,6 +31,8 @@ R_String* R_String_reset(R_String* self);
 const char* R_String_getString(R_String* self);
 #define R_String_cstring R_String_getString
 
+void R_String_puts(R_String* self);
+
 /*  R_String_first
     Returns the first character of the string.
  */

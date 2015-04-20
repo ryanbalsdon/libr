@@ -8,6 +8,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "R_Type.h"
 
 size_t R_Type_BytesAllocated = 0;
@@ -65,7 +66,8 @@ void R_Type_shallowCopy(const void* object_input, void* object_output) {
 }
 
 struct R_Integer {R_Type* type; int Integer;};
-R_Type_Def(R_Integer, NULL, NULL, R_Type_shallowCopy, NULL);
+void* R_Integer_Methods(const R_Face* interface);
+R_Type_Def(R_Integer, NULL, NULL, R_Type_shallowCopy, R_Integer_Methods);
 R_Integer* R_Integer_set(R_Integer* self, int value) {
   if (self == NULL) return NULL;
   self->Integer = value; 
@@ -74,9 +76,18 @@ R_Integer* R_Integer_set(R_Integer* self, int value) {
 int R_Integer_get(R_Integer* self) {
   return self->Integer;
 }
+void R_Integer_puts(R_Integer* self) {
+  if (R_Type_IsNotOf(self, R_Integer)) return;
+  printf("%d\n", self->Integer);
+}
+void* R_Integer_Methods(const R_Face* interface) {
+  R_Face_DefJump(R_Puts, R_Integer_puts);
+  return NULL;
+}
 
 struct R_Float {R_Type* type; float Float;};
-R_Type_Def(R_Float, NULL, NULL, R_Type_shallowCopy, NULL);
+void* R_Float_Methods(const R_Face* interface);
+R_Type_Def(R_Float, NULL, NULL, R_Type_shallowCopy, R_Float_Methods);
 R_Float* R_Float_set(R_Float* self, float value) {
   if (self == NULL) return NULL;
   self->Float = value; 
@@ -85,9 +96,18 @@ R_Float* R_Float_set(R_Float* self, float value) {
 float R_Float_get(R_Float* self) {
   return self->Float;
 }
+void R_Float_puts(R_Float* self) {
+  if (R_Type_IsNotOf(self, R_Float)) return;
+  printf("%g\n", self->Float);
+}
+void* R_Float_Methods(const R_Face* interface) {
+  R_Face_DefJump(R_Puts, R_Float_puts);
+  return NULL;
+}
 
 struct R_Unsigned {R_Type* type; unsigned int Integer;};
-R_Type_Def(R_Unsigned, NULL, NULL, R_Type_shallowCopy, NULL);
+void* R_Unsigned_Methods(const R_Face* interface);
+R_Type_Def(R_Unsigned, NULL, NULL, R_Type_shallowCopy, R_Unsigned_Methods);
 R_Unsigned* R_Unsigned_set(R_Unsigned* self, unsigned int value) {
   if (self == NULL) return NULL;
   self->Integer = value; 
@@ -96,9 +116,18 @@ R_Unsigned* R_Unsigned_set(R_Unsigned* self, unsigned int value) {
 unsigned int R_Unsigned_get(R_Unsigned* self) {
   return self->Integer;
 }
+void R_Unsigned_puts(R_Unsigned* self) {
+  if (R_Type_IsNotOf(self, R_Unsigned)) return;
+  printf("%u\n", self->Integer);
+}
+void* R_Unsigned_Methods(const R_Face* interface) {
+  R_Face_DefJump(R_Puts, R_Unsigned_puts);
+  return NULL;
+}
 
 struct R_Boolean {R_Type* type; bool Boolean;};
-R_Type_Def(R_Boolean, NULL, NULL, R_Type_shallowCopy, NULL);
+void* R_Boolean_Methods(const R_Face* interface);
+R_Type_Def(R_Boolean, NULL, NULL, R_Type_shallowCopy, R_Boolean_Methods);
 R_Boolean* R_Boolean_set(R_Boolean* self, bool value) {
   if (self == NULL || (value != 0 && value != 1)) return NULL;
   self->Boolean = value; 
@@ -106,6 +135,14 @@ R_Boolean* R_Boolean_set(R_Boolean* self, bool value) {
 }
 bool R_Boolean_get(R_Boolean* self) {
   return self->Boolean;
+}
+void R_Boolean_puts(R_Boolean* self) {
+  if (R_Type_IsNotOf(self, R_Boolean)) return;
+  printf("%s\n", self->Boolean ? "true" : "false");
+}
+void* R_Boolean_Methods(const R_Face* interface) {
+  R_Face_DefJump(R_Puts, R_Boolean_puts);
+  return NULL;
 }
 
 struct R_Null {R_Type* type;};

@@ -28,5 +28,7 @@ typedef void* (*R_Face_JumpTable)(const R_Face* interface);
 #define R_Face_DefJump(name, method) if (interface == R_Face_Named(name)) return method
 #define R_Face_DefCaller(name, ...) return (f ? ((R_Face_Function__##name)f)(__VA_ARGS__) : NULL)
 
+R_Face_Declare(R_Puts, void* object)
+void R_Puts(void* object);
 
 #endif /* R_Face_h */

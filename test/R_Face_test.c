@@ -39,8 +39,8 @@ void* AwesomeClass_jumpTable(const R_Face* interface); //takes an interface/sele
 R_Type_Def(AwesomeClass, NULL, NULL, NULL, AwesomeClass_jumpTable);
 
 void* AwesomeClass_puts(AwesomeClass* self) {
-  if (self->pass_fail == 1) printf("Pass\n");
-  else printf("Fail\n");
+  if (self->pass_fail == 1) printf("Puts Test Pass\n");
+  else printf("Puts Test Fail\n");
   self->pass_fail = 0;
   return self;
 }
@@ -72,4 +72,6 @@ int main(void) {
   assert(self->pass_fail == 1);
   assert(R_Type_Call(self, puts, self) == self);
   assert(self->pass_fail == 0);
+  R_Type_Delete(self);
+  printf("Pass\n");
 }

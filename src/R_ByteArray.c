@@ -23,7 +23,8 @@ struct R_ByteArray {
 static R_ByteArray* R_ByteArray_Constructor(R_ByteArray* self);
 static R_ByteArray* R_ByteArray_Destructor(R_ByteArray* self);
 static R_ByteArray* R_ByteArray_Copier(R_ByteArray* self, R_ByteArray* new);
-R_Type_Def(R_ByteArray, R_ByteArray_Constructor, R_ByteArray_Destructor, R_ByteArray_Copier, NULL);
+static void* R_ByteArray_Methods(const R_Face* interface);
+R_Type_Def(R_ByteArray, R_ByteArray_Constructor, R_ByteArray_Destructor, R_ByteArray_Copier, R_ByteArray_Methods);
 
 static void R_ByteArray_increaseAllocationIfNeeded(R_ByteArray* self, size_t spaceNeeded);
 
@@ -41,6 +42,10 @@ static R_ByteArray* R_ByteArray_Destructor(R_ByteArray* self) {
 static R_ByteArray* R_ByteArray_Copier(R_ByteArray* self, R_ByteArray* new) {
 	R_ByteArray_appendArray(new, self);
 	return new;
+}
+static void* R_ByteArray_Methods(const R_Face* interface) {
+  R_Face_DefJump(R_Puts, R_ByteArray_puts);
+  return NULL;
 }
 
 R_ByteArray* R_ByteArray_reset(R_ByteArray* self) {
@@ -61,6 +66,16 @@ static void R_ByteArray_increaseAllocationIfNeeded(R_ByteArray* self, size_t spa
 		self->buffer = (uint8_t*)realloc(self->buffer, self->buffer_size);
 		self->head = self->buffer + head_offset;
 	}
+}
+
+void R_ByteArray_puts(R_ByteArray* self) {
+	if (R_Type_IsNotOf(self, R_ByteArray)) return;
+	printf("{");
+	for (int i=0; i<R_ByteArray_size(self); i++) {
+		printf("0x%02X", R_ByteArray_byte(self, i));
+		if (i < R_ByteArray_size(self)-1) printf(", ");
+	}
+	printf("}\n");
 }
 
 R_ByteArray* R_ByteArray_appendByte(R_ByteArray* self, uint8_t byte) {

@@ -266,6 +266,12 @@ void test_bcd(void) {
 	R_Type_Delete(array);
 }
 
+void test_puts(void) {
+	R_ByteArray* test = R_ByteArray_setBytes(R_Type_New(R_ByteArray), 0x01, 0x20, 0x02, 0x01);
+	R_Puts(test);
+	R_Type_Delete(test);
+}
+
 int main(void) {
 	assert(R_Type_BytesAllocated == 0);
 
@@ -281,6 +287,7 @@ int main(void) {
 	test_copy();
 	test_append_integers();
 	test_bcd();
+	test_puts();
 
 	assert(R_Type_BytesAllocated == 0);
 	printf("Pass\n");

@@ -20,7 +20,8 @@ struct R_String {
 static R_String* R_String_Constructor(R_String* self);
 static R_String* R_String_Destructor(R_String* self);
 static R_String* R_String_Copier(R_String* self, R_String* new);
-R_Type_Def(R_String, R_String_Constructor, R_String_Destructor, R_String_Copier, NULL);
+static void* R_String_Methods(const R_Face* interface);
+R_Type_Def(R_String, R_String_Constructor, R_String_Destructor, R_String_Copier, R_String_Methods);
 
 
 static R_String* R_String_Constructor(R_String* self) {
@@ -39,6 +40,11 @@ static R_String* R_String_Copier(R_String* self, R_String* new) {
 	return new;
 }
 
+static void* R_String_Methods(const R_Face* interface) {
+  R_Face_DefJump(R_Puts, R_String_puts);
+  return NULL;
+}
+
 
 R_String* R_String_reset(R_String* self) {
 	if (self == NULL) return NULL;
@@ -47,6 +53,11 @@ R_String* R_String_reset(R_String* self) {
 	R_ByteArray_reset(self->array);
 
 	return self;
+}
+
+void R_String_puts(R_String* self) {
+	if (R_Type_IsNotOf(self, R_String)) return;
+	printf("%.*s\n", (int)R_String_length(self), R_ByteArray_bytes(R_String_bytes(self)));
 }
 
 const char* R_String_getString(R_String* self) {
