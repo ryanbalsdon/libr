@@ -464,6 +464,17 @@ void test_empty_object(void) {
 	R_Type_Delete(dict);
 }
 
+void test_puts(void) {
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
+
+	R_String* string = R_Dictionary_add(dict, "hello", R_String);
+	R_String_appendCString(string, "world");
+
+	R_Puts(dict);
+
+	R_Type_Delete(dict);
+}
+
 int main(void) {
 	assert(R_Type_BytesAllocated == 0);
 	test_allocation();
@@ -489,6 +500,7 @@ int main(void) {
 	test_empty_array();
 	test_array_with_one_object();
 	test_empty_object();
+	test_puts();
 
 	assert(R_Type_BytesAllocated == 0);
 	printf("Pass\n");

@@ -100,4 +100,6 @@ R_String* R_Dictionary_toJson(R_Dictionary* self, R_String* buffer);
  */
 R_Dictionary* R_Dictionary_fromJson(R_Dictionary* self, R_String* buffer);
 
+void R_Dictionary_puts(R_Dictionary* self);
+
 #endif /* R_Dictionary_h */

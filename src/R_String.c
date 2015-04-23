@@ -40,9 +40,9 @@ static R_String* R_String_Copier(R_String* self, R_String* new) {
 	return new;
 }
 
-static void* R_String_Methods(const R_Face* interface) {
-  R_Face_DefJump(R_Puts, R_String_puts);
-  return NULL;
+	static void* R_String_Methods(const R_Face* interface) {
+	R_Face_DefJump(R_Puts, R_String_puts);
+	return NULL;
 }
 
 

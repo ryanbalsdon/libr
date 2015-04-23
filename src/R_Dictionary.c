@@ -51,6 +51,8 @@ struct R_Dictionary {
 static R_Dictionary* R_Dictionary_Constructor(R_Dictionary* self);
 static R_Dictionary* R_Dictionary_Destructor(R_Dictionary* self);
 static R_Dictionary* R_Dictionary_Copier(R_Dictionary* self, R_Dictionary* new);
+static void* R_Dictionary_Methods(const R_Face* interface);
+R_Type_Def(R_Dictionary, R_Dictionary_Constructor, R_Dictionary_Destructor, R_Dictionary_Copier, R_Dictionary_Methods);
 
 static R_Dictionary* R_Dictionary_Constructor(R_Dictionary* self) {
 	self->elements = R_Type_New(R_List);
@@ -65,7 +67,11 @@ static R_Dictionary* R_Dictionary_Copier(R_Dictionary* self, R_Dictionary* new) 
 	if (R_List_appendList(new->elements, self->elements) == NULL) return R_Type_Delete(new), NULL;
 	return new;
 }
-R_Type_Def(R_Dictionary, R_Dictionary_Constructor, R_Dictionary_Destructor, R_Dictionary_Copier, NULL);
+static void* R_Dictionary_Methods(const R_Face* interface) {
+	R_Face_DefJump(R_Puts, R_Dictionary_puts);
+	return NULL;
+}
+
 
 static R_Dictionary_Element* R_Dictionary_getElement(R_Dictionary* self, const char* key);
 
@@ -431,4 +437,12 @@ R_Functor* R_Dictionary_KeyIterator(R_Functor* functor, R_Dictionary* dictionary
     functor->state = state;
     functor->function = (R_Functor_Function)R_Dictionary_keyIterator;
     return functor;
+}
+
+void R_Dictionary_puts(R_Dictionary* self) {
+  if (R_Type_IsNotOf(self, R_Dictionary)) return;
+  R_String* buffer = R_Type_New(R_String);
+  R_Dictionary_toJson(self, buffer);
+  R_String_puts(buffer);
+  R_Type_Delete(buffer);
 }

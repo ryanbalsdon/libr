@@ -13,11 +13,11 @@
 
 
 struct R_ByteArray {
-  R_Type* type;
-  uint8_t* buffer;
-  uint8_t* head;
-  size_t buffer_size;
-  size_t array_size;
+	R_Type* type;
+	uint8_t* buffer;
+	uint8_t* head;
+	size_t buffer_size;
+	size_t array_size;
 };
 
 static R_ByteArray* R_ByteArray_Constructor(R_ByteArray* self);
@@ -44,8 +44,8 @@ static R_ByteArray* R_ByteArray_Copier(R_ByteArray* self, R_ByteArray* new) {
 	return new;
 }
 static void* R_ByteArray_Methods(const R_Face* interface) {
-  R_Face_DefJump(R_Puts, R_ByteArray_puts);
-  return NULL;
+	R_Face_DefJump(R_Puts, R_ByteArray_puts);
+	return NULL;
 }
 
 R_ByteArray* R_ByteArray_reset(R_ByteArray* self) {

@@ -23,7 +23,8 @@ struct R_List {
 static R_List* R_List_Constructor(R_List* self);
 static R_List* R_List_Destructor(R_List* self);
 static R_List* R_List_Copier(R_List* self, R_List* new);
-R_Type_Def(R_List, R_List_Constructor, R_List_Destructor, R_List_Copier, NULL);
+static void* R_List_Methods(const R_Face* interface);
+R_Type_Def(R_List, R_List_Constructor, R_List_Destructor, R_List_Copier, R_List_Methods);
 
 static void R_List_increaseAllocationIfRequired(R_List* self);
 
@@ -44,6 +45,11 @@ static R_List* R_List_Destructor(R_List* self) {
 
 static R_List* R_List_Copier(R_List* self, R_List* new) {
     return R_List_appendList(new, self);
+}
+
+static void* R_List_Methods(const R_Face* interface) {
+    R_Face_DefJump(R_Puts, R_List_puts);
+    return NULL;
 }
 
 inline size_t R_List_size(R_List* self) {
@@ -211,4 +217,10 @@ R_Functor* R_List_Iterator(R_Functor* functor, R_List* list) {
     functor->state = state;
     functor->function = (R_Functor_Function)R_List_iterator;
     return functor;
+}
+
+void R_List_puts(R_List* self) {
+  if (R_Type_IsNotOf(self, R_List)) return;
+  printf("Listing %zu:\n", R_List_size(self));
+  R_List_each(self, void, item) {R_Puts(item);}
 }

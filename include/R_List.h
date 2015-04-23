@@ -107,4 +107,6 @@ R_Functor* R_List_Iterator(R_Functor* functor, R_List* list);
  */
 #define R_List_each(array, TYPE, NAME) for(TYPE* NAME=NULL; (NAME=(TYPE*)R_List_pointerAtIndex(array, R_List_indexOfPointer(array, NAME)+1));)
 
+void R_List_puts(R_List* self);
+
 #endif /* R_List_h */

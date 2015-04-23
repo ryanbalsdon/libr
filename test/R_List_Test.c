@@ -12,6 +12,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "R_List.h"
+#include "R_String.h"
 
 struct Integer {
   R_Type* type;
@@ -286,6 +287,14 @@ void test_append(void) {
   R_Type_Delete(list_b);
 }
 
+void test_puts(void) {
+  R_List* list = R_Type_New(R_List);
+  R_String_setString(R_List_add(list, R_String), "hello");
+  R_String_setString(R_List_add(list, R_String), "world");
+  R_Puts(list);
+  R_Type_Delete(list);
+}
+
 int main(void) {
 	test_allocations();
 	test_integer();
@@ -298,6 +307,7 @@ int main(void) {
 	test_add_copy();
 	test_copy();
 	test_append();
+  test_puts();
 
 	assert(R_Type_BytesAllocated == 0);
 	printf("Pass\n");
