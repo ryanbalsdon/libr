@@ -13,10 +13,10 @@
 #include "R_Type.h"
 
 //References to a selector. These would normally be in a header file
-R_Face_Declare(puts, void* self)
-R_Face_Declare(init, void* self)
-R_Face_Declare(change, void* self, int new)
-R_Face_Declare(not_implemented, void* self)
+R_Face_Declare(puts, void*, void* self)
+R_Face_Declare(init, void*, void* self)
+R_Face_Declare(change, int, void* self, int new)
+R_Face_Declare(not_implemented, void*, void* self)
 
 //Definition of the selector. Guts don't matter, we just need a unique pointer
 R_Face_Def(puts);
@@ -25,11 +25,10 @@ R_Face_Def(change);
 R_Face_Def(not_implemented);
 
 //Callers are needed because doing tail-call recursion in the jump table is difficult
-R_Face_DeclareCaller(puts, void* self) {R_Face_DefCaller(puts, self);}
-R_Face_DeclareCaller(init, void* self) {R_Face_DefCaller(init, self);}
-R_Face_DeclareCaller(change, void* self, int new) {R_Face_DefCaller(change, self, new);}
-R_Face_DeclareCaller(not_implemented, void* self) {R_Face_DefCaller(not_implemented, self);}
-
+R_Face_DeclareCaller(puts, void*, void* self) {R_Face_DefCaller(puts, NULL, self);}
+R_Face_DeclareCaller(init, void*, void* self) {R_Face_DefCaller(init, NULL, self);}
+R_Face_DeclareCaller(change, int, void* self, int new) {R_Face_DefCaller(change, 0, self, new);}
+R_Face_DeclareCaller(not_implemented, void*, void* self) {R_Face_DefCaller(not_implemented, NULL, self);}
 
 typedef struct {
   R_Type* type;
@@ -50,9 +49,9 @@ void* AwesomeClass_constructor(AwesomeClass* self) {
   return self;
 }
 
-void* AwesomeClass_whatever(AwesomeClass* self, int new) {
+int AwesomeClass_whatever(AwesomeClass* self, int new) {
   self->pass_fail = new;
-  return self;
+  return new;
 }
 
 void* AwesomeClass_jumpTable(const R_Face* interface) {
@@ -68,7 +67,7 @@ int main(void) {
   assert(R_Type_Call(self, not_implemented, self) == NULL);
   assert(R_Type_Call(self, init, self) == self);
   assert(self->pass_fail == 2);
-  assert(R_Type_Call(self, change, self, 1) == self);
+  assert(R_Type_Call(self, change, self, 1) == 1);
   assert(self->pass_fail == 1);
   assert(R_Type_Call(self, puts, self) == self);
   assert(self->pass_fail == 0);

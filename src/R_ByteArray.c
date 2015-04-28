@@ -45,6 +45,7 @@ static R_ByteArray* R_ByteArray_Copier(R_ByteArray* self, R_ByteArray* new) {
 }
 static void* R_ByteArray_Methods(const R_Face* interface) {
 	R_Face_DefJump(R_Puts, R_ByteArray_puts);
+	R_Face_DefJump(R_Equals, R_ByteArray_isSame);
 	return NULL;
 }
 
@@ -168,6 +169,10 @@ uint8_t R_ByteArray_last(const R_ByteArray* self) {
 
 int R_ByteArray_compare(const R_ByteArray* self, const R_ByteArray* comparor) {
 	return R_ByteArray_compareWithCArray(self, R_ByteArray_bytes(comparor), R_ByteArray_size(comparor));
+}
+
+bool R_ByteArray_isSame(R_ByteArray* self, R_ByteArray* comparor) {
+	return (R_ByteArray_compare(self, comparor) == 0);
 }
 
 int R_ByteArray_compareWithCArray(const R_ByteArray* self, const uint8_t* comparor, size_t bytes) {

@@ -85,8 +85,9 @@ int R_Type_IsObjectOfType(const void* object, const R_Type* type);
 #define R_Type_IsOf(object, Type) R_Type_IsObjectOfType(object, R_Type_Object(Type))
 int R_Type_IsObjectNotOfType(const void* object, const R_Type* type);
 #define R_Type_IsNotOf(object, Type) R_Type_IsObjectNotOfType(object, R_Type_Object(Type))
+#define R_Type_Of(object) ((object==NULL)?NULL:(*(R_Type**)object))
 
-#define R_Type_Call(object, interface, ...) R_Face_Call((*(R_Type**)object)->interfaces, interface, __VA_ARGS__)
+#define R_Type_Call(object, interface, ...) R_Face_Call((R_Type_Of(object)?R_Type_Of(object)->interfaces:NULL), interface, __VA_ARGS__)
 
 /*  R_Type_BytesAllocated
     Number of bytes currently in-use. Mostly just useful for testing or profiling.

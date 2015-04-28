@@ -157,6 +157,11 @@ R_ByteArray* R_ByteArray_moveSubArray(R_ByteArray* self, R_ByteArray* array, siz
  */
 int R_ByteArray_compare(const R_ByteArray* self, const R_ByteArray* comparor);
 
+/*  R_ByteArray_isSame
+    Returns true if the arrays are equal length and have identical contents.
+ */
+bool R_ByteArray_isSame(R_ByteArray* self, R_ByteArray* comparor);
+
 /*  R_ByteArray_compare
     Returns 0 if both arrays are the same length and have identical contents.
  */

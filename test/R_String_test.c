@@ -108,20 +108,24 @@ void test_is_same(void) {
 	R_String_setString(stringB, "sizes");
 	assert(R_String_isSame(stringA, stringB) == false);
 	assert(R_String_isSame(stringB, stringA) == false);
+	assert(R_Equals(stringA, stringB) == false);
 	assert(R_String_compare(stringA, "different") == true);
 	assert(R_String_compare(stringA, "diff") == false);
 	R_String_setString(stringA, "same");
 	R_String_setString(stringB, "size");
 	assert(R_String_isSame(stringA, stringB) == false);
 	assert(R_String_isSame(stringB, stringA) == false);
+	assert(R_Equals(stringA, stringB) == false);
 	R_String_setString(stringA, "substring");
 	R_String_setString(stringB, "substrin");
 	assert(R_String_isSame(stringA, stringB) == false);
 	assert(R_String_isSame(stringB, stringA) == false);
+	assert(R_Equals(stringA, stringB) == false);
 	R_String_setString(stringA, "actually equal");
 	R_String_setString(stringB, "actually equal");
 	assert(R_String_isSame(stringA, stringB) == true);
 	assert(R_String_isSame(stringB, stringA) == true);
+	assert(R_Equals(stringA, stringB) == true);
 	R_Type_Delete(stringA);
 	R_Type_Delete(stringB);
 }
@@ -236,6 +240,7 @@ int main(void) {
 	test_split();
 	test_base64();
 	test_puts();
+	test_is_same();
 
 	assert(R_Type_BytesAllocated == 0);
 	printf("Pass\n");
