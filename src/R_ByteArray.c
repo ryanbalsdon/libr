@@ -172,7 +172,8 @@ int R_ByteArray_compare(const R_ByteArray* self, const R_ByteArray* comparor) {
 }
 
 bool R_ByteArray_isSame(R_ByteArray* self, R_ByteArray* comparor) {
-	return (R_ByteArray_compare(self, comparor) == 0);
+	if (R_ByteArray_compare(self, comparor) != 0) return false;
+	return true;
 }
 
 int R_ByteArray_compareWithCArray(const R_ByteArray* self, const uint8_t* comparor, size_t bytes) {
