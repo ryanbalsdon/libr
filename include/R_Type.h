@@ -9,6 +9,7 @@
  * present and future rights to this software under copyright law.
  */
 
+#include "R_OS.h"
 #include <stddef.h>
 #include <stdbool.h>
 #include "R_Face.h"
@@ -58,14 +59,14 @@ typedef struct {
 /*  R_Type_New
     Allocates a new object of the given type. Allocates and nulls type->size bytes than calls type->ctor, if it isn't null.
  */
-void* R_Type_NewObjectOfType(const R_Type* type);
+void* R_FUNCTION_ATTRIBUTES R_Type_NewObjectOfType(const R_Type* type);
 #define R_Type_New(Type) (Type*)R_Type_NewObjectOfType(R_Type_Object(Type))
 
 /*  R_Type_Delete
     Gives the memory allocated to the given object back to the system. If type->dtor isn't null, free is called on the result
    of it. If type->dtor is null, free is called on the given object.
  */
-void R_Type_Delete(void* object);
+void R_FUNCTION_ATTRIBUTES R_Type_Delete(void* object);
 
 /*  R_Type_DeleteAndNull
     Convenience macro that runs R_Type_Delete against the object then sets the object to NULL.
@@ -76,14 +77,14 @@ void R_Type_Delete(void* object);
     Deep-copies the given object. If type->copy is null, this will always fail (and return null). If type->copy isn't null, a new
    object of the same type is allocated, type->ctor is run on it (if it isn't null) and type->copy is run on both.
  */
-void* R_Type_Copy(const void* object);
+void* R_FUNCTION_ATTRIBUTES R_Type_Copy(const void* object);
 
 /*  R_Type_Type(void* object);
     Returns whether the object is the given type/class. Casts the given object to an R_Type** then dereferences and compares it. Useful as shorthand.
  */
-int R_Type_IsObjectOfType(const void* object, const R_Type* type);
+int R_FUNCTION_ATTRIBUTES R_Type_IsObjectOfType(const void* object, const R_Type* type);
 #define R_Type_IsOf(object, Type) R_Type_IsObjectOfType(object, R_Type_Object(Type))
-int R_Type_IsObjectNotOfType(const void* object, const R_Type* type);
+int R_FUNCTION_ATTRIBUTES R_Type_IsObjectNotOfType(const void* object, const R_Type* type);
 #define R_Type_IsNotOf(object, Type) R_Type_IsObjectNotOfType(object, R_Type_Object(Type))
 #define R_Type_Of(object) ((object==NULL)?NULL:(*(R_Type**)object))
 
@@ -97,39 +98,39 @@ extern size_t R_Type_BytesAllocated;
 /* R_Type_shallowCopy
    A basic R_Type_Copier for objects without any internally-allocated memory.
  */
-void R_Type_shallowCopy(const void* object_input, void* object_output);
+void R_FUNCTION_ATTRIBUTES R_Type_shallowCopy(const void* object_input, void* object_output);
 
 /* R_Integer
    A basic integer type.
  */
 typedef struct R_Integer R_Integer;
 R_Type_Declare(R_Integer);
-R_Integer* R_Integer_set(R_Integer* self, int value);
-int R_Integer_get(R_Integer* self);
+R_Integer* R_FUNCTION_ATTRIBUTES R_Integer_set(R_Integer* self, int value);
+int R_FUNCTION_ATTRIBUTES R_Integer_get(R_Integer* self);
 
 /* R_Float
    A basic floating point type.
  */
 typedef struct R_Float R_Float;
 R_Type_Declare(R_Float);
-R_Float* R_Float_set(R_Float* self, float value);
-float R_Float_get(R_Float* self);
+R_Float* R_FUNCTION_ATTRIBUTES R_Float_set(R_Float* self, float value);
+float R_FUNCTION_ATTRIBUTES R_Float_get(R_Float* self);
 
 /* R_Unsigned
    A basic unsigned integer type.
  */
 typedef struct R_Unsigned R_Unsigned;
 R_Type_Declare(R_Unsigned);
-R_Unsigned* R_Unsigned_set(R_Unsigned* self, unsigned int value);
-unsigned int R_Unsigned_get(R_Unsigned* self);
+R_Unsigned* R_FUNCTION_ATTRIBUTES R_Unsigned_set(R_Unsigned* self, unsigned int value);
+unsigned int R_FUNCTION_ATTRIBUTES R_Unsigned_get(R_Unsigned* self);
 
 /* R_Boolean
    A basic boolean type.
  */
 typedef struct R_Boolean R_Boolean;
 R_Type_Declare(R_Boolean);
-R_Boolean* R_Boolean_set(R_Boolean* self, bool value);
-bool R_Boolean_get(R_Boolean* self);
+R_Boolean* R_FUNCTION_ATTRIBUTES R_Boolean_set(R_Boolean* self, bool value);
+bool R_FUNCTION_ATTRIBUTES R_Boolean_get(R_Boolean* self);
 
 /* R_Null
    A useless type.

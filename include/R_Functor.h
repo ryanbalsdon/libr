@@ -22,7 +22,7 @@ R_Type_Declare(R_Functor);
 /*  R_Functor_call
  Calls the functor once.
  */
-void* R_Functor_call(R_Functor*);
+void* R_FUNCTION_ATTRIBUTES R_Functor_call(R_Functor*);
 
 /*  R_Functor_call
  Loops the functor until it returns NULL.

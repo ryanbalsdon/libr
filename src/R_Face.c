@@ -14,11 +14,11 @@
 
 R_Face_Def(R_Puts);
 R_Face_DeclareCaller(R_Puts, void*, void* object) {R_Face_DefCaller(R_Puts, NULL, object);}
-void R_Puts(void* object) {R_Type_Call(object, R_Puts, object);}
+void R_FUNCTION_ATTRIBUTES R_Puts(void* object) {R_Type_Call(object, R_Puts, object);}
 
 R_Face_Def(R_Equals);
 R_Face_DeclareCaller(R_Equals, int, void* object_a, void* object_b) {R_Face_DefCaller(R_Equals, false, object_a, object_b);}
-int R_Equals(void* object_a, void* object_b) {
+int R_FUNCTION_ATTRIBUTES R_Equals(void* object_a, void* object_b) {
   if (R_Type_Of(object_a) != R_Type_Of(object_b)) return false;
   return R_Type_Call(object_a, R_Equals, object_a, object_b);
 }

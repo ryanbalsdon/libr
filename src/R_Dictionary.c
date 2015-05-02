@@ -20,22 +20,22 @@ typedef struct {
 	R_String* key;
 	void* value; //May be a string, integer, float, array of values or a dictionary
 } R_Dictionary_Element;
-static R_Dictionary_Element* R_Dictionary_Element_Constructor(R_Dictionary_Element* self);
-static R_Dictionary_Element* R_Dictionary_Element_Destructor(R_Dictionary_Element* self);
-static R_Dictionary_Element* R_Dictionary_Element_Copier(R_Dictionary_Element* self, R_Dictionary_Element* new);
+static R_Dictionary_Element* R_FUNCTION_ATTRIBUTES R_Dictionary_Element_Constructor(R_Dictionary_Element* self);
+static R_Dictionary_Element* R_FUNCTION_ATTRIBUTES R_Dictionary_Element_Destructor(R_Dictionary_Element* self);
+static R_Dictionary_Element* R_FUNCTION_ATTRIBUTES R_Dictionary_Element_Copier(R_Dictionary_Element* self, R_Dictionary_Element* new);
 
-static R_Dictionary_Element* R_Dictionary_Element_Constructor(R_Dictionary_Element* self) {
+static R_Dictionary_Element* R_FUNCTION_ATTRIBUTES R_Dictionary_Element_Constructor(R_Dictionary_Element* self) {
 	self->key = R_Type_New(R_String);
 	return self;
 }
 
-static R_Dictionary_Element* R_Dictionary_Element_Destructor(R_Dictionary_Element* self) {
+static R_Dictionary_Element* R_FUNCTION_ATTRIBUTES R_Dictionary_Element_Destructor(R_Dictionary_Element* self) {
 	R_Type_DeleteAndNull(self->key);
 	R_Type_DeleteAndNull(self->value);
 	return self;
 }
 
-static R_Dictionary_Element* R_Dictionary_Element_Copier(R_Dictionary_Element* self, R_Dictionary_Element* new) {
+static R_Dictionary_Element* R_FUNCTION_ATTRIBUTES R_Dictionary_Element_Copier(R_Dictionary_Element* self, R_Dictionary_Element* new) {
 	new->value = R_Type_Copy(self->value);
 	if (new->value == NULL) return R_Type_Delete(new), NULL;
 	R_String_appendString(new->key, self->key);
@@ -48,34 +48,34 @@ struct R_Dictionary {
 	R_Type* type;
 	R_List* elements;
 };
-static R_Dictionary* R_Dictionary_Constructor(R_Dictionary* self);
-static R_Dictionary* R_Dictionary_Destructor(R_Dictionary* self);
+static R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_Constructor(R_Dictionary* self);
+static R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_Destructor(R_Dictionary* self);
 static R_Dictionary* R_Dictionary_Copier(R_Dictionary* self, R_Dictionary* new);
-static void* R_Dictionary_Methods(const R_Face* interface);
+static void* R_FUNCTION_ATTRIBUTES R_Dictionary_Methods(const R_Face* interface);
 R_Type_Def(R_Dictionary, R_Dictionary_Constructor, R_Dictionary_Destructor, R_Dictionary_Copier, R_Dictionary_Methods);
 
-static R_Dictionary* R_Dictionary_Constructor(R_Dictionary* self) {
+static R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_Constructor(R_Dictionary* self) {
 	self->elements = R_Type_New(R_List);
 	return self;
 }
 
-static R_Dictionary* R_Dictionary_Destructor(R_Dictionary* self) {
+static R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_Destructor(R_Dictionary* self) {
 	R_Type_DeleteAndNull(self->elements);
 	return self;
 }
-static R_Dictionary* R_Dictionary_Copier(R_Dictionary* self, R_Dictionary* new) {
+static R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_Copier(R_Dictionary* self, R_Dictionary* new) {
 	if (R_List_appendList(new->elements, self->elements) == NULL) return R_Type_Delete(new), NULL;
 	return new;
 }
-static void* R_Dictionary_Methods(const R_Face* interface) {
+static void* R_FUNCTION_ATTRIBUTES R_Dictionary_Methods(const R_Face* interface) {
 	R_Face_DefJump(R_Puts, R_Dictionary_puts);
 	return NULL;
 }
 
 
-static R_Dictionary_Element* R_Dictionary_getElement(R_Dictionary* self, const char* key);
+static R_Dictionary_Element* R_FUNCTION_ATTRIBUTES R_Dictionary_getElement(R_Dictionary* self, const char* key);
 
-void* R_Dictionary_addObjectOfType(R_Dictionary* self, const char* key, const R_Type* type) {
+void* R_FUNCTION_ATTRIBUTES R_Dictionary_addObjectOfType(R_Dictionary* self, const char* key, const R_Type* type) {
 	if (R_Type_IsNotOf(self, R_Dictionary) || key == NULL || type == NULL) return NULL;
 	R_Dictionary_Element* element = R_Dictionary_getElement(self, key);
 	if (element == NULL) {
@@ -88,7 +88,7 @@ void* R_Dictionary_addObjectOfType(R_Dictionary* self, const char* key, const R_
 	return element->value;
 }
 
-void* R_Dictionary_addCopy(R_Dictionary* self, const char* key, const void* object) {
+void* R_FUNCTION_ATTRIBUTES R_Dictionary_addCopy(R_Dictionary* self, const char* key, const void* object) {
 	if (R_Type_IsNotOf(self, R_Dictionary) || key == NULL || object == NULL) return NULL;
 	R_Dictionary_Element* element = R_Dictionary_getElement(self, key);
 	if (element == NULL) {
@@ -101,7 +101,7 @@ void* R_Dictionary_addCopy(R_Dictionary* self, const char* key, const void* obje
 	return element->value;
 }
 
-R_Dictionary* R_Dictionary_merge(R_Dictionary* self, R_Dictionary* dictionary_to_copy) {
+R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_merge(R_Dictionary* self, R_Dictionary* dictionary_to_copy) {
 	if (R_Type_IsNotOf(self, R_Dictionary) || R_Type_IsNotOf(dictionary_to_copy, R_Dictionary)) return NULL;
 	R_List_each(dictionary_to_copy->elements, R_Dictionary_Element, element) {
 		if (R_Dictionary_addCopy(self, R_String_cstring(element->key), element->value) == NULL) return NULL;
@@ -109,7 +109,7 @@ R_Dictionary* R_Dictionary_merge(R_Dictionary* self, R_Dictionary* dictionary_to
 	return self;
 }
 
-void* R_Dictionary_transferOwnership(R_Dictionary* self, const char* key, void* object) {
+void* R_FUNCTION_ATTRIBUTES R_Dictionary_transferOwnership(R_Dictionary* self, const char* key, void* object) {
 	if (R_Type_IsNotOf(self, R_Dictionary) || key == NULL) return NULL;
 	R_Dictionary_Element* element = R_Dictionary_getElement(self, key);
 	if (element == NULL) {
@@ -122,23 +122,23 @@ void* R_Dictionary_transferOwnership(R_Dictionary* self, const char* key, void* 
 	return element->value;
 }
 
-void R_Dictionary_remove(R_Dictionary* self, const char* key) {
+void R_FUNCTION_ATTRIBUTES R_Dictionary_remove(R_Dictionary* self, const char* key) {
 	if (self == NULL || key == NULL) return;
 	R_List_removePointer(self->elements, R_Dictionary_getElement(self, key));
 }
 
-void* R_Dictionary_get(R_Dictionary* self, const char* key) {
+void* R_FUNCTION_ATTRIBUTES R_Dictionary_get(R_Dictionary* self, const char* key) {
 	if (self == NULL || key == NULL) return NULL;
 	R_Dictionary_Element* element = R_Dictionary_getElement(self, key);
 	if (element == NULL) return NULL;
 	return element->value;
 }
 
-void* R_Dictionary_getFromString(R_Dictionary* self, R_String* key) {
+void* R_FUNCTION_ATTRIBUTES R_Dictionary_getFromString(R_Dictionary* self, R_String* key) {
 	return R_Dictionary_get(self, R_String_cstring(key));
 }
 
-static R_Dictionary_Element* R_Dictionary_getElement(R_Dictionary* self, const char* key) {
+static R_Dictionary_Element* R_FUNCTION_ATTRIBUTES R_Dictionary_getElement(R_Dictionary* self, const char* key) {
 	if (self == NULL || key == NULL) return NULL;
 	R_List_each(self->elements, R_Dictionary_Element, element) {
 		if (R_String_compare(element->key, key)) return element;
@@ -146,24 +146,24 @@ static R_Dictionary_Element* R_Dictionary_getElement(R_Dictionary* self, const c
 	return NULL;
 }
 
-void R_Dictionary_removeAll(R_Dictionary* self) {
+void R_FUNCTION_ATTRIBUTES R_Dictionary_removeAll(R_Dictionary* self) {
 	if (self == NULL) return;
 	R_List_removeAll(self->elements);
 }
-bool R_Dictionary_isPresent(R_Dictionary* self, const char* key) {
+bool R_FUNCTION_ATTRIBUTES R_Dictionary_isPresent(R_Dictionary* self, const char* key) {
 	if (R_Dictionary_getElement(self, key) == NULL) return false;
 	return true;
 }
-bool R_Dictionary_isNotPresent(R_Dictionary* self, const char* key) {
+bool R_FUNCTION_ATTRIBUTES R_Dictionary_isNotPresent(R_Dictionary* self, const char* key) {
 	return !R_Dictionary_isPresent(self, key);
 }
-size_t R_Dictionary_size(R_Dictionary* self) {
+size_t R_FUNCTION_ATTRIBUTES R_Dictionary_size(R_Dictionary* self) {
 	if (self == NULL) return 0;
 	return R_List_size(self->elements);
 }
 
-static void R_Dictionary_toJson_writeValue(R_String* buffer, void* value);
-R_String* R_Dictionary_toJson(R_Dictionary* self, R_String* buffer) {
+static void R_FUNCTION_ATTRIBUTES R_Dictionary_toJson_writeValue(R_String* buffer, void* value);
+R_String* R_FUNCTION_ATTRIBUTES R_Dictionary_toJson(R_Dictionary* self, R_String* buffer) {
 	if (R_Type_IsNotOf(self, R_Dictionary) || buffer == NULL || R_String_reset(buffer) == NULL) return NULL;
 	R_String_appendCString(buffer, "{");
 
@@ -178,7 +178,7 @@ R_String* R_Dictionary_toJson(R_Dictionary* self, R_String* buffer) {
 	return buffer;
 }
 
-static void R_Dictionary_toJson_writeValue(R_String* buffer, void* value) {
+static void R_FUNCTION_ATTRIBUTES R_Dictionary_toJson_writeValue(R_String* buffer, void* value) {
 	if (R_Type_IsOf(value, R_String)) R_String_appendStringAsJson(buffer, value);
 	else if (R_Type_IsOf(value, R_Integer)) R_String_appendInt(buffer, R_Integer_get(value));
 	else if (R_Type_IsOf(value, R_Float)) R_String_appendFloat(buffer, R_Float_get(value));
@@ -203,13 +203,13 @@ static void R_Dictionary_toJson_writeValue(R_String* buffer, void* value) {
 	else R_String_appendCString(buffer, "\"Unknown Type\"");
 }
 
-static R_String* R_Dictionary_fromJson_moveQuotedString(R_String* source, R_String* dest);
-static void* R_Dictionary_fromJson_readNumber(R_String* source);
-static void* R_Dictionary_fromJson_readValue(R_String* string);
-static R_Dictionary* R_Dictionary_fromJson_readObject(R_Dictionary* object, R_String* string);
-static R_String* R_Dictionary_fromJson_advanceToNextNonWhitespace(R_String* string);
-static R_List* R_Dictionary_fromJson_readArray(R_String* string);
-R_Dictionary* R_Dictionary_fromJson(R_Dictionary* self, R_String* buffer) {
+static R_String* R_FUNCTION_ATTRIBUTES R_Dictionary_fromJson_moveQuotedString(R_String* source, R_String* dest);
+static void* R_FUNCTION_ATTRIBUTES R_Dictionary_fromJson_readNumber(R_String* source);
+static void* R_FUNCTION_ATTRIBUTES R_Dictionary_fromJson_readValue(R_String* string);
+static R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_fromJson_readObject(R_Dictionary* object, R_String* string);
+static R_String* R_FUNCTION_ATTRIBUTES R_Dictionary_fromJson_advanceToNextNonWhitespace(R_String* string);
+static R_List* R_FUNCTION_ATTRIBUTES R_Dictionary_fromJson_readArray(R_String* string);
+R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_fromJson(R_Dictionary* self, R_String* buffer) {
 	if (self == NULL || buffer == NULL) return NULL;
 	R_Dictionary_removeAll(self);
 	R_String* string = R_Type_Copy(buffer);
@@ -222,7 +222,7 @@ R_Dictionary* R_Dictionary_fromJson(R_Dictionary* self, R_String* buffer) {
 	return self;
 }
 
-static R_String* R_Dictionary_fromJson_moveQuotedString(R_String* source, R_String* dest) {
+static R_String* R_FUNCTION_ATTRIBUTES R_Dictionary_fromJson_moveQuotedString(R_String* source, R_String* dest) {
 	if (source == NULL || dest == NULL) return NULL;
 	if (R_String_first(source) != '"') return NULL;
 	R_String_shift(source);
@@ -247,7 +247,7 @@ static R_String* R_Dictionary_fromJson_moveQuotedString(R_String* source, R_Stri
 	return NULL;
 }
 
-static R_Dictionary* R_Dictionary_fromJson_readObject(R_Dictionary* object, R_String* string) {
+static R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_fromJson_readObject(R_Dictionary* object, R_String* string) {
 	if (R_String_first(string) != '{') return NULL;
 	R_Dictionary_fromJson_advanceToNextNonWhitespace(string);
 	while (R_String_length(string) > 0) {
@@ -279,13 +279,13 @@ static R_Dictionary* R_Dictionary_fromJson_readObject(R_Dictionary* object, R_St
 	return object;
 }
 
-static R_String* R_Dictionary_fromJson_advanceToNextNonWhitespace(R_String* string) {
+static R_String* R_FUNCTION_ATTRIBUTES R_Dictionary_fromJson_advanceToNextNonWhitespace(R_String* string) {
 	R_String_shift(string);
 	R_String_trim(string);
 	return string;
 }
 
-static void* R_Dictionary_fromJson_readValue(R_String* string) {
+static void* R_FUNCTION_ATTRIBUTES R_Dictionary_fromJson_readValue(R_String* string) {
 	if (R_String_first(string) == '"') {//value is a string
 		R_String* value = R_Type_New(R_String);
 		if (R_Dictionary_fromJson_moveQuotedString(string, value) == NULL) return R_Type_Delete(value), NULL;
@@ -296,18 +296,18 @@ static void* R_Dictionary_fromJson_readValue(R_String* string) {
 	}
 	else if (R_String_first(string) == 't' || R_String_first(string) == 'f') {//value is a boolean (true)
 		const char* characters = R_String_cstring(string);
-		if (strstr(characters, "true") == characters) {
+		if (os_strstr(characters, "true") == characters) {
 			R_String_getSubstring(string, string, 4, 0);
 			return R_Boolean_set(R_Type_New(R_Boolean), true);
 		}
-		else if (strstr(characters, "false") == characters) {
+		else if (os_strstr(characters, "false") == characters) {
 			R_String_getSubstring(string, string, 5, 0);
 			return R_Boolean_set(R_Type_New(R_Boolean), false);
 		}
 	}
 	else if (R_String_first(string) == 'n') {//value is a null
 		const char* characters = R_String_cstring(string);
-		if (strstr(characters, "null") == characters) {
+		if (os_strstr(characters, "null") == characters) {
 			R_String_getSubstring(string, string, 4, 0);
 			return R_Type_New(R_Null);
 		}
@@ -325,7 +325,7 @@ static void* R_Dictionary_fromJson_readValue(R_String* string) {
 	return NULL;
 }
 
-static R_List* R_Dictionary_fromJson_readArray(R_String* string) {
+static R_List* R_FUNCTION_ATTRIBUTES R_Dictionary_fromJson_readArray(R_String* string) {
 	if (R_String_first(string) != '[') return NULL;
 	R_List* array = R_Type_New(R_List);
 	R_Dictionary_fromJson_advanceToNextNonWhitespace(string);
@@ -350,7 +350,7 @@ static R_List* R_Dictionary_fromJson_readArray(R_String* string) {
 	return R_Type_Delete(array), NULL;
 }
 
-static void* R_Dictionary_fromJson_readNumber(R_String* source) {
+static void* R_FUNCTION_ATTRIBUTES R_Dictionary_fromJson_readNumber(R_String* source) {
 	if (source == NULL) return NULL;
 	R_String* value = R_Type_New(R_String);
 	bool isFloat = false;
@@ -407,14 +407,14 @@ typedef struct {
 } R_Dictionary_Iterator_State;
 R_Type_Def(R_Dictionary_Iterator_State, NULL, NULL, NULL, NULL);
 
-static void* R_Dictionary_valueIterator(R_Dictionary_Iterator_State* state) {
+static void* R_FUNCTION_ATTRIBUTES R_Dictionary_valueIterator(R_Dictionary_Iterator_State* state) {
     if (state->previous_index == 0) return NULL;
     R_Dictionary_Element* element = R_List_pointerAtIndex(state->dictionary->elements, --state->previous_index);
     if (element == NULL) return NULL;
     return element->value;
 }
 
-R_Functor* R_Dictionary_ValueIterator(R_Functor* functor, R_Dictionary* dictionary) {
+R_Functor* R_FUNCTION_ATTRIBUTES R_Dictionary_ValueIterator(R_Functor* functor, R_Dictionary* dictionary) {
     R_Dictionary_Iterator_State* state = R_Type_New(R_Dictionary_Iterator_State);
     state->dictionary = dictionary;
     state->previous_index = R_List_size(dictionary->elements);
@@ -423,14 +423,14 @@ R_Functor* R_Dictionary_ValueIterator(R_Functor* functor, R_Dictionary* dictiona
     return functor;
 }
 
-static void* R_Dictionary_keyIterator(R_Dictionary_Iterator_State* state) {
+static void* R_FUNCTION_ATTRIBUTES R_Dictionary_keyIterator(R_Dictionary_Iterator_State* state) {
     if (state->previous_index == 0) return NULL;
     R_Dictionary_Element* element = R_List_pointerAtIndex(state->dictionary->elements, --state->previous_index);
     if (element == NULL) return NULL;
     return element->key;
 }
 
-R_Functor* R_Dictionary_KeyIterator(R_Functor* functor, R_Dictionary* dictionary) {
+R_Functor* R_FUNCTION_ATTRIBUTES R_Dictionary_KeyIterator(R_Functor* functor, R_Dictionary* dictionary) {
     R_Dictionary_Iterator_State* state = R_Type_New(R_Dictionary_Iterator_State);
     state->dictionary = dictionary;
     state->previous_index = R_List_size(dictionary->elements);
@@ -439,7 +439,7 @@ R_Functor* R_Dictionary_KeyIterator(R_Functor* functor, R_Dictionary* dictionary
     return functor;
 }
 
-void R_Dictionary_puts(R_Dictionary* self) {
+void R_FUNCTION_ATTRIBUTES R_Dictionary_puts(R_Dictionary* self) {
   if (R_Type_IsNotOf(self, R_Dictionary)) return;
   R_String* buffer = R_Type_New(R_String);
   R_Dictionary_toJson(self, buffer);

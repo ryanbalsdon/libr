@@ -23,164 +23,164 @@ R_Type_Declare(R_String);
 /*  R_String_reset
     Empties the string.
  */
-R_String* R_String_reset(R_String* self);
+R_String* R_FUNCTION_ATTRIBUTES R_String_reset(R_String* self);
 
 /*  R_String_getString
     Returns a buffer to a C String. This buffer is not a copy!
  */
-const char* R_String_getString(R_String* self);
+const char* R_FUNCTION_ATTRIBUTES R_String_getString(R_String* self);
 #define R_String_cstring R_String_getString
 
-void R_String_puts(R_String* self);
+void R_FUNCTION_ATTRIBUTES R_String_puts(R_String* self);
 
 /*  R_String_first
     Returns the first character of the string.
  */
-char R_String_first(const R_String* self);
+char R_FUNCTION_ATTRIBUTES R_String_first(const R_String* self);
 
 /*  R_String_shift
     Removes the first character from the string.
  */
-char R_String_shift(R_String* self);
+char R_FUNCTION_ATTRIBUTES R_String_shift(R_String* self);
 
 /*  R_String_first
     Returns the last character of the string.
  */
-char R_String_last(const R_String* self);
+char R_FUNCTION_ATTRIBUTES R_String_last(const R_String* self);
 
 /*  R_String_pop
     Removes the last character from the string.
  */
-char R_String_pop(R_String* self);
+char R_FUNCTION_ATTRIBUTES R_String_pop(R_String* self);
 
 /*  R_String_character
     Gets the character at the given index or 0 on error.
  */
-char R_String_character(R_String* self, size_t index);
+char R_FUNCTION_ATTRIBUTES R_String_character(R_String* self, size_t index);
 
 /*  R_String_push
     Apends one character to the end of the string.
  */
-R_String* R_String_push(R_String* self, char character);
+R_String* R_FUNCTION_ATTRIBUTES R_String_push(R_String* self, char character);
 
 /*  R_String_trim
     Removes whitespace from the beginning and end of the string.
  */
-R_String* R_String_trim(R_String* self);
+R_String* R_FUNCTION_ATTRIBUTES R_String_trim(R_String* self);
 
 
 /*  R_String_appendCString
     Appends the given C String to the end of the string.
  */
-R_String* R_String_appendCString(R_String* self, const char* string);
+R_String* R_FUNCTION_ATTRIBUTES R_String_appendCString(R_String* self, const char* string);
 
 /*  R_String_appendString
     Appends the given string.
  */
-R_String* R_String_appendString(R_String* self, R_String* string);
+R_String* R_FUNCTION_ATTRIBUTES R_String_appendString(R_String* self, R_String* string);
 
 /*  R_String_appendBytes
     Appends the given number of characters to the string.
  */
-R_String* R_String_appendBytes(R_String* self, const char* bytes, size_t byteCount);
+R_String* R_FUNCTION_ATTRIBUTES R_String_appendBytes(R_String* self, const char* bytes, size_t byteCount);
 
 /*  R_String_appendArray
     Appends the given R_ByteArray, assuming it's ASCII.
  */
-R_String* R_String_appendArray(R_String* self, const R_ByteArray* array);
+R_String* R_FUNCTION_ATTRIBUTES R_String_appendArray(R_String* self, const R_ByteArray* array);
 
 /*  R_String_appendArrayAsHex
     Appends the given array as a hex string. ie [0x2a, 0x50] becomes "2A50"
  */
-R_String* R_String_appendArrayAsHex(R_String* self, const R_ByteArray* array);
+R_String* R_FUNCTION_ATTRIBUTES R_String_appendArrayAsHex(R_String* self, const R_ByteArray* array);
 
 /*  R_String_setString
     Empties the string then appends the given C String.
  */
-R_String* R_String_setString(R_String* self, const char* string);
+R_String* R_FUNCTION_ATTRIBUTES R_String_setString(R_String* self, const char* string);
 
 /*  R_String_setSizedString
     Empties the string then appends the given number of bytes of the given C String.
  */
-R_String* R_String_setSizedString(R_String* self, const char* string, size_t stringLength);
+R_String* R_FUNCTION_ATTRIBUTES R_String_setSizedString(R_String* self, const char* string, size_t stringLength);
 
 /*  R_String_length
     Returns the number of characters in the string.
  */
-size_t R_String_length(const R_String* self);
+size_t R_FUNCTION_ATTRIBUTES R_String_length(const R_String* self);
 #define R_String_size R_String_length
 
 /*  R_String_appendInt
     Converts the given integer to a string and appends it.
  */
-R_String* R_String_appendInt(R_String* self, int value);
+R_String* R_FUNCTION_ATTRIBUTES R_String_appendInt(R_String* self, int value);
 
 /*  R_String_appendInt
     Converts the string to an integer and returns it.
  */
-int R_String_getInt(R_String* self);
+int R_FUNCTION_ATTRIBUTES R_String_getInt(R_String* self);
 
 /*  R_String_appendFloat 
     Converts the given float to a string and appends it.
  */
-R_String* R_String_appendFloat(R_String* self, float value);
+R_String* R_FUNCTION_ATTRIBUTES R_String_appendFloat(R_String* self, float value);
 
 /*  R_String_getFloat
     Converts the string to a float and returns it.
  */
-float R_String_getFloat(R_String* self);
+float R_FUNCTION_ATTRIBUTES R_String_getFloat(R_String* self);
 
 /*  R_String_getSubstring
     Sets the given output string to the substring in between the given indexes. The characters at the given indexes are included.
  */
-R_String* R_String_getSubstring(R_String* self, R_String* output, size_t startingIndex, size_t length);
+R_String* R_FUNCTION_ATTRIBUTES R_String_getSubstring(R_String* self, R_String* output, size_t startingIndex, size_t length);
 
 /*  R_String_moveSubstring
     Sets the given output string to the substring in between the given indexes. The characters at the given indexes are included.
  */
-R_String* R_String_moveSubstring(R_String* self, R_String* output, size_t startingIndex, size_t length);
+R_String* R_FUNCTION_ATTRIBUTES R_String_moveSubstring(R_String* self, R_String* output, size_t startingIndex, size_t length);
 
 /*  R_String_isEmpty
     Returns true if there are no characters in the string.
  */
-bool R_String_isEmpty(R_String* self);
+bool R_FUNCTION_ATTRIBUTES R_String_isEmpty(R_String* self);
 
 /*  R_String_isSame
     Returns true if the strings are equal length and have identical contents.
  */
-bool R_String_isSame(R_String* self, R_String* comparor);
+bool R_FUNCTION_ATTRIBUTES R_String_isSame(R_String* self, R_String* comparor);
 
 /*  R_String_compare
     Returns true if the output of strcmp would be 0
  */
-bool R_String_compare(const R_String* self, const char* comparor);
+bool R_FUNCTION_ATTRIBUTES R_String_compare(const R_String* self, const char* comparor);
 
 /*  R_String_appendStringAsJson
     Formats string as a quoted JSON-formatted string value and appends it to self.
  */
-R_String* R_String_appendStringAsJson(R_String* self, R_String* string);
+R_String* R_FUNCTION_ATTRIBUTES R_String_appendStringAsJson(R_String* self, R_String* string);
 
 /*  R_String_bytes
     The raw bytes in the string. This array is not null-terminated!
  */
-const R_ByteArray* R_String_bytes(R_String* self);
+const R_FUNCTION_ATTRIBUTES R_ByteArray* R_String_bytes(R_String* self);
 
 /*  R_String_bytes
     Returns the first index of the given substring or -1.
  */
-int R_String_find(R_String* self, const char* substring);
+int R_FUNCTION_ATTRIBUTES R_String_find(R_String* self, const char* substring);
 
 /*  R_String_split
     Splits the string into lines (seperated by the given seperator) and adds each line as a string to the output list.
  */
-R_List* R_String_split(R_String* self, const char* seperator, R_List* output);
+R_List* R_FUNCTION_ATTRIBUTES R_String_split(R_String* self, const char* seperator, R_List* output);
 
 /* R_String_join
    Appends the strings in the given list to self, seperated by the seperator
  */
-R_String* R_String_join(R_String* self, const char* seperator, R_List* input);
+R_String* R_FUNCTION_ATTRIBUTES R_String_join(R_String* self, const char* seperator, R_List* input);
 
-R_String* R_String_appendArrayAsBase64(R_String* self, const R_ByteArray* array);
+R_String* R_FUNCTION_ATTRIBUTES R_String_appendArrayAsBase64(R_String* self, const R_ByteArray* array);
 
 
 #endif /* R_String_h */

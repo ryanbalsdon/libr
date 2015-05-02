@@ -19,8 +19,8 @@ struct R_Events {
 	R_Type* type;
 	R_Dictionary* events;
 };
-static R_Events* R_Events_Constructor(R_Events* self);
-static R_Events* R_Events_Destructor(R_Events* self);
+static R_Events* R_FUNCTION_ATTRIBUTES R_Events_Constructor(R_Events* self);
+static R_Events* R_FUNCTION_ATTRIBUTES R_Events_Destructor(R_Events* self);
 R_Type_Def(R_Events, R_Events_Constructor, R_Events_Destructor, NULL, NULL);
 
 typedef struct {
@@ -31,19 +31,19 @@ typedef struct {
 } R_Events_NotificationDefinition;
 R_Type_Def(R_Events_NotificationDefinition, NULL, NULL, NULL, NULL);
 
-static R_Events* R_Events_Constructor(R_Events* self) {
+static R_Events* R_FUNCTION_ATTRIBUTES R_Events_Constructor(R_Events* self) {
 	self->events = R_Type_New(R_Dictionary);
 	if (self->events == NULL) return NULL;
 	return self;
 }
 
-static R_Events* R_Events_Destructor(R_Events* self) {
+static R_Events* R_FUNCTION_ATTRIBUTES R_Events_Destructor(R_Events* self) {
 	R_Type_Delete(self->events);
 	return self;
 }
 
-static R_Events_NotificationDefinition* R_Events_newDefinition(R_Events* self, const char* event_key);
-R_Events* R_Events_register(R_Events* self, const char* event_key, void* target, R_Events_Callback callback) {
+static R_Events_NotificationDefinition* R_FUNCTION_ATTRIBUTES R_Events_newDefinition(R_Events* self, const char* event_key);
+R_Events* R_FUNCTION_ATTRIBUTES R_Events_register(R_Events* self, const char* event_key, void* target, R_Events_Callback callback) {
 	if (self == NULL || event_key == NULL || callback == NULL) return NULL; //target can be NULL!
 	R_Events_NotificationDefinition* def = R_Events_newDefinition(self, event_key);
 	if (def == NULL) return NULL;
@@ -53,7 +53,7 @@ R_Events* R_Events_register(R_Events* self, const char* event_key, void* target,
 	return self;
 }
 
-R_Events* R_Events_registerOnce(R_Events* self, const char* event_key, void* target, R_Events_Callback callback) {
+R_Events* R_FUNCTION_ATTRIBUTES R_Events_registerOnce(R_Events* self, const char* event_key, void* target, R_Events_Callback callback) {
 	if (self == NULL || event_key == NULL || callback == NULL) return NULL; //target can be NULL!
 	R_Events_NotificationDefinition* def = R_Events_newDefinition(self, event_key);
 	if (def == NULL) return NULL;
@@ -63,7 +63,7 @@ R_Events* R_Events_registerOnce(R_Events* self, const char* event_key, void* tar
 	return self;
 }
 
-static R_Events_NotificationDefinition* R_Events_newDefinition(R_Events* self, const char* event_key) {
+static R_FUNCTION_ATTRIBUTES R_Events_NotificationDefinition* R_Events_newDefinition(R_Events* self, const char* event_key) {
 	if (self == NULL || event_key == NULL) return NULL;
 
 	R_List* events_for_key = NULL;
@@ -77,7 +77,7 @@ static R_Events_NotificationDefinition* R_Events_newDefinition(R_Events* self, c
 	return def;
 }
 
-R_Events* R_Events_remove(R_Events* self, const char* event_key, const void* target, R_Events_Callback callback) {
+R_Events* R_FUNCTION_ATTRIBUTES R_Events_remove(R_Events* self, const char* event_key, const void* target, R_Events_Callback callback) {
 	if (self == NULL || event_key == NULL || callback == NULL) return NULL; //target can be NULL!
 	R_List* events_for_key = R_Dictionary_get(self->events, event_key);
 	if (events_for_key == NULL) return NULL;
@@ -92,7 +92,7 @@ R_Events* R_Events_remove(R_Events* self, const char* event_key, const void* tar
 	return self;
 }
 
-R_Events* R_Events_removeTarget(R_Events* self, const void* target) {
+R_Events* R_FUNCTION_ATTRIBUTES R_Events_removeTarget(R_Events* self, const void* target) {
 	if (self == NULL) return NULL; //target can be NULL!
 
 	R_Functor* event_iterator = R_Dictionary_ValueIterator(R_Type_New(R_Functor), self->events);
@@ -112,7 +112,7 @@ R_Events* R_Events_removeTarget(R_Events* self, const void* target) {
 	return self;
 }
 
-R_Events* R_Events_notify(R_Events* self, const char* event_key, void* payload) {
+R_Events* R_FUNCTION_ATTRIBUTES R_Events_notify(R_Events* self, const char* event_key, void* payload) {
 	if (self == NULL || event_key == NULL) return NULL; //payload can be NULL!
 	R_List* events_for_key = R_Dictionary_get(self->events, event_key);
 	if (events_for_key == NULL) return NULL;
@@ -128,7 +128,7 @@ R_Events* R_Events_notify(R_Events* self, const char* event_key, void* payload) 
 	return self;
 }
 
-bool R_Events_isRegistered(R_Events* self, const char* event_key, void* target, R_Events_Callback callback) {
+bool R_FUNCTION_ATTRIBUTES R_Events_isRegistered(R_Events* self, const char* event_key, void* target, R_Events_Callback callback) {
 	if (self == NULL || event_key == NULL || callback == NULL) return false;
 	R_List* events_for_key = R_Dictionary_get(self->events, event_key);
 	if (events_for_key == NULL) return false;

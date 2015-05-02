@@ -39,7 +39,7 @@ void test_appendCArray(void) {
 	uint8_t bytes[] = {0x00, 0x01, 0x02, 0x03};
 	R_ByteArray_appendCArray(array, bytes, sizeof(bytes));
 	assert(R_ByteArray_size(array) == sizeof(bytes));
-	assert(memcmp(bytes, R_ByteArray_bytes(array), sizeof(bytes)) == 0);
+	assert(os_memcmp(bytes, R_ByteArray_bytes(array), sizeof(bytes)) == 0);
 	R_ByteArray_appendByte(array, 0xA5);
 	assert(R_ByteArray_size(array) == sizeof(bytes)+1);
 	assert(R_ByteArray_bytes(array)[sizeof(bytes)] == 0xA5);
@@ -56,7 +56,7 @@ void test_appendArray(void) {
 	assert(R_ByteArray_size(array) == sizeof(bytes));
 	R_ByteArray_appendArray(array2, array);
 	assert(R_ByteArray_size(array2) == sizeof(bytes));
-	assert(memcmp(bytes, R_ByteArray_bytes(array2), sizeof(bytes)) == 0);
+	assert(os_memcmp(bytes, R_ByteArray_bytes(array2), sizeof(bytes)) == 0);
 	R_Type_Delete(array);
 	R_Type_Delete(array2);
 }
@@ -206,7 +206,7 @@ void test_copy(void) {
 	R_ByteArray* array2 = R_Type_Copy(array);
 	assert(array2 != NULL);
 	assert(R_ByteArray_size(array2) == sizeof(bytes));
-	assert(memcmp(bytes, R_ByteArray_bytes(array2), sizeof(bytes)) == 0);
+	assert(os_memcmp(bytes, R_ByteArray_bytes(array2), sizeof(bytes)) == 0);
 	R_Type_Delete(array);
 	R_Type_Delete(array2);
 }
