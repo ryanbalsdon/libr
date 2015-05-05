@@ -11,9 +11,9 @@
 
 #include <stdbool.h>
 #include "R_Type.h"
-#include "R_String.h"
-#include "R_Functor.h"
- 
+#include "R_String.h" 
+#include "R_List.h"
+#include "R_KeyValuePair.h"
 
 typedef struct R_Dictionary R_Dictionary;
 R_Type_Declare(R_Dictionary);
@@ -75,16 +75,6 @@ bool R_FUNCTION_ATTRIBUTES R_Dictionary_isPresent(R_Dictionary* self, const char
  */
 bool R_FUNCTION_ATTRIBUTES R_Dictionary_isNotPresent(R_Dictionary* self, const char* key);
 
-/*  R_Dictionary_ValueIterator
-    Initializes a functor that can be used to iterate over the dictionary keys.
- */
-R_Functor* R_FUNCTION_ATTRIBUTES R_Dictionary_KeyIterator(R_Functor* functor, R_Dictionary* dictionary);
-
-/*  R_Dictionary_ValueIterator
-    Initializes a functor that can be used to iterate over the dictionary values.
- */
-R_Functor* R_FUNCTION_ATTRIBUTES R_Dictionary_ValueIterator(R_Functor* functor, R_Dictionary* dictionary);
-
 /*  R_Dictionary_size
     Returns the number of keys in the dictionary.
  */
@@ -101,5 +91,7 @@ R_String* R_FUNCTION_ATTRIBUTES R_Dictionary_toJson(R_Dictionary* self, R_String
 R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_fromJson(R_Dictionary* self, R_String* buffer);
 
 void R_FUNCTION_ATTRIBUTES R_Dictionary_puts(R_Dictionary* self);
+
+R_List* R_FUNCTION_ATTRIBUTES R_Dictionary_listOfPairs(R_Dictionary* self);
 
 #endif /* R_Dictionary_h */

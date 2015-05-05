@@ -10,7 +10,6 @@
  */
 
 #include "R_Type.h"
-#include "R_Functor.h"
 
 R_Type_Declare(R_List);
 typedef struct R_List R_List;
@@ -40,6 +39,11 @@ void* R_FUNCTION_ATTRIBUTES R_List_addCopy(R_List* self, const void* object);
     Appends the given list by adding a copy of every element. Returns NULL on the first failed copy.
  */
 void* R_FUNCTION_ATTRIBUTES R_List_appendList(R_List* self, R_List* list);
+
+/*  R_List_appendList
+    Appends the given list by transfering ownership of every element. Returns NULL on the first failed copy.
+ */
+void* R_FUNCTION_ATTRIBUTES R_List_transferList(R_List* self, R_List* list);
 
 /*  R_List_removeIndex
     Removes the object at the given index and destroys it.
@@ -96,11 +100,6 @@ void R_FUNCTION_ATTRIBUTES R_List_shift(R_List* self);
     Swaps the locations of the two objects at the given indexes.
  */
 void R_FUNCTION_ATTRIBUTES R_List_swap(R_List* self, int indexA, int indexB);
-
-/*  R_List_Iterator
-    Initializes a functor as an iterator/enumerator for the list. Each call returns the next element.
- */
-R_Functor* R_FUNCTION_ATTRIBUTES R_List_Iterator(R_Functor* functor, R_List* list);
 
 /*  R_List_each
     Sets up a loop to iterate over the list.

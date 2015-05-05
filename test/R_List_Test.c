@@ -143,42 +143,6 @@ void test_cleanup(void) {
 	assert(R_Type_BytesAllocated == 0);
 }
 
-void test_objectarray_iterator(void) {
-  R_List* array = R_Type_New(R_List);
-  R_Integer* integer = R_List_add(array, R_Integer);
-  R_Integer_set(integer, 0);
-  integer = R_List_add(array, R_Integer);
-  R_Integer_set(integer, 1);
-  integer = R_List_add(array, R_Integer);
-  R_Integer_set(integer, 2);
-
-  bool integer0_found = false;
-  bool integer1_found = false;
-  bool integer2_found = false;
-
-  R_Functor* iterator = R_List_Iterator(R_Type_New(R_Functor), array);
-  R_Integer* element = NULL;
-  while ((element = R_Functor_call(iterator)) != NULL) {
-    assert(R_Type_IsOf(element, R_Integer));
-    if (R_Integer_get(element) == 0) integer0_found = true;
-    if (R_Integer_get(element) == 1) integer1_found = true;
-    if (R_Integer_get(element) == 2) integer2_found = true;
-  }
-
-  assert(integer0_found);
-  assert(integer1_found);
-  assert(integer2_found);
-
-  iterator = R_List_Iterator(iterator, array);
-  while ((element = R_Functor_call(iterator)) != NULL) {
-    R_List_removePointer(array, element);
-  }
-  assert(R_List_size(array) == 0);
-
-  R_Type_Delete(iterator);
-  R_Type_Delete(array);
-}
-
 void test_objectarray_each(void) {
   R_List* array = R_Type_New(R_List);
   R_Integer* integer = R_List_add(array, R_Integer);
@@ -251,6 +215,7 @@ void test_copy(void) {
 
   assert(array_copy != NULL);
   assert(R_List_size(array_copy) == 4);
+  R_Puts(array_copy);
   assert(R_Integer_get(R_List_pointerAtIndex(array_copy, 0)) == 0);
   assert(R_Integer_get(R_List_pointerAtIndex(array_copy, 1)) == 1);
   assert(R_Integer_get(R_List_pointerAtIndex(array_copy, 2)) == 2);
@@ -302,7 +267,6 @@ int main(void) {
 	test_swap();
 	test_cleanup();
 	test_transfer();
-	test_objectarray_iterator();
 	test_objectarray_each();
 	test_add_copy();
 	test_copy();

@@ -78,36 +78,32 @@ static R_FUNCTION_ATTRIBUTES R_Events_NotificationDefinition* R_Events_newDefini
 }
 
 R_Events* R_FUNCTION_ATTRIBUTES R_Events_remove(R_Events* self, const char* event_key, const void* target, R_Events_Callback callback) {
-	if (self == NULL || event_key == NULL || callback == NULL) return NULL; //target can be NULL!
+	if (R_Type_IsNotOf(self, R_Events) || event_key == NULL || callback == NULL) return NULL; //target can be NULL!
 	R_List* events_for_key = R_Dictionary_get(self->events, event_key);
 	if (events_for_key == NULL) return NULL;
 
-	R_Functor* iterator = R_List_Iterator(R_Type_New(R_Functor), events_for_key);
-	if (iterator == NULL) return NULL;
-	R_Events_NotificationDefinition* def = NULL;
-	while ((def = R_Functor_call(iterator)) != NULL) {
-		if (def->target == target && def->callback == callback) R_List_removePointer(events_for_key, def);
+	for (int i=R_List_size(events_for_key)-1; i>=0; i--) {
+		R_Events_NotificationDefinition* notification = R_List_pointerAtIndex(events_for_key, i);
+		if (notification == NULL) return NULL;
+		if (notification->target == target && notification->callback == callback) R_List_removePointer(events_for_key, notification);
 	}
-	R_Type_Delete(iterator);
+
 	return self;
 }
 
 R_Events* R_FUNCTION_ATTRIBUTES R_Events_removeTarget(R_Events* self, const void* target) {
 	if (self == NULL) return NULL; //target can be NULL!
 
-	R_Functor* event_iterator = R_Dictionary_ValueIterator(R_Type_New(R_Functor), self->events);
-	if (event_iterator == NULL) return NULL;
-	R_List* event = NULL;
-	while ((event = R_Functor_call(event_iterator)) != NULL) {
-		R_Functor* def_iterator = R_List_Iterator(R_Type_New(R_Functor), event);
-		if (def_iterator == NULL) return R_Type_Delete(event_iterator), NULL;
-		R_Events_NotificationDefinition* def = NULL;
-		while ((def = R_Functor_call(def_iterator)) != NULL) {
-			if (def->target == target) R_List_removePointer(event, def);
+	R_List* event_pairs = R_Dictionary_listOfPairs(self->events);
+	for (int i=0; i<R_List_size(event_pairs); i++) {
+		R_List* event = R_KeyValuePair_value(R_List_pointerAtIndex(event_pairs, i));
+		if (event == NULL) return NULL;
+		for (int j=R_List_size(event)-1; j>=0; j--) {
+			R_Events_NotificationDefinition* notification = R_List_pointerAtIndex(event, j);
+			if (notification == NULL) return NULL;
+			if (notification->target == target) R_List_removePointer(event, notification);
 		}
-		R_Type_Delete(def_iterator);
 	}
-	R_Type_Delete(event_iterator);
 
 	return self;
 }
@@ -117,14 +113,13 @@ R_Events* R_FUNCTION_ATTRIBUTES R_Events_notify(R_Events* self, const char* even
 	R_List* events_for_key = R_Dictionary_get(self->events, event_key);
 	if (events_for_key == NULL) return NULL;
 
-	R_Functor* iterator = R_List_Iterator(R_Type_New(R_Functor), events_for_key);
-	if (iterator == NULL) return NULL;
-	R_Events_NotificationDefinition* def = NULL;
-	while ((def = R_Functor_call(iterator)) != NULL) {
-		if (def->callback) def->callback(def->target, event_key, payload);
-		if (def->run_once) R_List_removePointer(events_for_key, def);
+	for (int i=R_List_size(events_for_key)-1; i>=0; i--) {
+		R_Events_NotificationDefinition* notification = R_List_pointerAtIndex(events_for_key, i);
+		if (notification == NULL) return NULL;
+		if (notification->callback) notification->callback(notification->target, event_key, payload);
+		if (notification->run_once) R_List_removePointer(events_for_key, notification);
 	}
-	R_Type_Delete(iterator);
+
 	return self;
 }
 
@@ -132,13 +127,11 @@ bool R_FUNCTION_ATTRIBUTES R_Events_isRegistered(R_Events* self, const char* eve
 	if (self == NULL || event_key == NULL || callback == NULL) return false;
 	R_List* events_for_key = R_Dictionary_get(self->events, event_key);
 	if (events_for_key == NULL) return false;
-	R_Functor* iterator = R_List_Iterator(R_Type_New(R_Functor), events_for_key);
-	if (iterator == NULL) return false;
-	R_Events_NotificationDefinition* def = NULL;
-	while ((def = R_Functor_call(iterator)) != NULL) {
-		if (def->target == target && def->callback == callback) return R_Type_Delete(iterator), true;
+	
+	for (int i=R_List_size(events_for_key)-1; i>=0; i--) {
+		R_Events_NotificationDefinition* notification = R_List_pointerAtIndex(events_for_key, i);
+		if (notification == NULL) return NULL;
+		if (notification->target == target && notification->callback == callback) return true;
 	}
-	R_Type_Delete(iterator);
 	return false;
 }
-
