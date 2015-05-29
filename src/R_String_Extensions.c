@@ -34,13 +34,21 @@ R_String* R_FUNCTION_ATTRIBUTES R_String_setSizedString(R_String* self, const ch
 }
 
 R_String* R_FUNCTION_ATTRIBUTES R_String_appendInt(R_String* self, int value) {
+#ifdef ESP8266
+  char characters[10]; //because max value of int32 is 213748364
+#else
   char characters[os_snprintf(NULL, 0, "%d", value)];
+#endif
   os_sprintf(characters, "%d", value);
   return R_String_appendCString(self, characters);
 }
 
 R_String* R_FUNCTION_ATTRIBUTES R_String_appendFloat(R_String* self, float value) {
+#ifdef ESP8266
+  char characters[14]; //because most digits I've seen from %g is 4.94066e-324
+#else
   char characters[os_snprintf(NULL, 0, "%g", value)];
+#endif
   os_sprintf(characters, "%g", value);
   return R_String_appendCString(self, characters);
 }
@@ -48,12 +56,19 @@ R_String* R_FUNCTION_ATTRIBUTES R_String_appendFloat(R_String* self, float value
 int R_FUNCTION_ATTRIBUTES R_String_getInt(R_String* self) {
   if (R_Type_IsNotOf(self, R_String)) return 0;
   int output = 0;
+#ifdef ESP8266
+  return os_atoi(R_String_getString(self));
+#else
   if (os_sscanf(R_String_getString(self), "%d", &output) == 1) return output;
+#endif
   return 0;
 }
 float R_FUNCTION_ATTRIBUTES R_String_getFloat(R_String* self) {
   if (R_Type_IsNotOf(self, R_String)) return 0.0f;
   float output = 0.0f;
+#ifdef ESP8266
+  return os_atof(R_String_getString(self));
+#endif
   if (os_sscanf(R_String_getString(self), "%g", &output) == 1) return output;
   return 0.0f;
 }
@@ -87,7 +102,7 @@ R_String* R_FUNCTION_ATTRIBUTES R_String_appendStringAsJson(R_String* self, R_St
 int R_FUNCTION_ATTRIBUTES R_String_find(R_String* self, const char* substring) {
   if (R_Type_IsNotOf(self, R_String) || substring == NULL) return -1;
   const char* string = R_String_cstring(self);
-  char* result = os_strstr(string, substring);
+  char* result = (char*)os_strstr(string, substring);
   if (result == NULL) return -1;
   return (int)(result - string);
 }

@@ -9,9 +9,19 @@
  * present and future rights to this software under copyright law.
  */
 
+void* os_realloc_alt(void* old_ptr, size_t new_size);
+int os_atoi_alt(const char* string);
+double os_atof_alt(const char* string);
+
 #ifdef ESP8266
+  #include "mem.h"
+  #include "osapi.h"
+  #define os_realloc os_realloc_alt
+  #define os_atoi os_atoi_alt
+  #define os_atof os_atof_alt
   #define R_FUNCTION_ATTRIBUTES __attribute__((section(".irom0.text")))
 #else
+  #include <string.h>
   #define os_calloc calloc
   #define os_zalloc(size) os_calloc(1,size)
   #define os_free free

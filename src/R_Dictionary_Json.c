@@ -151,18 +151,18 @@ static void* R_FUNCTION_ATTRIBUTES R_Dictionary_fromJson_readValue(R_String* str
   }
   else if (R_String_first(string) == 't' || R_String_first(string) == 'f') {//value is a boolean (true)
     const char* characters = R_String_cstring(string);
-    if (os_strstr(characters, "true") == characters) {
+    if ((char*)os_strstr(characters, "true") == characters) {
       R_String_getSubstring(string, string, 4, 0);
       return R_Boolean_set(R_Type_New(R_Boolean), true);
     }
-    else if (os_strstr(characters, "false") == characters) {
+    else if ((char*)os_strstr(characters, "false") == characters) {
       R_String_getSubstring(string, string, 5, 0);
       return R_Boolean_set(R_Type_New(R_Boolean), false);
     }
   }
   else if (R_String_first(string) == 'n') {//value is a null
     const char* characters = R_String_cstring(string);
-    if (os_strstr(characters, "null") == characters) {
+    if ((char*)os_strstr(characters, "null") == characters) {
       R_String_getSubstring(string, string, 4, 0);
       return R_Type_New(R_Null);
     }

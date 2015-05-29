@@ -15,7 +15,7 @@ size_t R_Type_BytesAllocated = 0;
 
 void* R_FUNCTION_ATTRIBUTES R_Type_NewObjectOfType(const R_Type* type) {
   if (type->size < sizeof(R_Type*)) return NULL; //If they were equal, this object would be useless. No good reason to limit that though...
-  void* new_object = os_zalloc(type->size);
+  void* new_object = (void*)os_zalloc(type->size);
   if (new_object == NULL) return NULL;
   *(const R_Type**)new_object = type;
   R_Type_BytesAllocated += type->size;

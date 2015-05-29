@@ -59,7 +59,7 @@ R_String* R_FUNCTION_ATTRIBUTES R_String_reset(R_String* self) {
 const char* R_FUNCTION_ATTRIBUTES R_String_getString(R_String* self) {
 	if (R_Type_IsNotOf(self, R_String)) return NULL;
 	if (self->cstring != NULL) os_free(self->cstring);
-	self->cstring = os_malloc((R_ByteArray_size(self->array)+1)*sizeof(char));
+	self->cstring = (char*)os_malloc((R_ByteArray_size(self->array)+1)*sizeof(char));
 	os_memcpy(self->cstring, R_ByteArray_bytes(self->array), R_ByteArray_size(self->array));
 	self->cstring[R_ByteArray_size(self->array)] = '\0';
 	return self->cstring;

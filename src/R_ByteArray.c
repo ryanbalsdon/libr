@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "R_OS.h"
 #include "R_ByteArray.h"
 
 
