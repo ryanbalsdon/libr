@@ -9,6 +9,8 @@
  * present and future rights to this software under copyright law.
  */
 
+#include <string.h>
+
 void* os_realloc_alt(void* old_ptr, size_t new_size);
 int os_atoi_alt(const char* string);
 double os_atof_alt(const char* string);
