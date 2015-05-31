@@ -94,4 +94,6 @@ void R_FUNCTION_ATTRIBUTES R_Dictionary_puts(R_Dictionary* self);
 
 R_List* R_FUNCTION_ATTRIBUTES R_Dictionary_listOfPairs(R_Dictionary* self);
 
+#define R_Dictionary_each(dictionary, PAIR_NAME) R_List_each(R_Dictionary_listOfPairs(dictionary), R_KeyValuePair, PAIR_NAME)
+
 #endif /* R_Dictionary_h */

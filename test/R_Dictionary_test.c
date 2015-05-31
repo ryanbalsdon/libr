@@ -13,6 +13,7 @@
 #include "R_Dictionary.h"
 #include "R_String.h"
 #include "R_List.h"
+#include "R_KeyValuePair.h"
 
 void test_allocation(void) {
 	assert(R_Type_BytesAllocated == 0);
@@ -387,6 +388,33 @@ void test_puts(void) {
 	R_Type_Delete(dict);
 }
 
+void test_foreach(void) {
+	R_Dictionary* dict = R_Type_New(R_Dictionary);
+	R_Integer_set(R_Dictionary_add(dict, "key1", R_Integer), 1);
+	R_Integer_set(R_Dictionary_add(dict, "key2", R_Integer), 2);
+	assert(R_Dictionary_size(dict) == 2);
+
+  bool key1_found = false;
+  bool key2_found = false;
+
+  R_Dictionary_each(dict, pair) {
+    assert(R_Type_IsOf(pair, R_KeyValuePair));
+    assert(R_Type_IsOf(R_KeyValuePair_key(pair), R_String));
+    assert(R_Type_IsOf(R_KeyValuePair_value(pair), R_Integer));
+    if (R_String_compare(R_KeyValuePair_key(pair), "key1")) {
+      key1_found = true;
+      assert(R_Integer_get(R_KeyValuePair_value(pair)) == 1);
+    }
+    if (R_String_compare(R_KeyValuePair_key(pair), "key2")) {
+      key2_found = true;
+      assert(R_Integer_get(R_KeyValuePair_value(pair)) == 2);
+    }
+  }
+  assert(key1_found);
+  assert(key2_found);
+	R_Type_Delete(dict);
+}
+
 int main(void) {
 	assert(R_Type_BytesAllocated == 0);
 	test_allocation();
@@ -395,6 +423,7 @@ int main(void) {
 	test_merge();
 	test_integers();
 	test_mixed();
+	test_foreach();
 	test_write_json_strings();
 	test_write_json_numbers();
 	test_write_json_objects();
