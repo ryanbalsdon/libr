@@ -260,6 +260,7 @@ int main(void) {
   test_unsigned();
   test_boolean();
 
+  assert(R_Type_BytesAllocated == 0);
   printf("Pass\n");
 
   return 0;

@@ -23,6 +23,7 @@ void* R_FUNCTION_ATTRIBUTES R_Type_NewObjectOfType(const R_Type* type) {
     //Constructor has failed
     if (type->dtor != NULL) type->dtor(new_object);
     os_free(new_object);
+    R_Type_BytesAllocated -= type->size;
     return NULL;
   }
   return new_object;

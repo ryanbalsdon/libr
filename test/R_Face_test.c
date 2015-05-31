@@ -72,5 +72,7 @@ int main(void) {
   assert(R_Type_Call(self, puts, self) == self);
   assert(self->pass_fail == 0);
   R_Type_Delete(self);
+
+  assert(R_Type_BytesAllocated == 0);
   printf("Pass\n");
 }

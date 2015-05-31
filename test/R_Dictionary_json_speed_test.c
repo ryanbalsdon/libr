@@ -30,6 +30,7 @@
   R_Type_Delete(large_json);
   R_Type_Delete(dict);
 
+  assert(R_Type_BytesAllocated == 0);
   printf("Pass: %lu ticks\n", end-begin);
   return 0;
  }
