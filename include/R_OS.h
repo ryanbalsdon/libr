@@ -22,6 +22,11 @@ double os_atof_alt(const char* string);
   #define os_atoi os_atoi_alt
   #define os_atof os_atof_alt
   #define R_FUNCTION_ATTRIBUTES __attribute__((section(".irom0.text")))
+  typedef int pthread_mutex_t;
+  #define pthread_mutex_lock(mutex_pointer) do {while(*(mutex_pointer)); (*(mutex_pointer))++; } while(0)
+  #define pthread_mutex_unlock(mutex_pointer) do {(*(mutex_pointer))--; } while(0)
+  #define pthread_mutex_init(mutex_pointer, options) do {*(mutex_pointer)=0; } while(0)
+  #define pthread_mutex_destroy
 #else
   #include <string.h>
   #define os_calloc calloc
