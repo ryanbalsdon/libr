@@ -12,7 +12,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "R_List.h"
-#include "R_String.h"
+#include "R_MutableString.h"
 
 struct Integer {
   R_Type* type;
@@ -254,8 +254,8 @@ void test_append(void) {
 
 void test_puts(void) {
   R_List* list = R_Type_New(R_List);
-  R_String_setString(R_List_add(list, R_String), "hello");
-  R_String_setString(R_List_add(list, R_String), "world");
+  R_MutableString_setString(R_List_add(list, R_MutableString), "hello");
+  R_MutableString_setString(R_List_add(list, R_MutableString), "world");
   R_Puts(list);
   R_Type_Delete(list);
 }

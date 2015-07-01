@@ -12,7 +12,7 @@
 #include <string.h>
 #include <time.h>
 #include "R_Dictionary.h"
-#include "R_String.h"
+#include "R_MutableString.h"
 #include "R_List.h"
 
  int main(void) {

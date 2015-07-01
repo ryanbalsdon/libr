@@ -29,13 +29,13 @@ void test_stuff(void) {
   R_KeyValuePair_setValue(pair, test_value);
 
   assert(R_KeyValuePair_value(pair) == test_value);
-  assert(R_String_compare(R_KeyValuePair_key(pair), "key"));
+  assert(R_MutableString_compare(R_KeyValuePair_key(pair), "key"));
 
   R_KeyValuePair* copy = R_Type_Copy(pair);
   assert(R_KeyValuePair_value(copy) != test_value);
   assert(R_Type_IsOf(R_KeyValuePair_value(copy), R_Integer));
   assert(R_Integer_get(R_KeyValuePair_value(copy)) == 2);
-  assert(R_String_compare(R_KeyValuePair_key(copy), "key"));
+  assert(R_MutableString_compare(R_KeyValuePair_key(copy), "key"));
 
   R_Type_Delete(copy);
   R_Type_Delete(pair);

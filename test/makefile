@@ -17,7 +17,7 @@ folders:
 clean:
 	rm -rf objects
 
-objects/R_Dictionary_test.test: objects/R_Dictionary_test objects/R_String_test.test
+objects/R_Dictionary_test.test: objects/R_Dictionary_test objects/R_MutableString_test.test
 	./$<
 
 objects/%.test: objects/%

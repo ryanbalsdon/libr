@@ -11,7 +11,7 @@
 #include <assert.h>
 #include <string.h>
 #include "R_Dictionary.h"
-#include "R_String.h"
+#include "R_MutableString.h"
 #include "R_List.h"
 #include "R_KeyValuePair.h"
 
@@ -124,17 +124,17 @@ void test_merge(void) {
 
 void test_write_json_strings(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
-	R_String* json = R_Type_New(R_String);
+	R_MutableString* json = R_Type_New(R_MutableString);
 
-	R_String* string = R_Dictionary_add(dict, "string key 1", R_String);
-	R_String_appendCString(string, "string value 1");
+	R_MutableString* string = R_Dictionary_add(dict, "string key 1", R_MutableString);
+	R_MutableString_appendCString(string, "string value 1");
 	assert(R_Dictionary_toJson(dict, json) == json);
-	assert(R_String_compare(json, "{\"string key 1\":\"string value 1\"}"));
+	assert(R_MutableString_compare(json, "{\"string key 1\":\"string value 1\"}"));
 
-	string = R_Dictionary_add(dict, "string key 2", R_String);
-	R_String_appendCString(string, "string value 2");
+	string = R_Dictionary_add(dict, "string key 2", R_MutableString);
+	R_MutableString_appendCString(string, "string value 2");
 	assert(R_Dictionary_toJson(dict, json) == json);
-	assert(R_String_compare(json, "{\"string key 1\":\"string value 1\",\"string key 2\":\"string value 2\"}"));
+	assert(R_MutableString_compare(json, "{\"string key 1\":\"string value 1\",\"string key 2\":\"string value 2\"}"));
 
 	R_Type_Delete(json);
 	R_Type_Delete(dict);
@@ -142,14 +142,14 @@ void test_write_json_strings(void) {
 
 void test_write_json_numbers(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
-	R_String* json = R_Type_New(R_String);
+	R_MutableString* json = R_Type_New(R_MutableString);
 
 	R_Integer* integer = R_Dictionary_add(dict, "int", R_Integer);
 	R_Integer_set(integer, -42);
 	R_Float* floater = R_Dictionary_add(dict, "float", R_Float);
 	R_Float_set(floater, 1.4e-12f);
 	assert(R_Dictionary_toJson(dict, json) == json);
-	assert(R_String_compare(json, "{\"int\":-42,\"float\":1.4e-12}"));
+	assert(R_MutableString_compare(json, "{\"int\":-42,\"float\":1.4e-12}"));
 
 	R_Type_Delete(json);
 	R_Type_Delete(dict);
@@ -157,14 +157,14 @@ void test_write_json_numbers(void) {
 
 void test_write_json_objects(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
-	R_String* json = R_Type_New(R_String);
+	R_MutableString* json = R_Type_New(R_MutableString);
 
 	R_Dictionary* sub = R_Dictionary_add(dict, "upper", R_Dictionary);
 	sub = R_Dictionary_add(sub, "lower", R_Dictionary);
 	R_Integer* integer = R_Dictionary_add(sub, "int", R_Integer);
 	R_Integer_set(integer, 1);
 	assert(R_Dictionary_toJson(dict, json) == json);
-	assert(R_String_compare(json, "{\"upper\":{\"lower\":{\"int\":1}}}"));
+	assert(R_MutableString_compare(json, "{\"upper\":{\"lower\":{\"int\":1}}}"));
 
 	R_Type_Delete(json);
 	R_Type_Delete(dict);
@@ -172,14 +172,14 @@ void test_write_json_objects(void) {
 
 void test_write_json_booleans(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
-	R_String* json = R_Type_New(R_String);
+	R_MutableString* json = R_Type_New(R_MutableString);
 
 	R_Boolean* bin = R_Dictionary_add(dict, "pass", R_Boolean);
 	R_Boolean_set(bin, true);
 	bin = R_Dictionary_add(dict, "fail", R_Boolean);
 	R_Boolean_set(bin, false);
 	assert(R_Dictionary_toJson(dict, json) == json);
-	assert(R_String_compare(json, "{\"pass\":true,\"fail\":false}"));
+	assert(R_MutableString_compare(json, "{\"pass\":true,\"fail\":false}"));
 
 	R_Type_Delete(json);
 	R_Type_Delete(dict);
@@ -187,7 +187,7 @@ void test_write_json_booleans(void) {
 
 void test_write_json_arrays(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
-	R_String* json = R_Type_New(R_String);
+	R_MutableString* json = R_Type_New(R_MutableString);
 
 	R_List* list = R_Dictionary_add(dict, "array", R_List);
 	R_Integer_set(R_List_add(list, R_Integer), 0);
@@ -195,7 +195,7 @@ void test_write_json_arrays(void) {
 	R_Float_set(R_List_add(list, R_Float), 2.02f);
 	R_Integer_set(R_List_add(list, R_Integer), 3);
 	assert(R_Dictionary_toJson(dict, json) == json);
-	assert(R_String_compare(json, "{\"array\":[0,1,2.02,3]}"));
+	assert(R_MutableString_compare(json, "{\"array\":[0,1,2.02,3]}"));
 
 	R_Type_Delete(json);
 	R_Type_Delete(dict);
@@ -203,21 +203,21 @@ void test_write_json_arrays(void) {
 
 void test_read_json_strings(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
-	R_String* json1 = R_String_appendCString(R_Type_New(R_String), "{\"string key 1\":\"string value 1\"}");
-	R_String* json2 = R_String_appendCString(R_Type_New(R_String), "{\"string key 1\":\"string value 1\",\"string key 2\":\"string value 2\"}");
+	R_MutableString* json1 = R_MutableString_appendCString(R_Type_New(R_MutableString), "{\"string key 1\":\"string value 1\"}");
+	R_MutableString* json2 = R_MutableString_appendCString(R_Type_New(R_MutableString), "{\"string key 1\":\"string value 1\",\"string key 2\":\"string value 2\"}");
 	
 	assert(R_Dictionary_fromJson(dict, json1) == dict);
 	assert(R_Dictionary_get(dict, "string key 1") != NULL);
-	assert(R_Type_IsOf(R_Dictionary_get(dict, "string key 1"), R_String));
-	assert(R_String_compare(R_Dictionary_get(dict, "string key 1"), "string value 1"));
+	assert(R_Type_IsOf(R_Dictionary_get(dict, "string key 1"), R_MutableString));
+	assert(R_MutableString_compare(R_Dictionary_get(dict, "string key 1"), "string value 1"));
 
 	assert(R_Dictionary_fromJson(dict, json2) == dict);
 	assert(R_Dictionary_get(dict, "string key 1") != NULL);
-	assert(R_Type_IsOf(R_Dictionary_get(dict, "string key 1"), R_String));
-	assert(R_String_compare(R_Dictionary_get(dict, "string key 1"), "string value 1"));
+	assert(R_Type_IsOf(R_Dictionary_get(dict, "string key 1"), R_MutableString));
+	assert(R_MutableString_compare(R_Dictionary_get(dict, "string key 1"), "string value 1"));
 	assert(R_Dictionary_get(dict, "string key 2") != NULL);
-	assert(R_Type_IsOf(R_Dictionary_get(dict, "string key 2"), R_String));
-	assert(R_String_compare(R_Dictionary_get(dict, "string key 2"), "string value 2"));
+	assert(R_Type_IsOf(R_Dictionary_get(dict, "string key 2"), R_MutableString));
+	assert(R_MutableString_compare(R_Dictionary_get(dict, "string key 2"), "string value 2"));
 
 	R_Type_Delete(dict);
 	R_Type_Delete(json1);
@@ -226,7 +226,7 @@ void test_read_json_strings(void) {
 
 void test_read_json_numbers(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
-	R_String* json = R_String_appendCString(R_Type_New(R_String), "{\"int\":-42,\"float\":1.4e-12}");
+	R_MutableString* json = R_MutableString_appendCString(R_Type_New(R_MutableString), "{\"int\":-42,\"float\":1.4e-12}");
 
 	assert(R_Dictionary_fromJson(dict, json) == dict);
 	assert(R_Dictionary_get(dict, "int") != NULL);
@@ -244,7 +244,7 @@ void test_read_json_numbers(void) {
 
 void test_read_json_booleans(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
-	R_String* json = R_String_appendCString(R_Type_New(R_String), "{\"pass\":true,\"fail\":false}");
+	R_MutableString* json = R_MutableString_appendCString(R_Type_New(R_MutableString), "{\"pass\":true,\"fail\":false}");
 
 	assert(R_Dictionary_fromJson(dict, json) == dict);
 	assert(R_Dictionary_get(dict, "pass") != NULL);
@@ -262,7 +262,7 @@ void test_read_json_booleans(void) {
 
 void test_read_json_objects(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
-	R_String* json = R_String_appendCString(R_Type_New(R_String), "{\"upper\":{\"lower\":{\"int\":1}}}");
+	R_MutableString* json = R_MutableString_appendCString(R_Type_New(R_MutableString), "{\"upper\":{\"lower\":{\"int\":1}}}");
 
 	assert(R_Dictionary_fromJson(dict, json) == dict);
 	assert(R_Dictionary_get(dict, "upper") != NULL);
@@ -284,7 +284,7 @@ void test_read_json_objects(void) {
 
 void test_read_json_arrays(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
-	R_String* json = R_String_appendCString(R_Type_New(R_String), "{\"array\":[0,1,2.02,3]}");
+	R_MutableString* json = R_MutableString_appendCString(R_Type_New(R_MutableString), "{\"array\":[0,1,2.02,3]}");
 
 	assert(R_Dictionary_fromJson(dict, json) == dict);
 	assert(R_Dictionary_get(dict, "array") != NULL);
@@ -314,15 +314,15 @@ void test_read_json_arrays(void) {
 
 void test_json_nulls(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
-	R_String* json = R_String_appendCString(R_Type_New(R_String), "{\"this\":null}");
+	R_MutableString* json = R_MutableString_appendCString(R_Type_New(R_MutableString), "{\"this\":null}");
 
 	assert(R_Dictionary_fromJson(dict, json) == dict);
 	assert(R_Dictionary_get(dict, "this") != NULL);
 	assert(R_Type_IsOf(R_Dictionary_get(dict, "this"), R_Null));
 
-	R_String_reset(json);
+	R_MutableString_reset(json);
 	assert(R_Dictionary_toJson(dict, json) == json);
-	assert(R_String_compare(json, "{\"this\":null}"));
+	assert(R_MutableString_compare(json, "{\"this\":null}"));
 
 	R_Type_Delete(json);
 	R_Type_Delete(dict);
@@ -330,16 +330,16 @@ void test_json_nulls(void) {
 
 void test_empty_array(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
-	R_String* json = R_String_appendCString(R_Type_New(R_String), "{\"array\":[]}");
+	R_MutableString* json = R_MutableString_appendCString(R_Type_New(R_MutableString), "{\"array\":[]}");
 	assert(R_Dictionary_fromJson(dict, json) == dict);
 	assert(R_Dictionary_get(dict, "array") != NULL);
 	assert(R_Type_IsOf(R_Dictionary_get(dict, "array"), R_List));
 	R_List* array = R_Dictionary_get(dict, "array");
 	assert(R_List_size(array) == 0);
 
-	R_String_reset(json);
+	R_MutableString_reset(json);
 	assert(R_Dictionary_toJson(dict, json) == json);
-	assert(R_String_compare(json, "{\"array\":[]}"));
+	assert(R_MutableString_compare(json, "{\"array\":[]}"));
 
 	R_Type_Delete(json);
 	R_Type_Delete(dict);
@@ -347,16 +347,16 @@ void test_empty_array(void) {
 
 void test_array_with_one_object(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
-	R_String* json = R_String_appendCString(R_Type_New(R_String), "{\"some_product\":[{\"price\":\"26.61\",\"tax\":0.13,\"name\":\"bugs\"}]}");
+	R_MutableString* json = R_MutableString_appendCString(R_Type_New(R_MutableString), "{\"some_product\":[{\"price\":\"26.61\",\"tax\":0.13,\"name\":\"bugs\"}]}");
 	assert(R_Dictionary_fromJson(dict, json) == dict);
 	assert(R_Dictionary_get(dict, "some_product") != NULL);
 	assert(R_Type_IsOf(R_Dictionary_get(dict, "some_product"), R_List));
 	R_List* array = R_Dictionary_get(dict, "some_product");
 	assert(R_List_size(array) == 1);
 
-	R_String_reset(json);
+	R_MutableString_reset(json);
 	assert(R_Dictionary_toJson(dict, json) == json);
-	assert(R_String_compare(json, "{\"some_product\":[{\"price\":\"26.61\",\"tax\":0.13,\"name\":\"bugs\"}]}"));
+	assert(R_MutableString_compare(json, "{\"some_product\":[{\"price\":\"26.61\",\"tax\":0.13,\"name\":\"bugs\"}]}"));
 
 	R_Type_Delete(json);
 	R_Type_Delete(dict);
@@ -364,14 +364,14 @@ void test_array_with_one_object(void) {
 
 void test_empty_object(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
-	R_String* json = R_String_appendCString(R_Type_New(R_String), "{\"object\":{}}");
+	R_MutableString* json = R_MutableString_appendCString(R_Type_New(R_MutableString), "{\"object\":{}}");
 	assert(R_Dictionary_fromJson(dict, json) == dict);
 	assert(R_Dictionary_get(dict, "object") != NULL);
 	assert(R_Type_IsOf(R_Dictionary_get(dict, "object"), R_Dictionary));
 
-	R_String_reset(json);
+	R_MutableString_reset(json);
 	assert(R_Dictionary_toJson(dict, json) == json);
-	assert(R_String_compare(json, "{\"object\":{}}"));
+	assert(R_MutableString_compare(json, "{\"object\":{}}"));
 
 	R_Type_Delete(json);
 	R_Type_Delete(dict);
@@ -380,8 +380,8 @@ void test_empty_object(void) {
 void test_puts(void) {
 	R_Dictionary* dict = R_Type_New(R_Dictionary);
 
-	R_String* string = R_Dictionary_add(dict, "hello", R_String);
-	R_String_appendCString(string, "world");
+	R_MutableString* string = R_Dictionary_add(dict, "hello", R_MutableString);
+	R_MutableString_appendCString(string, "world");
 
 	R_Puts(dict);
 
@@ -399,13 +399,13 @@ void test_foreach(void) {
 
   R_Dictionary_each(dict, pair) {
     assert(R_Type_IsOf(pair, R_KeyValuePair));
-    assert(R_Type_IsOf(R_KeyValuePair_key(pair), R_String));
+    assert(R_Type_IsOf(R_KeyValuePair_key(pair), R_MutableString));
     assert(R_Type_IsOf(R_KeyValuePair_value(pair), R_Integer));
-    if (R_String_compare(R_KeyValuePair_key(pair), "key1")) {
+    if (R_MutableString_compare(R_KeyValuePair_key(pair), "key1")) {
       key1_found = true;
       assert(R_Integer_get(R_KeyValuePair_value(pair)) == 1);
     }
-    if (R_String_compare(R_KeyValuePair_key(pair), "key2")) {
+    if (R_MutableString_compare(R_KeyValuePair_key(pair), "key2")) {
       key2_found = true;
       assert(R_Integer_get(R_KeyValuePair_value(pair)) == 2);
     }

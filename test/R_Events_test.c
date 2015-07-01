@@ -11,7 +11,7 @@
 #include <assert.h>
 #include <string.h>
 #include "R_Events.h"
-#include "R_String.h"
+#include "R_MutableString.h"
 
 
 char* test_simple_key1 = "test_simple key 1";

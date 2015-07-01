@@ -27,19 +27,19 @@ R_Type_Delete(instance); // Free memory back to the heap, after running the dest
 ### R_String
  R_String is a higher-level string class built using R_Type. It adds some auto-allocation, hex-conversion and safe self-copying features to regular C Strings.
 ```
- R_String* string = R_String_setString(R_Type_New(R_String), "Hello ");
- R_String_appendCString(string, "World!");
- printf("%s\n", R_String_getString(string)); //prints "Hello World!"
+ R_MutableString* string = R_MutableString_setString(R_Type_New(R_MutableString), "Hello ");
+ R_MutableString_appendCString(string, "World!");
+ printf("%s\n", R_MutableString_getString(string)); //prints "Hello World!"
  R_Type_Delete(string);
 ```
 
-### R_ByteArray
- R_ByteArray is a higher-level byte-array (array of type uint8_t) built using R_Type. It adds some auto-allocation and conversion features to regular byte arrays.
+### R_Data
+ R_Data is a higher-level byte-array (array of type uint8_t) built using R_Type. It adds some auto-allocation and conversion features to regular byte arrays.
 ```
- R_ByteArray* array = R_TypeNew(R_ByteArray);
- R_ByteArray_appendBytes(array, 0x01, 0x02, 0x03);
- R_ByteArray_appendBytes(array, 0x40, 0x50, 0x60);
- for (int i=0; i<R_ByteArray_size(array);i++) printf("%02X"); //prints "010203405060"
+ R_Data* array = R_TypeNew(R_Data);
+ R_Data_appendBytes(array, 0x01, 0x02, 0x03);
+ R_Data_appendBytes(array, 0x40, 0x50, 0x60);
+ for (int i=0; i<R_Data_size(array);i++) printf("%02X"); //prints "010203405060"
  R_Type_Delete(array);
 ```
 

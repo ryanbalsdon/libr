@@ -11,7 +11,7 @@
 
 #include <stdbool.h>
 #include "R_Type.h"
-#include "R_String.h" 
+#include "R_MutableString.h" 
 #include "R_List.h"
 #include "R_KeyValuePair.h"
 
@@ -57,7 +57,7 @@ void* R_FUNCTION_ATTRIBUTES R_Dictionary_get(R_Dictionary* self, const char* key
 /*  R_Dictionary_getFromString
     Fetches the object with the given key. Returns NULL if it doesn't exist.
  */
-void* R_FUNCTION_ATTRIBUTES R_Dictionary_getFromString(R_Dictionary* self, R_String* key);
+void* R_FUNCTION_ATTRIBUTES R_Dictionary_getFromString(R_Dictionary* self, R_MutableString* key);
 
 /*  R_Dictionary_removeAll
     Removes all objects from the dictionary.
@@ -83,12 +83,12 @@ size_t R_FUNCTION_ATTRIBUTES R_Dictionary_size(R_Dictionary* self);
 /*  R_Dictionary_toJson
     Writes the dictionary to the given string, as json. 
  */
-R_String* R_FUNCTION_ATTRIBUTES R_Dictionary_toJson(R_Dictionary* self, R_String* buffer);
+R_MutableString* R_FUNCTION_ATTRIBUTES R_Dictionary_toJson(R_Dictionary* self, R_MutableString* buffer);
 
 /*  R_Dictionary_toJson
     Initializes the dictionary with the given json string.
  */
-R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_fromJson(R_Dictionary* self, R_String* buffer);
+R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_fromJson(R_Dictionary* self, R_MutableString* buffer);
 
 void R_FUNCTION_ATTRIBUTES R_Dictionary_puts(R_Dictionary* self);
 

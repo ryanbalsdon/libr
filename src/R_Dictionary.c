@@ -11,7 +11,7 @@
 #include <string.h>
 #include "R_Dictionary.h"
 #include "R_List.h"
-#include "R_String.h"
+#include "R_MutableString.h"
 
 
 struct R_Dictionary {
@@ -76,7 +76,7 @@ void* R_FUNCTION_ATTRIBUTES R_Dictionary_addCopy(R_Dictionary* self, const char*
 R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_merge(R_Dictionary* self, R_Dictionary* dictionary_to_copy) {
 	if (R_Type_IsNotOf(self, R_Dictionary) || R_Type_IsNotOf(dictionary_to_copy, R_Dictionary)) return NULL;
 	R_List_each(dictionary_to_copy->elements, R_KeyValuePair, element) {
-		if (R_Dictionary_addCopy(self, R_String_cstring(R_KeyValuePair_key(element)), R_KeyValuePair_value(element)) == NULL) return NULL;
+		if (R_Dictionary_addCopy(self, R_MutableString_cstring(R_KeyValuePair_key(element)), R_KeyValuePair_value(element)) == NULL) return NULL;
 	}
 	return self;
 }
@@ -105,14 +105,14 @@ void* R_FUNCTION_ATTRIBUTES R_Dictionary_get(R_Dictionary* self, const char* key
 	return R_KeyValuePair_value(element);
 }
 
-void* R_FUNCTION_ATTRIBUTES R_Dictionary_getFromString(R_Dictionary* self, R_String* key) {
-	return R_Dictionary_get(self, R_String_cstring(key));
+void* R_FUNCTION_ATTRIBUTES R_Dictionary_getFromString(R_Dictionary* self, R_MutableString* key) {
+	return R_Dictionary_get(self, R_MutableString_cstring(key));
 }
 
 static R_KeyValuePair* R_FUNCTION_ATTRIBUTES R_Dictionary_getElement(R_Dictionary* self, const char* key) {
 	if (R_Type_IsNotOf(self, R_Dictionary) || key == NULL) return NULL;
 	R_List_each(self->elements, R_KeyValuePair, element) {
-		if (R_String_compare(R_KeyValuePair_key(element), key)) return element;
+		if (R_MutableString_compare(R_KeyValuePair_key(element), key)) return element;
 	}
 	return NULL;
 }
@@ -135,8 +135,8 @@ size_t R_FUNCTION_ATTRIBUTES R_Dictionary_size(R_Dictionary* self) {
 
 void R_FUNCTION_ATTRIBUTES R_Dictionary_puts(R_Dictionary* self) {
   if (R_Type_IsNotOf(self, R_Dictionary)) return;
-  R_String* buffer = R_Type_New(R_String);
+  R_MutableString* buffer = R_Type_New(R_MutableString);
   R_Dictionary_toJson(self, buffer);
-  R_String_puts(buffer);
+  R_MutableString_puts(buffer);
   R_Type_Delete(buffer);
 }
