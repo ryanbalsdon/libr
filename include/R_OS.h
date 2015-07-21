@@ -39,6 +39,7 @@ double os_atof_alt(const char* string);
   #define os_sscanf sscanf
   #define os_strlen strlen
   #define os_strstr strstr
+  #define os_strcpy strcpy
   #define os_snprintf snprintf
   #define os_sprintf sprintf
   #define os_memcpy memcpy

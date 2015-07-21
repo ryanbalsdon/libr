@@ -20,6 +20,12 @@
 */
 typedef void* (*R_Type_Constructor)(void* object);
 
+/*  R_Type_Allocator
+    Function Pointer for a memory allocator. Input is the size of the object to allocate. Output
+   is a pointer to a chunk of zero-initialized memory or NULL on error.
+*/
+typedef void* (*R_Type_Allocator)(size_t size);
+
 /*  R_Type_Destructor
     Function Pointer for an R_Type destructor. Input is an initialized object. free() is called
    on the output. This is used to clean up internally-allocated memory of the object and return the
@@ -38,6 +44,7 @@ typedef void* (*R_Type_Copier)(const void* object_input, void* object_output);
  */
 typedef struct {
   size_t size; //Must be at least sizeof(R_Type*) because the first param of all objects must be a R_Type*.
+  R_Type_Allocator alloc; //May be NULL. If not, zalloc is used.
   R_Type_Constructor ctor; //May be NULL. If not, it's called after alloc succeeds during 'new'.
   R_Type_Destructor dtor; //May be NULL. If not, free is called on its result during 'delete'.
   R_Type_Copier copy; //If set to NULL, 'copy' will always fail. If not NULL, it's called during 'copy' to do deep copying.
@@ -48,11 +55,14 @@ typedef struct {
 
 #define R_Type_Def(Type, ctor, dtor, copier, interfaces) const R_Type* R_Type_Object(Type) = &(R_Type){ \
     sizeof(Type), \
+    NULL, \
     (R_Type_Constructor)ctor, \
     (R_Type_Destructor)dtor, \
     (R_Type_Copier)copier, \
     interfaces \
   }
+
+#define R_Type_Define(Type, ...) const R_Type* R_Type_Object(Type) = &(R_Type){ .size = sizeof(Type), __VA_ARGS__ }
 
 #define R_Type_Declare(Type) extern const R_Type* R_Type_Object(Type)
 
@@ -95,47 +105,6 @@ int R_FUNCTION_ATTRIBUTES R_Type_IsObjectNotOfType(const void* object, const R_T
  */
 extern size_t R_Type_BytesAllocated;
 
-/* R_Type_shallowCopy
-   A basic R_Type_Copier for objects without any internally-allocated memory.
- */
-void R_FUNCTION_ATTRIBUTES R_Type_shallowCopy(const void* object_input, void* object_output);
-
-/* R_Integer
-   A basic integer type.
- */
-typedef struct R_Integer R_Integer;
-R_Type_Declare(R_Integer);
-R_Integer* R_FUNCTION_ATTRIBUTES R_Integer_set(R_Integer* self, int value);
-int R_FUNCTION_ATTRIBUTES R_Integer_get(R_Integer* self);
-
-/* R_Float
-   A basic floating point type.
- */
-typedef struct R_Float R_Float;
-R_Type_Declare(R_Float);
-R_Float* R_FUNCTION_ATTRIBUTES R_Float_set(R_Float* self, float value);
-float R_FUNCTION_ATTRIBUTES R_Float_get(R_Float* self);
-
-/* R_Unsigned
-   A basic unsigned integer type.
- */
-typedef struct R_Unsigned R_Unsigned;
-R_Type_Declare(R_Unsigned);
-R_Unsigned* R_FUNCTION_ATTRIBUTES R_Unsigned_set(R_Unsigned* self, unsigned int value);
-unsigned int R_FUNCTION_ATTRIBUTES R_Unsigned_get(R_Unsigned* self);
-
-/* R_Boolean
-   A basic boolean type.
- */
-typedef struct R_Boolean R_Boolean;
-R_Type_Declare(R_Boolean);
-R_Boolean* R_FUNCTION_ATTRIBUTES R_Boolean_set(R_Boolean* self, bool value);
-bool R_FUNCTION_ATTRIBUTES R_Boolean_get(R_Boolean* self);
-
-/* R_Null
-   A useless type.
- */
-typedef struct R_Null R_Null;
-R_Type_Declare(R_Null);
+#include "R_Type_Builtins.h"
 
 #endif

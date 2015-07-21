@@ -13,7 +13,7 @@
 
 
 void R_FUNCTION_ATTRIBUTES R_MutableString_puts(R_MutableString* self) {
-  os_printf("%.*s\n", (int)R_MutableString_length(self), R_Data_bytes(R_MutableString_bytes(self)));
+  os_printf("%.*s\n", (int)R_MutableString_length(self), R_MutableData_bytes(R_MutableString_bytes(self)));
 }
 
 R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_appendCString(R_MutableString* self, const char* string) {
@@ -160,22 +160,22 @@ R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_join(R_MutableString* sel
 }
 
 static uint8_t R_FUNCTION_ATTRIBUTES R_MutableString_appendArrayAsBase64_base64FromIndex(uint8_t index);
-R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_appendArrayAsBase64(R_MutableString* self, const R_Data* array) {
-  if (R_Type_IsNotOf(self, R_MutableString) || R_Type_IsNotOf(array, R_Data)) return NULL;
-  for(int i=0; i<R_Data_size(array); i+=3) {
-    uint8_t byte1 = ((R_Data_byte(array,   i) & 0xFC) >> 2);
-    uint8_t byte2 = ((R_Data_byte(array,   i) & 0x03) << 4) + ((R_Data_byte(array, i+1) & 0xF0) >> 4);
-    uint8_t byte3 = ((R_Data_byte(array, i+1) & 0x0F) << 2) + ((R_Data_byte(array, i+2) & 0xC0) >> 6);
-    uint8_t byte4 = (R_Data_byte(array, i+2) & 0x3F);
+R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_appendArrayAsBase64(R_MutableString* self, const R_MutableData* array) {
+  if (R_Type_IsNotOf(self, R_MutableString) || R_Type_IsNotOf(array, R_MutableData)) return NULL;
+  for(int i=0; i<R_MutableData_size(array); i+=3) {
+    uint8_t byte1 = ((R_MutableData_byte(array,   i) & 0xFC) >> 2);
+    uint8_t byte2 = ((R_MutableData_byte(array,   i) & 0x03) << 4) + ((R_MutableData_byte(array, i+1) & 0xF0) >> 4);
+    uint8_t byte3 = ((R_MutableData_byte(array, i+1) & 0x0F) << 2) + ((R_MutableData_byte(array, i+2) & 0xC0) >> 6);
+    uint8_t byte4 = (R_MutableData_byte(array, i+2) & 0x3F);
     if (R_MutableString_push(self, R_MutableString_appendArrayAsBase64_base64FromIndex(byte1)) == NULL) return NULL;
     if (R_MutableString_push(self, R_MutableString_appendArrayAsBase64_base64FromIndex(byte2)) == NULL) return NULL;
-    if (R_Data_length(array) > i+1) {
+    if (R_MutableData_length(array) > i+1) {
       if (R_MutableString_push(self, R_MutableString_appendArrayAsBase64_base64FromIndex(byte3)) == NULL) return NULL;
     }
     else {
       if (R_MutableString_push(self, '=') == NULL) return NULL;
     }
-    if (R_Data_length(array) > i+2) {
+    if (R_MutableData_length(array) > i+2) {
       if (R_MutableString_push(self, R_MutableString_appendArrayAsBase64_base64FromIndex(byte4)) == NULL) return NULL;
     }
     else {

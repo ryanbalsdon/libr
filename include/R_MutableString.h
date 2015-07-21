@@ -16,7 +16,7 @@
 
 typedef struct R_MutableString R_MutableString;
 
-#include "R_Data.h"
+#include "R_MutableData.h"
 
 R_Type_Declare(R_MutableString);
 
@@ -85,14 +85,14 @@ R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_appendString(R_MutableStr
 R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_appendBytes(R_MutableString* self, const char* bytes, size_t byteCount);
 
 /*  R_MutableString_appendArray
-    Appends the given R_Data, assuming it's ASCII.
+    Appends the given R_MutableData, assuming it's ASCII.
  */
-R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_appendArray(R_MutableString* self, const R_Data* array);
+R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_appendArray(R_MutableString* self, const R_MutableData* array);
 
 /*  R_MutableString_appendArrayAsHex
     Appends the given array as a hex string. ie [0x2a, 0x50] becomes "2A50"
  */
-R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_appendArrayAsHex(R_MutableString* self, const R_Data* array);
+R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_appendArrayAsHex(R_MutableString* self, const R_MutableData* array);
 
 /*  R_MutableString_setString
     Empties the string then appends the given C String.
@@ -163,7 +163,7 @@ R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_appendStringAsJson(R_Muta
 /*  R_MutableString_bytes
     The raw bytes in the string. This array is not null-terminated!
  */
-const R_FUNCTION_ATTRIBUTES R_Data* R_MutableString_bytes(R_MutableString* self);
+const R_FUNCTION_ATTRIBUTES R_MutableData* R_MutableString_bytes(R_MutableString* self);
 
 /*  R_MutableString_bytes
     Returns the first index of the given substring or -1.
@@ -180,7 +180,7 @@ R_List* R_FUNCTION_ATTRIBUTES R_MutableString_split(R_MutableString* self, const
  */
 R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_join(R_MutableString* self, const char* seperator, R_List* input);
 
-R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_appendArrayAsBase64(R_MutableString* self, const R_Data* array);
+R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_appendArrayAsBase64(R_MutableString* self, const R_MutableData* array);
 
 
 #endif /* R_MutableString_h */

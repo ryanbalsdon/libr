@@ -198,56 +198,6 @@ void test_bad_constructor(void) {
   assert(BadConstructorTestor_Destructor_Called);
 }
 
-void test_integer(void) {
-  R_Integer* value = R_Type_New(R_Integer);
-  assert(R_Integer_get(value) == 0);
-  R_Integer_set(value, 42);
-  assert(R_Integer_get(value) == 42);
-  R_Puts(value);
-  R_Integer* value_copy = R_Type_Copy(value);
-  assert(R_Integer_get(value_copy) == 42);
-  R_Type_Delete(value);
-  assert(R_Integer_get(value_copy) == 42);
-  R_Type_Delete(value_copy);
-}
-
-void test_float(void) {
-  R_Float* value = R_Type_New(R_Float);
-  assert(R_Float_get(value) == 0.0f);
-  R_Float_set(value, 4.2f);
-  assert(R_Float_get(value) == 4.2f);
-  R_Puts(value);
-  R_Float* value_copy = R_Type_Copy(value);
-  assert(R_Float_get(value_copy) == 4.2f);
-  R_Type_Delete(value);
-  assert(R_Float_get(value_copy) == 4.2f);
-  R_Type_Delete(value_copy);
-}
-
-void test_unsigned(void) {
-  R_Unsigned* value = R_Type_New(R_Unsigned);
-  assert(R_Unsigned_get(value) == 0);
-  R_Unsigned_set(value, -1);
-  assert(R_Unsigned_get(value) > 0);
-  R_Puts(value);
-  R_Unsigned* value_copy = R_Type_Copy(value);
-  assert(R_Unsigned_get(value_copy) == R_Unsigned_get(value));
-  R_Type_Delete(value);
-  R_Type_Delete(value_copy);
-}
-
-void test_boolean(void) {
-  R_Boolean* value = R_Type_New(R_Boolean);
-  assert(R_Boolean_get(value) == false);
-  R_Boolean_set(value, true);
-  assert(R_Boolean_get(value) == true);
-  R_Puts(value);
-  R_Boolean* value_copy = R_Type_Copy(value);
-  assert(R_Boolean_get(value_copy) == R_Boolean_get(value));
-  R_Type_Delete(value);
-  R_Type_Delete(value_copy);
-}
-
 int main(void) {
   test_simple();
   test_constructor();
@@ -255,10 +205,6 @@ int main(void) {
   test_copier();
   test_full();
   test_bad_constructor();
-  test_integer();
-  test_float();
-  test_unsigned();
-  test_boolean();
 
   assert(R_Type_BytesAllocated == 0);
   printf("Pass\n");

@@ -33,13 +33,13 @@ R_Type_Delete(instance); // Free memory back to the heap, after running the dest
  R_Type_Delete(string);
 ```
 
-### R_Data
- R_Data is a higher-level byte-array (array of type uint8_t) built using R_Type. It adds some auto-allocation and conversion features to regular byte arrays.
+### R_MutableData
+ R_MutableData is a higher-level byte-array (array of type uint8_t) built using R_Type. It adds some auto-allocation and conversion features to regular byte arrays.
 ```
- R_Data* array = R_TypeNew(R_Data);
- R_Data_appendBytes(array, 0x01, 0x02, 0x03);
- R_Data_appendBytes(array, 0x40, 0x50, 0x60);
- for (int i=0; i<R_Data_size(array);i++) printf("%02X"); //prints "010203405060"
+ R_MutableData* array = R_TypeNew(R_MutableData);
+ R_MutableData_appendBytes(array, 0x01, 0x02, 0x03);
+ R_MutableData_appendBytes(array, 0x40, 0x50, 0x60);
+ for (int i=0; i<R_MutableData_size(array);i++) printf("%02X"); //prints "010203405060"
  R_Type_Delete(array);
 ```
 

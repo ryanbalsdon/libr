@@ -11,7 +11,7 @@
 #include <assert.h>
 #include <string.h>
 #include "R_MutableString.h"
-#include "R_Data.h"
+#include "R_MutableData.h"
 
 void test_set_get(void) {
 	R_MutableString* string = R_Type_New(R_MutableString);
@@ -92,8 +92,8 @@ void test_getSubString(void) {
 
 void test_setHex(void) {
 	R_MutableString* string = R_Type_New(R_MutableString);
-	R_Data* testArray = R_Type_New(R_Data);
-	R_Data_appendBytes(testArray, 0x01, 0x23, 0x5A, 0xFF);
+	R_MutableData* testArray = R_Type_New(R_MutableData);
+	R_MutableData_appendBytes(testArray, 0x01, 0x23, 0x5A, 0xFF);
 	R_MutableString_appendArrayAsHex(string, testArray);
 	assert(R_MutableString_length(string) == 8);
 	assert(strcmp(R_MutableString_getString(string), "01235AFF") == 0);
