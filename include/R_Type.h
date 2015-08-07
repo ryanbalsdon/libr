@@ -12,7 +12,8 @@
 #include "R_OS.h"
 #include <stddef.h>
 #include <stdbool.h>
-#include "R_Face.h"
+#include <stdint.h>
+#include "R_JumpTable.h"
 
 /*  R_Type_Constructor
     Function Pointer for an R_Type constructor. Input is an allocated space of memory. Output
@@ -48,18 +49,18 @@ typedef struct {
   R_Type_Constructor ctor; //May be NULL. If not, it's called after alloc succeeds during 'new'.
   R_Type_Destructor dtor; //May be NULL. If not, free is called on its result during 'delete'.
   R_Type_Copier copy; //If set to NULL, 'copy' will always fail. If not NULL, it's called during 'copy' to do deep copying.
-  R_Face_JumpTable interfaces; //A jump table to define implemented interfaces.
+  R_JumpTable* interfaces; //A jump table to define implemented interfaces.
 } R_Type;
 
 #define R_Type_Object(Type) R_Type__ ## Type
 
-#define R_Type_Def(Type, ctor, dtor, copier, interfaces) const R_Type* R_Type_Object(Type) = &(R_Type){ \
+#define R_Type_Def(Type, ctor, dtor, copier, jump_table) const R_Type* R_Type_Object(Type) = &(R_Type){ \
     sizeof(Type), \
     NULL, \
     (R_Type_Constructor)ctor, \
     (R_Type_Destructor)dtor, \
     (R_Type_Copier)copier, \
-    interfaces \
+    jump_table \
   }
 
 #define R_Type_Define(Type, ...) const R_Type* R_Type_Object(Type) = &(R_Type){ .size = sizeof(Type), __VA_ARGS__ }
@@ -98,12 +99,21 @@ int R_FUNCTION_ATTRIBUTES R_Type_IsObjectNotOfType(const void* object, const R_T
 #define R_Type_IsNotOf(object, Type) R_Type_IsObjectNotOfType(object, R_Type_Object(Type))
 #define R_Type_Of(object) ((object==NULL)?NULL:(*(R_Type**)object))
 
-#define R_Type_Call(object, interface, ...) R_Face_Call((R_Type_Of(object)?R_Type_Of(object)->interfaces:NULL), interface, __VA_ARGS__)
+#define R_Type_Call(object, method, ...) R_JumpTable_call((R_Type_Of(object)?R_Type_Of(object)->interfaces:NULL), method, __VA_ARGS__)
 
 /*  R_Type_BytesAllocated
     Number of bytes currently in-use. Mostly just useful for testing or profiling.
  */
 extern size_t R_Type_BytesAllocated;
+
+#define R_Puts(object) R_Type_Call(object, R_Puts, object)
+R_JumpTable_DeclareKey(R_Puts);
+R_JumpTable_DeclareFunction(R_Puts, void, void*);
+
+#define R_Equals(object1, object2) R_Type_Call(object1, R_Equals, object1, object2)
+R_JumpTable_DeclareKey(R_Equals);
+R_JumpTable_DeclareFunction(R_Equals, bool, void*, void*);
+
 
 #include "R_Type_Builtins.h"
 

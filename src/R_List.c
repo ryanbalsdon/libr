@@ -24,8 +24,11 @@ struct R_List {
 static R_List* R_FUNCTION_ATTRIBUTES R_List_Constructor(R_List* self);
 static R_List* R_FUNCTION_ATTRIBUTES R_List_Destructor(R_List* self);
 static R_List* R_FUNCTION_ATTRIBUTES R_List_Copier(R_List* self, R_List* new);
-static void* R_FUNCTION_ATTRIBUTES R_List_Methods(const R_Face* interface);
-R_Type_Def(R_List, R_List_Constructor, R_List_Destructor, R_List_Copier, R_List_Methods);
+static R_JumpTable_Entry methods[] = {
+  R_JumpTable_Entry_Make(R_Puts, R_List_puts), 
+  R_JumpTable_Entry_NULL
+};
+R_Type_Def(R_List, R_List_Constructor, R_List_Destructor, R_List_Copier, methods);
 
 static void R_FUNCTION_ATTRIBUTES R_List_increaseAllocationIfRequired(R_List* self);
 
@@ -46,11 +49,6 @@ static R_List* R_FUNCTION_ATTRIBUTES R_List_Destructor(R_List* self) {
 
 static R_List* R_FUNCTION_ATTRIBUTES R_List_Copier(R_List* self, R_List* new) {
     return R_List_appendList(new, self);
-}
-
-static void* R_FUNCTION_ATTRIBUTES R_List_Methods(const R_Face* interface) {
-    R_Face_DefJump(R_Puts, R_List_puts);
-    return NULL;
 }
 
 inline size_t R_FUNCTION_ATTRIBUTES R_List_size(R_List* self) {

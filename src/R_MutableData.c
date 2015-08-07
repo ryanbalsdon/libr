@@ -24,8 +24,12 @@ struct R_MutableData {
 static R_MutableData* R_FUNCTION_ATTRIBUTES R_MutableData_Constructor(R_MutableData* self);
 static R_MutableData* R_FUNCTION_ATTRIBUTES R_MutableData_Destructor(R_MutableData* self);
 static R_MutableData* R_FUNCTION_ATTRIBUTES R_MutableData_Copier(R_MutableData* self, R_MutableData* new);
-static void* R_FUNCTION_ATTRIBUTES R_MutableData_Methods(const R_Face* interface);
-R_Type_Def(R_MutableData, R_MutableData_Constructor, R_MutableData_Destructor, R_MutableData_Copier, R_MutableData_Methods);
+static R_JumpTable_Entry methods[] = {
+  R_JumpTable_Entry_Make(R_Puts, R_MutableData_puts),
+  R_JumpTable_Entry_Make(R_Equals, R_MutableData_isSame),
+  R_JumpTable_Entry_NULL
+};
+R_Type_Def(R_MutableData, R_MutableData_Constructor, R_MutableData_Destructor, R_MutableData_Copier, methods);
 
 static void R_FUNCTION_ATTRIBUTES R_MutableData_increaseAllocationIfNeeded(R_MutableData* self, size_t spaceNeeded);
 
@@ -43,11 +47,6 @@ static R_MutableData* R_FUNCTION_ATTRIBUTES R_MutableData_Destructor(R_MutableDa
 static R_MutableData* R_FUNCTION_ATTRIBUTES R_MutableData_Copier(R_MutableData* self, R_MutableData* new) {
 	R_MutableData_appendArray(new, self);
 	return new;
-}
-static void* R_FUNCTION_ATTRIBUTES R_MutableData_Methods(const R_Face* interface) {
-	R_Face_DefJump(R_Puts, R_MutableData_puts);
-	R_Face_DefJump(R_Equals, R_MutableData_isSame);
-	return NULL;
 }
 
 R_MutableData* R_FUNCTION_ATTRIBUTES R_MutableData_reset(R_MutableData* self) {

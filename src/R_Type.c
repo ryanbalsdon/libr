@@ -65,3 +65,6 @@ void* R_FUNCTION_ATTRIBUTES R_Type_shallowCopy(const void* object_input, void* o
   os_memcpy(object_output, object_input, input_type->size);
   return object_output;
 }
+
+R_JumpTable_DefineKey(R_Puts);
+R_JumpTable_DefineKey(R_Equals);

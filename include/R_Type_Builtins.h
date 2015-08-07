@@ -9,6 +9,10 @@
  * present and future rights to this software under copyright law.
  */
 
+#include <stddef.h>
+#include <stdbool.h>
+#include <stdint.h>
+
 /* R_Type_shallowCopy
    A basic R_Type_Copier for objects without any internally-allocated memory.
  */

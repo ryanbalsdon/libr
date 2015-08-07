@@ -20,8 +20,12 @@ struct R_MutableString {
 static R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_Constructor(R_MutableString* self);
 static R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_Destructor(R_MutableString* self);
 static R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_Copier(R_MutableString* self, R_MutableString* new);
-static void* R_FUNCTION_ATTRIBUTES R_MutableString_Methods(const R_Face* interface);
-R_Type_Def(R_MutableString, R_MutableString_Constructor, R_MutableString_Destructor, R_MutableString_Copier, R_MutableString_Methods);
+static R_JumpTable_Entry methods[] = {
+  R_JumpTable_Entry_Make(R_Puts, R_MutableString_puts), 
+  R_JumpTable_Entry_Make(R_Equals, R_MutableString_isSame),
+  R_JumpTable_Entry_NULL
+};
+R_Type_Def(R_MutableString, R_MutableString_Constructor, R_MutableString_Destructor, R_MutableString_Copier, methods);
 
 
 static R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_Constructor(R_MutableString* self) {
@@ -38,12 +42,6 @@ static R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_Destructor(R_Mutab
 static R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_Copier(R_MutableString* self, R_MutableString* new) {
 	R_MutableString_appendString(new, self);
 	return new;
-}
-
-static void* R_FUNCTION_ATTRIBUTES R_MutableString_Methods(const R_Face* interface) {
-	R_Face_DefJump(R_Puts, R_MutableString_puts);
-	R_Face_DefJump(R_Equals, R_MutableString_isSame);
-	return NULL;
 }
 
 

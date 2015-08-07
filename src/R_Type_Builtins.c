@@ -12,8 +12,6 @@
 
 
 /* R_Integer */
-static void* R_FUNCTION_ATTRIBUTES R_Integer_Methods(const R_Face* interface);
-R_Type_Define(R_Integer, .copy = R_Type_shallowCopy, .interfaces = R_Integer_Methods);
 R_Integer* R_FUNCTION_ATTRIBUTES R_Integer_set(R_Integer* self, int value) {
   if (self == NULL) return NULL;
   self->value = value; 
@@ -26,15 +24,15 @@ static void R_FUNCTION_ATTRIBUTES R_Integer_puts(R_Integer* self) {
   if (R_Type_IsNotOf(self, R_Integer)) return;
   os_printf("%d\n", self->value);
 }
-static void* R_FUNCTION_ATTRIBUTES R_Integer_Methods(const R_Face* interface) {
-  R_Face_DefJump(R_Puts, R_Integer_puts);
-  return NULL;
-}
+static R_JumpTable_Entry R_Integer_methods[] = {
+  R_JumpTable_Entry_Make(R_Puts, R_Integer_puts), 
+  R_JumpTable_Entry_NULL
+};
+R_Type_Define(R_Integer, .copy = R_Type_shallowCopy, .interfaces = R_Integer_methods);
+
 
 
 /* R_Float */
-static void* R_FUNCTION_ATTRIBUTES R_Float_Methods(const R_Face* interface);
-R_Type_Define(R_Float, .copy = R_Type_shallowCopy, .interfaces = R_Float_Methods);
 R_Float* R_FUNCTION_ATTRIBUTES R_Float_set(R_Float* self, float value) {
   if (self == NULL) return NULL;
   self->value = value; 
@@ -47,15 +45,15 @@ static void R_FUNCTION_ATTRIBUTES R_Float_puts(R_Float* self) {
   if (R_Type_IsNotOf(self, R_Float)) return;
   os_printf("%g\n", self->value);
 }
-static void* R_FUNCTION_ATTRIBUTES R_Float_Methods(const R_Face* interface) {
-  R_Face_DefJump(R_Puts, R_Float_puts);
-  return NULL;
-}
+static R_JumpTable_Entry R_Float_methods[] = {
+  R_JumpTable_Entry_Make(R_Puts, R_Float_puts), 
+  R_JumpTable_Entry_NULL
+};
+R_Type_Define(R_Float, .copy = R_Type_shallowCopy, .interfaces = R_Float_methods);
+
 
 
 /* R_Unsigned */
-static void* R_FUNCTION_ATTRIBUTES R_Unsigned_Methods(const R_Face* interface);
-R_Type_Define(R_Unsigned, .copy = R_Type_shallowCopy, .interfaces = R_Unsigned_Methods);
 R_Unsigned* R_FUNCTION_ATTRIBUTES R_Unsigned_set(R_Unsigned* self, unsigned int value) {
   if (self == NULL) return NULL;
   self->value = value; 
@@ -68,15 +66,15 @@ static void R_FUNCTION_ATTRIBUTES R_Unsigned_puts(R_Unsigned* self) {
   if (R_Type_IsNotOf(self, R_Unsigned)) return;
   os_printf("%u\n", self->value);
 }
-static void* R_FUNCTION_ATTRIBUTES R_Unsigned_Methods(const R_Face* interface) {
-  R_Face_DefJump(R_Puts, R_Unsigned_puts);
-  return NULL;
-}
+static R_JumpTable_Entry R_Unsigned_methods[] = {
+  R_JumpTable_Entry_Make(R_Puts, R_Unsigned_puts),
+  R_JumpTable_Entry_NULL
+};
+R_Type_Define(R_Unsigned, .copy = R_Type_shallowCopy, .interfaces = R_Unsigned_methods);
+
 
 
 /* R_Boolean */
-static void* R_FUNCTION_ATTRIBUTES R_Boolean_Methods(const R_Face* interface);
-R_Type_Define(R_Boolean, .copy = R_Type_shallowCopy, .interfaces = R_Boolean_Methods);
 R_Boolean* R_FUNCTION_ATTRIBUTES R_Boolean_set(R_Boolean* self, bool value) {
   if (self == NULL || (value != 0 && value != 1)) return NULL;
   self->value = value; 
@@ -89,10 +87,12 @@ static void R_FUNCTION_ATTRIBUTES R_Boolean_puts(R_Boolean* self) {
   if (R_Type_IsNotOf(self, R_Boolean)) return;
   os_printf("%s\n", self->value ? "true" : "false");
 }
-static void* R_FUNCTION_ATTRIBUTES R_Boolean_Methods(const R_Face* interface) {
-  R_Face_DefJump(R_Puts, R_Boolean_puts);
-  return NULL;
-}
+static R_JumpTable_Entry R_Boolean_methods[] = {
+  R_JumpTable_Entry_Make(R_Puts, R_Boolean_puts),
+  R_JumpTable_Entry_NULL
+};
+R_Type_Define(R_Boolean, .copy = R_Type_shallowCopy, .interfaces = R_Boolean_methods);
+
 
 
 /* R_Null */

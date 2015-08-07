@@ -21,8 +21,11 @@ struct R_Dictionary {
 static R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_Constructor(R_Dictionary* self);
 static R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_Destructor(R_Dictionary* self);
 static R_Dictionary* R_Dictionary_Copier(R_Dictionary* self, R_Dictionary* new);
-static void* R_FUNCTION_ATTRIBUTES R_Dictionary_Methods(const R_Face* interface);
-R_Type_Def(R_Dictionary, R_Dictionary_Constructor, R_Dictionary_Destructor, R_Dictionary_Copier, R_Dictionary_Methods);
+static R_JumpTable_Entry methods[] = {
+  R_JumpTable_Entry_Make(R_Puts, R_Dictionary_puts), 
+  R_JumpTable_Entry_NULL
+};
+R_Type_Def(R_Dictionary, R_Dictionary_Constructor, R_Dictionary_Destructor, R_Dictionary_Copier, methods);
 
 static R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_Constructor(R_Dictionary* self) {
 	self->elements = R_Type_New(R_List);
@@ -36,10 +39,6 @@ static R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_Destructor(R_Dictionary*
 static R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_Copier(R_Dictionary* self, R_Dictionary* new) {
 	if (R_List_appendList(new->elements, self->elements) == NULL) return R_Type_Delete(new), NULL;
 	return new;
-}
-static void* R_FUNCTION_ATTRIBUTES R_Dictionary_Methods(const R_Face* interface) {
-	R_Face_DefJump(R_Puts, R_Dictionary_puts);
-	return NULL;
 }
 
 R_List* R_FUNCTION_ATTRIBUTES R_Dictionary_listOfPairs(R_Dictionary* self) {
