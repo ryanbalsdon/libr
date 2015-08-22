@@ -22,7 +22,7 @@ void* R_FUNCTION_ATTRIBUTES R_Type_shallowCopy(const void* object_input, void* o
    A basic integer type.
  */
 typedef struct {
-  R_Type* type; 
+  const R_Type* type; 
   int value;
 } R_Integer;
 R_Type_Declare(R_Integer);
@@ -33,7 +33,7 @@ int R_FUNCTION_ATTRIBUTES R_Integer_get(R_Integer* self);
    A basic floating point type.
  */
 typedef struct {
-  R_Type* type; 
+  const R_Type* type; 
   float value;
 } R_Float;
 R_Type_Declare(R_Float);
@@ -44,7 +44,7 @@ float R_FUNCTION_ATTRIBUTES R_Float_get(R_Float* self);
    A basic unsigned integer type.
  */
 typedef struct {
-  R_Type* type; 
+  const R_Type* type; 
   unsigned int value;
 } R_Unsigned;
 R_Type_Declare(R_Unsigned);
@@ -55,7 +55,7 @@ unsigned int R_FUNCTION_ATTRIBUTES R_Unsigned_get(R_Unsigned* self);
    A basic boolean type.
  */
 typedef struct {
-  R_Type* type; 
+  const R_Type* type; 
   bool value;
 } R_Boolean;
 R_Type_Declare(R_Boolean);
@@ -66,7 +66,7 @@ bool R_FUNCTION_ATTRIBUTES R_Boolean_get(R_Boolean* self);
    A useless type.
  */
 typedef struct {
-  R_Type* type;
+  const R_Type* type;
 } R_Null;
 R_Type_Declare(R_Null);
 
@@ -74,13 +74,12 @@ R_Type_Declare(R_Null);
    An array of bytes.
  */
 typedef struct {
-  R_Type* type; 
+  const R_Type* type; 
   size_t size; 
   uint8_t* bytes;
 } R_Data;
 R_Type_Declare(R_Data);
-R_Data* R_FUNCTION_ATTRIBUTES R_Data_New(size_t size);
-R_Data* R_FUNCTION_ATTRIBUTES R_Data_set(R_Data* self, uint8_t* bytes, size_t size);
+R_Data* R_FUNCTION_ATTRIBUTES R_Data_New(uint8_t* bytes, size_t size);
 uint8_t* R_FUNCTION_ATTRIBUTES R_Data_bytes(R_Data* self);
 size_t R_FUNCTION_ATTRIBUTES R_Data_size(R_Data* self);
 
@@ -88,12 +87,11 @@ size_t R_FUNCTION_ATTRIBUTES R_Data_size(R_Data* self);
    A NULL-terminated array of chars.
  */
 typedef struct {
-  R_Type* type; 
+  const R_Type* type; 
   char* string;
 } R_String;
 R_Type_Declare(R_String);
 R_String* R_FUNCTION_ATTRIBUTES R_String_New(char* string);
-R_String* R_FUNCTION_ATTRIBUTES R_String_set(R_String* self, char* string);
 char* R_FUNCTION_ATTRIBUTES R_String_get(R_String* self);
 
 #endif /* R_Type_Builtins_h */

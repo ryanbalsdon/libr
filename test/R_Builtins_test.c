@@ -85,14 +85,13 @@ void test_data(void) {
   assert(R_Data_bytes(empty) == NULL);
   R_Type_Delete(empty);
 
-  R_Data* zeros = R_Data_New(20);
+  R_Data* zeros = R_Data_New(NULL, 20);
   assert(R_Data_size(zeros) == 20);
   assert(R_Data_bytes(zeros) != NULL);
   for (int i=0; i<20; i++) assert(R_Data_bytes(zeros)[i] == 0x00);
   R_Type_Delete(zeros);
 
-  R_Data* test = R_Type_New(R_Data);
-  R_Data_set(test, test_data, test_size);
+  R_Data* test = R_Data_New(test_data, test_size);
   assert(R_Data_size(test) == test_size);
   assert(R_Data_bytes(test) != NULL);
   assert(memcmp(R_Data_bytes(test), test_data, test_size) == 0);
@@ -123,16 +122,6 @@ void test_string(void) {
   R_Type_Delete(new);
   assert(strcmp(R_String_get(copy), test_string) == 0);
   R_Type_Delete(copy);
-
-  R_String* set = R_Type_New(R_String);
-  assert(R_String_set(set, test_string) == set);
-  assert(R_String_get(set) != NULL);
-  assert(strcmp(R_String_get(set), test_string) == 0);
-
-  assert(R_String_set(set, "not the test string") == set);
-  assert(R_String_get(set) != NULL);
-  assert(strcmp(R_String_get(set), test_string) != 0);
-  R_Type_Delete(set);
 }
 
 void test_null(void) {

@@ -383,7 +383,9 @@ void test_puts(void) {
 	R_MutableString* string = R_Dictionary_add(dict, "hello", R_MutableString);
 	R_MutableString_appendCString(string, "world");
 
-	R_Puts(dict);
+	char buffer[18];
+	assert(R_Stringify(dict, buffer, 18) == 17);
+	assert(strcmp(buffer, "{\"hello\":\"world\"}") == 0);
 
 	R_Type_Delete(dict);
 }

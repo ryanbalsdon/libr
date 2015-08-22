@@ -73,6 +73,7 @@ void R_Puts(void* object) {
     size_t bytes = R_Type_call(object, R_Stringify, object, buffer, 2048);
     os_printf("%.*s\n", (int)bytes, buffer);
   }
+  os_free(buffer);
 }
 
 R_JumpTable_DefineKey(R_Stringify);

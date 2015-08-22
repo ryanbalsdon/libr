@@ -167,5 +167,6 @@ bool R_FUNCTION_ATTRIBUTES R_MutableData_isSame(R_MutableData* self, R_MutableDa
  */
 int R_FUNCTION_ATTRIBUTES R_MutableData_compareWithCArray(const R_MutableData* self, const uint8_t* comparor, size_t bytes);
 
+const R_Data* R_FUNCTION_ATTRIBUTES R_MutableData_data(const R_MutableData* self);
 
 #endif /* R_MutableData_h */

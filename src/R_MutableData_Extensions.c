@@ -26,6 +26,11 @@ size_t R_FUNCTION_ATTRIBUTES R_MutableData_stringify(R_MutableData* self, char* 
   return buffer - buffer_head;
 }
 
+R_MutableData* R_FUNCTION_ATTRIBUTES R_MutableData_appendArray(R_MutableData* self, const R_MutableData* array) {
+  if (R_Type_IsNotOf(self, R_MutableData) || R_Type_IsNotOf(array, R_MutableData)) return NULL;
+  return R_MutableData_appendCArray(self, R_MutableData_bytes(array), R_MutableData_size(array));
+}
+
 uint8_t R_FUNCTION_ATTRIBUTES R_MutableData_first(const R_MutableData* self) {
   return R_MutableData_byte(self, 0);
 }
@@ -132,4 +137,15 @@ R_MutableData* R_FUNCTION_ATTRIBUTES R_MutableData_appendUInt32AsBCD(R_MutableDa
 
   R_Type_Delete(reversed);
   return self;
+}
+
+int R_FUNCTION_ATTRIBUTES R_MutableData_compare(const R_MutableData* self, const R_MutableData* comparor) {
+  return R_MutableData_compareWithCArray(self, R_MutableData_bytes(comparor), R_MutableData_size(comparor));
+}
+
+int R_FUNCTION_ATTRIBUTES R_MutableData_compareWithCArray(const R_MutableData* self, const uint8_t* comparor, size_t bytes) {
+  if (R_Type_IsNotOf(self, R_MutableData) || comparor == NULL) return -1;
+  if (R_MutableData_size(self) < bytes) return -1;
+  if (R_MutableData_size(self) > bytes) return -1;
+  return os_memcmp(R_MutableData_bytes(self), comparor, bytes);
 }
