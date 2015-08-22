@@ -29,6 +29,7 @@ double os_atof_alt(const char* string);
   #define pthread_mutex_destroy
 #else
   #include <string.h>
+  #include <stdio.h>
   #define os_calloc calloc
   #define os_zalloc(size) os_calloc(1,size)
   #define os_free free

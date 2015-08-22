@@ -31,7 +31,7 @@ R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_reset(R_MutableString* se
 const char* R_FUNCTION_ATTRIBUTES R_MutableString_getString(R_MutableString* self);
 #define R_MutableString_cstring R_MutableString_getString
 
-void R_FUNCTION_ATTRIBUTES R_MutableString_puts(R_MutableString* self);
+size_t R_FUNCTION_ATTRIBUTES R_MutableString_stringify(R_MutableString* self, char* buffer, size_t size);
 
 /*  R_MutableString_first
     Returns the first character of the string.

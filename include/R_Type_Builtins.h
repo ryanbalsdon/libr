@@ -75,7 +75,6 @@ R_Type_Declare(R_Null);
  */
 typedef struct {
   R_Type* type; 
-  bool is_owner; //Low (default) means destructor will call free on bytes. High means destructor will not call free on bytes.
   size_t size; 
   uint8_t* bytes;
 } R_Data;
@@ -90,7 +89,6 @@ size_t R_FUNCTION_ATTRIBUTES R_Data_size(R_Data* self);
  */
 typedef struct {
   R_Type* type; 
-  bool is_owner; //Low (default) means destructor will call free on bytes. High means destructor will not call free on bytes.
   char* string;
 } R_String;
 R_Type_Declare(R_String);

@@ -12,8 +12,9 @@
 #include "R_MutableString.h"
 
 
-void R_FUNCTION_ATTRIBUTES R_MutableString_puts(R_MutableString* self) {
-  os_printf("%.*s\n", (int)R_MutableString_length(self), R_MutableData_bytes(R_MutableString_bytes(self)));
+size_t R_FUNCTION_ATTRIBUTES R_MutableString_stringify(R_MutableString* self, char* buffer, size_t size) {
+  if (R_Type_IsNotOf(self, R_MutableString)) return 0;
+  return os_snprintf(buffer, size, "%.*s", (int)R_MutableString_length(self), R_MutableData_bytes(R_MutableString_bytes(self)));
 }
 
 R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_appendCString(R_MutableString* self, const char* string) {

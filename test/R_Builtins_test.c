@@ -18,7 +18,9 @@ void test_integer(void) {
   assert(R_Integer_get(value) == 0);
   R_Integer_set(value, 42);
   assert(R_Integer_get(value) == 42);
-  R_Puts(value);
+  char buffer[20];
+  assert(R_Stringify(value, buffer, 20) == 2);
+  assert(strcmp(buffer, "42") == 0);
   R_Integer* value_copy = R_Type_Copy(value);
   assert(R_Integer_get(value_copy) == 42);
   R_Type_Delete(value);
@@ -31,7 +33,11 @@ void test_float(void) {
   assert(R_Float_get(value) == 0.0f);
   R_Float_set(value, 4.2f);
   assert(R_Float_get(value) == 4.2f);
-  R_Puts(value);
+
+  char buffer[20];
+  assert(R_Stringify(value, buffer, 20) == 3);
+  assert(strcmp(buffer, "4.2") == 0);
+
   R_Float* value_copy = R_Type_Copy(value);
   assert(R_Float_get(value_copy) == 4.2f);
   R_Type_Delete(value);
@@ -44,9 +50,14 @@ void test_unsigned(void) {
   assert(R_Unsigned_get(value) == 0);
   R_Unsigned_set(value, -1);
   assert(R_Unsigned_get(value) > 0);
-  R_Puts(value);
   R_Unsigned* value_copy = R_Type_Copy(value);
   assert(R_Unsigned_get(value_copy) == R_Unsigned_get(value));
+
+  R_Unsigned_set(value, 2);
+  char buffer[20];
+  assert(R_Stringify(value, buffer, 20) == 1);
+  assert(strcmp(buffer, "2") == 0);
+
   R_Type_Delete(value);
   R_Type_Delete(value_copy);
 }
@@ -56,7 +67,9 @@ void test_boolean(void) {
   assert(R_Boolean_get(value) == false);
   R_Boolean_set(value, true);
   assert(R_Boolean_get(value) == true);
-  R_Puts(value);
+  char buffer[20];
+  assert(R_Stringify(value, buffer, 20) == 4);
+  assert(strcmp(buffer, "true") == 0);
   R_Boolean* value_copy = R_Type_Copy(value);
   assert(R_Boolean_get(value_copy) == R_Boolean_get(value));
   R_Type_Delete(value);
@@ -83,7 +96,17 @@ void test_data(void) {
   assert(R_Data_size(test) == test_size);
   assert(R_Data_bytes(test) != NULL);
   assert(memcmp(R_Data_bytes(test), test_data, test_size) == 0);
+
+  R_Data* copy = R_Type_Copy(test);
   R_Type_Delete(test);
+  assert(R_Data_size(copy) == test_size);
+  assert(R_Data_bytes(copy) != NULL);
+  assert(memcmp(R_Data_bytes(copy), test_data, test_size) == 0);
+
+  char buffer[25];
+  assert(R_Stringify(copy, buffer, 25) == 24);
+  assert(strcmp(buffer, "{0xFF, 0x00, 0x02, 0xC3}") == 0);
+  R_Type_Delete(copy);
 }
 
 void test_string(void) {
@@ -92,7 +115,14 @@ void test_string(void) {
   assert(new != NULL);
   assert(R_String_get(new) != NULL);
   assert(strcmp(R_String_get(new), test_string) == 0);
+  char buffer[5];
+  assert(R_Stringify(new, buffer, 5) == 4);
+  assert(strcmp(buffer, "test") == 0);
+  R_String* copy = R_Type_Copy(new);
+  assert(copy);
   R_Type_Delete(new);
+  assert(strcmp(R_String_get(copy), test_string) == 0);
+  R_Type_Delete(copy);
 
   R_String* set = R_Type_New(R_String);
   assert(R_String_set(set, test_string) == set);
@@ -110,7 +140,27 @@ void test_null(void) {
   R_Type_Delete(null);
 }
 
+void test_stringify(void) {
+  R_Integer* value = R_Type_New(R_Integer);
+  assert(R_Integer_get(value) == 0);
+  R_Integer_set(value, 24135);
+  char buffer_large[20];
+  char buffer_short[3];
+  char buffer_perfect[6];
+
+  assert(R_Stringify(value, buffer_large, 20) == 5);
+  assert(R_Stringify(value, buffer_short, 3) == 3);
+  assert(R_Stringify(value, buffer_perfect, 6) == 5);
+
+  assert(strcmp(buffer_large, "24135") == 0);
+  assert(strcmp(buffer_short, "24") == 0);
+  assert(strcmp(buffer_perfect, "24135") == 0);
+
+  R_Type_Delete(value);
+}
+
 int main(void) {
+  test_stringify();
   test_integer();
   test_float();
   test_unsigned();

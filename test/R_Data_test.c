@@ -272,7 +272,9 @@ void test_bcd(void) {
 
 void test_puts(void) {
 	R_MutableData* test = R_MutableData_setBytes(R_Type_New(R_MutableData), 0x01, 0x20, 0x02, 0x01);
-	R_Puts(test);
+	char buffer[25];
+	assert(R_Stringify(test, buffer, 25) == 24);
+	assert(strcmp(buffer, "{0x01, 0x20, 0x02, 0x01}") == 0);
 	R_Type_Delete(test);
 }
 

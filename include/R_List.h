@@ -106,6 +106,6 @@ void R_FUNCTION_ATTRIBUTES R_List_swap(R_List* self, int indexA, int indexB);
  */
 #define R_List_each(array, TYPE, NAME) for(TYPE* NAME=NULL; (NAME=(TYPE*)R_List_pointerAtIndex(array, R_List_indexOfPointer(array, NAME)+1));)
 
-void R_FUNCTION_ATTRIBUTES R_List_puts(R_List* self);
+size_t R_FUNCTION_ATTRIBUTES R_List_stringify(R_List* self, char* buffer, size_t size);
 
 #endif /* R_List_h */

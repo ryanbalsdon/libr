@@ -22,7 +22,7 @@ static R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_Constructor(R_Dictionary
 static R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_Destructor(R_Dictionary* self);
 static R_Dictionary* R_Dictionary_Copier(R_Dictionary* self, R_Dictionary* new);
 static R_JumpTable_Entry methods[] = {
-  R_JumpTable_Entry_Make(R_Puts, R_Dictionary_puts), 
+  R_JumpTable_Entry_Make(R_Stringify, R_Dictionary_stringify), 
   R_JumpTable_Entry_NULL
 };
 R_Type_Def(R_Dictionary, R_Dictionary_Constructor, R_Dictionary_Destructor, R_Dictionary_Copier, methods);
@@ -132,10 +132,11 @@ size_t R_FUNCTION_ATTRIBUTES R_Dictionary_size(R_Dictionary* self) {
 	return R_List_size(self->elements);
 }
 
-void R_FUNCTION_ATTRIBUTES R_Dictionary_puts(R_Dictionary* self) {
-  if (R_Type_IsNotOf(self, R_Dictionary)) return;
-  R_MutableString* buffer = R_Type_New(R_MutableString);
-  R_Dictionary_toJson(self, buffer);
-  R_MutableString_puts(buffer);
-  R_Type_Delete(buffer);
+size_t R_FUNCTION_ATTRIBUTES R_Dictionary_stringify(R_Dictionary* self, char* buffer, size_t size) {
+  if (R_Type_IsNotOf(self, R_Dictionary)) return 0;
+  R_MutableString* string = R_Type_New(R_MutableString);
+  R_Dictionary_toJson(self, string);
+  size_t output = R_MutableString_stringify(string, buffer, size);
+  R_Type_Delete(string);
+  return output;
 }

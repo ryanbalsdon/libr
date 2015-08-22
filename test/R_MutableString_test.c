@@ -223,7 +223,9 @@ void test_base64(void) {
 
 void test_puts(void) {
  	R_MutableString* pass = R_MutableString_setString(R_Type_New(R_MutableString), "Puts Test String");
-	R_Puts(pass);
+ 	char buffer[17];
+ 	assert(R_Stringify(pass, buffer, 17) == 16);
+ 	assert(strcmp(buffer, "Puts Test String") == 0);
 	R_Type_Delete(pass);
 }
 

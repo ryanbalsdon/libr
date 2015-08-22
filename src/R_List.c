@@ -25,7 +25,7 @@ static R_List* R_FUNCTION_ATTRIBUTES R_List_Constructor(R_List* self);
 static R_List* R_FUNCTION_ATTRIBUTES R_List_Destructor(R_List* self);
 static R_List* R_FUNCTION_ATTRIBUTES R_List_Copier(R_List* self, R_List* new);
 static R_JumpTable_Entry methods[] = {
-  R_JumpTable_Entry_Make(R_Puts, R_List_puts), 
+  R_JumpTable_Entry_Make(R_Stringify, R_List_stringify), 
   R_JumpTable_Entry_NULL
 };
 R_Type_Def(R_List, R_List_Constructor, R_List_Destructor, R_List_Copier, methods);
@@ -189,8 +189,30 @@ void R_FUNCTION_ATTRIBUTES R_List_removeAll(R_List* self) {
     self->arraySize = 0;
 }
 
-void R_FUNCTION_ATTRIBUTES R_List_puts(R_List* self) {
-  if (R_Type_IsNotOf(self, R_List)) return;
-  os_printf("Listing %zu:\n", R_List_size(self));
-  R_List_each(self, void, item) {R_Puts(item);}
+size_t R_FUNCTION_ATTRIBUTES R_List_stringify(R_List* self, char* buffer, size_t size) {
+  if (R_Type_IsNotOf(self, R_List)) return 0;
+  char* buffer_head = buffer;
+  size_t this_size = os_snprintf(buffer, size, "List of %zu:\n", R_List_size(self));
+  if (this_size >= size) return this_size;
+  size -= this_size;
+  buffer += this_size;
+
+  R_List_each(self, void, item) {
+    this_size = 0;
+    if (R_Type_hasMethod(item, R_Stringify)) {
+      this_size = R_Stringify(item, buffer, size);
+    } else {
+      this_size = snprintf(buffer, size, "Unknown Type");
+    }
+    if (this_size >= size) return buffer - buffer_head;
+    size -= this_size;
+    buffer += this_size;
+
+    this_size = snprintf(buffer, size, "\n");
+    if (this_size >= size) return buffer - buffer_head;
+    size -= this_size;
+    buffer += this_size;
+  }
+
+  return buffer - buffer_head;
 }

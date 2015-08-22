@@ -23,7 +23,7 @@ R_Type_Declare(R_MutableData);
 */
 R_MutableData* R_FUNCTION_ATTRIBUTES R_MutableData_reset(R_MutableData* self);
 
-void R_FUNCTION_ATTRIBUTES R_MutableData_puts(R_MutableData* self);
+size_t R_FUNCTION_ATTRIBUTES R_MutableData_stringify(R_MutableData* self, char* buffer, size_t size);
 
 /*  R_MutableData_setByte
     Empties the array and appends a single byte.

@@ -25,7 +25,7 @@ static R_MutableData* R_FUNCTION_ATTRIBUTES R_MutableData_Constructor(R_MutableD
 static R_MutableData* R_FUNCTION_ATTRIBUTES R_MutableData_Destructor(R_MutableData* self);
 static R_MutableData* R_FUNCTION_ATTRIBUTES R_MutableData_Copier(R_MutableData* self, R_MutableData* new);
 static R_JumpTable_Entry methods[] = {
-  R_JumpTable_Entry_Make(R_Puts, R_MutableData_puts),
+  R_JumpTable_Entry_Make(R_Stringify, R_MutableData_stringify),
   R_JumpTable_Entry_Make(R_Equals, R_MutableData_isSame),
   R_JumpTable_Entry_NULL
 };

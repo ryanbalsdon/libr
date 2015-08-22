@@ -99,18 +99,21 @@ int R_FUNCTION_ATTRIBUTES R_Type_IsObjectNotOfType(const void* object, const R_T
 #define R_Type_IsNotOf(object, Type) R_Type_IsObjectNotOfType(object, R_Type_Object(Type))
 #define R_Type_Of(object) ((object==NULL)?NULL:(*(R_Type**)object))
 
-#define R_Type_Call(object, method, ...) R_JumpTable_call((R_Type_Of(object)?R_Type_Of(object)->interfaces:NULL), method, __VA_ARGS__)
+#define R_Type_call(object, method, ...) R_JumpTable_call((R_Type_Of(object)?R_Type_Of(object)->interfaces:NULL), method, __VA_ARGS__)
+#define R_Type_hasMethod(object, method) R_JumpTable_hasEntry((R_Type_Of(object)?R_Type_Of(object)->interfaces:NULL), method)
+#define R_Type_hasNoMethod(object, method) (!R_Type_hasMethod(object, method))
 
 /*  R_Type_BytesAllocated
     Number of bytes currently in-use. Mostly just useful for testing or profiling.
  */
 extern size_t R_Type_BytesAllocated;
 
-#define R_Puts(object) R_Type_Call(object, R_Puts, object)
-R_JumpTable_DeclareKey(R_Puts);
-R_JumpTable_DeclareFunction(R_Puts, void, void*);
+void R_Puts(void* object);
+#define R_Stringify(object, buffer, size) R_Type_call(object, R_Stringify, object, buffer, size)
+R_JumpTable_DeclareKey(R_Stringify);
+R_JumpTable_DeclareFunction(R_Stringify, size_t, void*, char*, size_t);
 
-#define R_Equals(object1, object2) R_Type_Call(object1, R_Equals, object1, object2)
+#define R_Equals(object1, object2) R_Type_call(object1, R_Equals, object1, object2)
 R_JumpTable_DeclareKey(R_Equals);
 R_JumpTable_DeclareFunction(R_Equals, bool, void*, void*);
 

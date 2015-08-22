@@ -215,7 +215,6 @@ void test_copy(void) {
 
   assert(array_copy != NULL);
   assert(R_List_size(array_copy) == 4);
-  R_Puts(array_copy);
   assert(R_Integer_get(R_List_pointerAtIndex(array_copy, 0)) == 0);
   assert(R_Integer_get(R_List_pointerAtIndex(array_copy, 1)) == 1);
   assert(R_Integer_get(R_List_pointerAtIndex(array_copy, 2)) == 2);
@@ -256,7 +255,10 @@ void test_puts(void) {
   R_List* list = R_Type_New(R_List);
   R_MutableString_setString(R_List_add(list, R_MutableString), "hello");
   R_MutableString_setString(R_List_add(list, R_MutableString), "world");
-  R_Puts(list);
+  R_Integer_set(R_List_add(list, R_Integer), 1024);
+  char buffer[29];
+  assert(R_Stringify(list, buffer, 29) == 28);
+  assert(strcmp(buffer, "List of 3:\nhello\nworld\n1024\n") == 0);
   R_Type_Delete(list);
 }
 

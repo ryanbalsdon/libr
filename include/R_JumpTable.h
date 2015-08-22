@@ -29,5 +29,6 @@ typedef R_JumpTable_Entry R_JumpTable;
 
 void* R_JumpTable_get(R_JumpTable_Entry* table, const R_JumpTable_NamedKey* key);
 #define R_JumpTable_call(table, key, ...) ((R_JumpTable_Function(key))R_JumpTable_get(table,R_JumpTable_Key(key)))(__VA_ARGS__)
+#define R_JumpTable_hasEntry(table, key) R_JumpTable_get(table,R_JumpTable_Key(key))
 
 #endif /* R_JumpTable_h */

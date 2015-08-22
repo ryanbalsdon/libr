@@ -90,7 +90,7 @@ R_MutableString* R_FUNCTION_ATTRIBUTES R_Dictionary_toJson(R_Dictionary* self, R
  */
 R_Dictionary* R_FUNCTION_ATTRIBUTES R_Dictionary_fromJson(R_Dictionary* self, R_MutableString* buffer);
 
-void R_FUNCTION_ATTRIBUTES R_Dictionary_puts(R_Dictionary* self);
+size_t R_FUNCTION_ATTRIBUTES R_Dictionary_stringify(R_Dictionary* self, char* buffer, size_t size);
 
 R_List* R_FUNCTION_ATTRIBUTES R_Dictionary_listOfPairs(R_Dictionary* self);
 

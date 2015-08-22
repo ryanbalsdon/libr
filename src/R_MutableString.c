@@ -21,7 +21,7 @@ static R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_Constructor(R_Muta
 static R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_Destructor(R_MutableString* self);
 static R_MutableString* R_FUNCTION_ATTRIBUTES R_MutableString_Copier(R_MutableString* self, R_MutableString* new);
 static R_JumpTable_Entry methods[] = {
-  R_JumpTable_Entry_Make(R_Puts, R_MutableString_puts), 
+  R_JumpTable_Entry_Make(R_Stringify, R_MutableString_stringify), 
   R_JumpTable_Entry_Make(R_Equals, R_MutableString_isSame),
   R_JumpTable_Entry_NULL
 };

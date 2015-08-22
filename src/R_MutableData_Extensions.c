@@ -11,14 +11,19 @@
 #include <string.h>
 #include "R_MutableData.h"
 
-void R_FUNCTION_ATTRIBUTES R_MutableData_puts(R_MutableData* self) {
-  if (R_Type_IsNotOf(self, R_MutableData)) return;
-  os_printf("{");
+size_t R_FUNCTION_ATTRIBUTES R_MutableData_stringify(R_MutableData* self, char* buffer, size_t size) {
+  if (R_Type_IsNotOf(self, R_MutableData)) return 0;
+  char* buffer_head = buffer;
   for (int i=0; i<R_MutableData_size(self); i++) {
-    os_printf("0x%02X", R_MutableData_byte(self, i));
-    if (i < R_MutableData_size(self)-1) os_printf(", ");
+    size_t this_size = 0;
+    if (i==0) this_size = os_snprintf(buffer, size, "{0x%02X, ", R_MutableData_byte(self, i));
+    else if (i==R_MutableData_size(self)-1) this_size = os_snprintf(buffer, size, "0x%02X}", R_MutableData_byte(self, i));
+    else this_size = os_snprintf(buffer, size, "0x%02X, ", R_MutableData_byte(self, i));
+    if (this_size >= size) return buffer - buffer_head;
+    size -= this_size;
+    buffer += this_size;
   }
-  os_printf("}\n");
+  return buffer - buffer_head;
 }
 
 uint8_t R_FUNCTION_ATTRIBUTES R_MutableData_first(const R_MutableData* self) {
