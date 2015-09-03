@@ -1,8 +1,8 @@
 # R Library
- This library is a collection of small utilities for C. The focus of these modules is on rapid-prototyping and ease-of-use. The idea being that, once bottlenecks in a project are found, these generic classes can be replaced with more traditional, higher-performance, non-object-oriented C code.
+ This library is a collection of small utilities for C. Most of them revolve around higher-level data management and types because that's where C is most lacking.
 
 # Contributing
- There are many examples in the test/ folder of how to use this library. The tests can be run with `make test` or `make valgrind` if Valgrind is installed.
+ Fork this repo, make your change, add any relevant tests then open a Pull Request. The tests can be run with `make test` or `make valgrind` if Valgrind is installed.
 
 # Namespacing Rules
  Because Namespacing doesn't exist in C, some general rules are used to achieve it:
@@ -13,9 +13,9 @@
 - Local or instance values are snake_case, starting with a lowercase.
 
 ## Namespacing Examples
-- `R_Type_New`: `New is a class method of the `Type` class in the `R` namespace.
+- `R_Type_New`: `New` is a class method of the `Type` class in the `R` namespace.
 - `R_Integer_get`: `get` is an instance method of the `Integer` class in the `R` namespace. It's first argument is an `R_Integer*`.
-- `r_type`: This is a local variable who's name doesn't conflict with any namespaces.
+- `r_type`: This is a local variable who's name doesn't conflict with any namespaces or classes.
 
 # R_Type
  R_Type is an OO (Object-Oriented) framework for C. All the other utilities in libr build off this framework. 
@@ -168,4 +168,16 @@ R_Type_Delete(strings); //This will deallocate both first_string and second_stri
       R_Puts(R_KeyValuePair_value(element));
     }
   }
+```
+
+# R_Events
+ This a Event/Notification/Actor Model system using calbacks and implemented using R_Dictionary.
+```
+void test_callback(void* target, const char* event_key, void* payload) {printf("Notified!");}
+void main(void) {
+	R_Events* notification_center = R_Type_New(R_Events);
+	R_Events_register(notification_center, "Event Name", NULL, test_callback);
+ R_Events_notify(notification_center, "Event Name", NULL)
+ R_Type_Delete(notification_center);
+}
 ```
