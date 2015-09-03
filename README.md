@@ -6,10 +6,10 @@
 
 # Namespacing Rules
  Because Namespacing doesn't exist in C, some general rules are used to achieve it:
-- Namespaces and classes are CamelCase, starting with a capital.
+- Namespaces and classes are CamelCase, starting with an uppercase.
 - Namespaces and classes are separated with an underscore.
-- Class methods are CamelCase, starting with a capital.
-- Instance methods are camelCase, starting a lowercase. Instance methods always take an object as their first argument.
+- Class methods are CamelCase, starting with an uppercase.
+- Instance methods are camelCase, starting with a lowercase. Instance methods always take an object as their first argument.
 - Local or instance values are snake_case, starting with a lowercase.
 
 ## Namespacing Examples
@@ -18,9 +18,7 @@
 - `r_type`: This is a local variable who's name doesn't conflict with any namespaces or classes.
 
 # R_Type
- R_Type is an OO (Object-Oriented) framework for C. All the other utilities in libr build off this framework. 
-
- There are three steps to creating a new class with this framework.
+ R_Type is an OO (Object-Oriented) framework for C. All the other utilities in libr build off this framework. It uses structs as a blueprint but relies on the first data element of the struct being a pointer to info about its type.
 
 ## Header Definition
  Use the `R_Type_Declare` macro to declare that your struct is a class.
@@ -31,9 +29,9 @@ R_Type_Declare(NewClass);
 
 ## Implementation
  Use the `R_Type_Define` macro to define a new class using your struct.
- ```
- R_Type_Define(NewClass, NULL);
- ```
+```
+R_Type_Define(NewClass, NULL);
+```
 
  The struct _must_ have an R_Type (or void) pointer as its first element.
 ```
@@ -59,20 +57,20 @@ R_Type_Delete(instance);
 ```
 NewClass* NewClass_Constructor(NewClass* self) {return self;}
 NewClass* NewClass_Destructor(NewClass* self) {return self;}
- R_Type_Define(NewClass, .ctor = NewClass_Constructor, .dtor = NewClass_Destructor);
+R_Type_Define(NewClass, .ctor = NewClass_Constructor, .dtor = NewClass_Destructor);
 ```
 
 ## Deep Copying
- If your class contains other allocated object, create a custom copy method. Otherwise, use the builtin shallow copy.
+ If your class contains other allocated objects, create a custom copy method. Otherwise, use the builtin shallow copy.
 ```
 R_Type_Define(NewClass, .copy = R_Type_shallowCopy);
 //or...
 NewClass* NewClass_Copier(NewClass* old, NewClass* new) {old->value = new->value; return new;}
- R_Type_Define(NewClass, .copy = NewClass_Copier);
+R_Type_Define(NewClass, .copy = NewClass_Copier);
 ```
 
 ## Duck Typing / Dynamic method calls / Interfaces
- Use a method table to inplement an interface/selector in your class.
+ Use a method table to implement an interface/selector in your class. The last entry in this list _must_ be `R_JumpTable_Entry_NULL`. Methods are added above that using the `R_JumpTable_Entry_Make` macro.
 ```
 size_t NewClass_stringify(R_Float* self, char* buffer, size_t size) {
   int bytes_written = os_snprintf(buffer, size, "NewClass, in string form");
@@ -102,13 +100,13 @@ R_Type_Define(NewClass, .interfaces = NewClass_methods);
 
  An example of its usage:
  ```
- R_MutableData* bytes = R_Type_New(R_MutableData);
- R_MutableData_appendBytes(bytes, 0x01, 0x42, 0xFF, 0xa5);
- assert(R_MutaData_byte(bytes, 1) == 0x42);
- R_Type_Delete(bytes);
+R_MutableData* bytes = R_Type_New(R_MutableData);
+R_MutableData_appendBytes(bytes, 0x01, 0x42, 0xFF, 0xa5);
+assert(R_MutaData_byte(bytes, 1) == 0x42);
+R_Type_Delete(bytes);
  ```
 
- It comes with many helper methods to append and extract different data types like:
+ It comes with many helper methods to append and extract data like:
 - R_MutableData_appendByte
 - R_MutableData_appendArray
 - R_MutableData_appendHexString
@@ -119,15 +117,15 @@ R_Type_Define(NewClass, .interfaces = NewClass_methods);
 # R_MutableString
  This is a dynamic-sized string that is built off of R_MutableData and is used similarly.
  ```
- R_MutableString* string = R_MutableString_setString(R_Type_New(R_MutableString), "Hello");
- R_MutableString_push(string, ' ');
- R_MutableString_appendCString(string, "World");
- assert(strcmp(R_MutableString_getString(string), "Hello World") == 0);
- R_Type_Delete(string);
+R_MutableString* string = R_MutableString_setString(R_Type_New(R_MutableString), "Hello");
+R_MutableString_push(string, ' ');
+R_MutableString_appendCString(string, "World");
+assert(strcmp(R_MutableString_getString(string), "Hello World") == 0);
+R_Type_Delete(string);
  ```
 
 # R_List
- This is a list of R_Type instances. The instance memory is managed by the list. The list can allocate a new instance or being given an existing instance to manage.
+ This is a list of R_Type instances. The instances' memory is managed by the list. The list can allocate a new instance or being given an existing object to manage.
 ```
 R_List* strings = R_Type_New(R_List);
 R_MutableString* first_string = R_List_add(strings, R_MutableString);
@@ -137,21 +135,21 @@ assert(R_List_size(strings) == 2);
 R_Type_Delete(strings); //This will deallocate both first_string and second_string!
 ```
 
- The list can be looped over with an `each` method.
+ The list can be looped over with an `R_List_each` method.
  ```
-  R_List_each(strings, R_MutableString, string) {
-    assert(R_Type_IsOf(string, R_MutableString));
-  }
+R_List_each(strings, R_MutableString, string) {
+  assert(R_Type_IsOf(string, R_MutableString));
+}
 
-  R_List_each(strings, void, unknown_type) {
-    if (R_Type_IsOf(unknown_type, R_MutableString)) printf("This is a mutable string!\n");
-    if (R_Type_IsOf(unknown_type, R_Integer)) printf("This is an integer!\n");
-    if (R_Type_IsOf(unknown_type, R_Boolean)) printf("This is a boolean!\n");
-  }
+R_List_each(strings, void, unknown_type) {
+  if (R_Type_IsOf(unknown_type, R_MutableString)) printf("This is a mutable string!\n");
+  if (R_Type_IsOf(unknown_type, R_Integer)) printf("This is an integer!\n");
+  if (R_Type_IsOf(unknown_type, R_Boolean)) printf("This is a boolean!\n");
+}
  ```
 
 # R_Dictionary
- This is a key-value dictionary, implemented as an R_List of R_KeyValuePair instances. It supports JSON parsing, manual creation and each loops.
+ This is a key-value dictionary, implemented as an R_List of `R_KeyValuePair` instances. It supports JSON parsing, manual creation and each loops.
 ```
   R_Dictionary* dictionary = R_Type_New(R_Dictionary);
   R_Integer_set(R_Dictionary_add(dictionary, "key1", R_Integer), 1);
@@ -171,13 +169,13 @@ R_Type_Delete(strings); //This will deallocate both first_string and second_stri
 ```
 
 # R_Events
- This a Event/Notification/Actor Model system using calbacks and implemented using R_Dictionary.
+ This a Event/Notification/Actor Model system using callbacks and implemented using R_Dictionary.
 ```
 void test_callback(void* target, const char* event_key, void* payload) {printf("Notified!");}
 void main(void) {
-	R_Events* notification_center = R_Type_New(R_Events);
-	R_Events_register(notification_center, "Event Name", NULL, test_callback);
- R_Events_notify(notification_center, "Event Name", NULL)
- R_Type_Delete(notification_center);
+  R_Events* notification_center = R_Type_New(R_Events);
+  R_Events_register(notification_center, "Event Name", NULL, test_callback);
+  R_Events_notify(notification_center, "Event Name", NULL)
+  R_Type_Delete(notification_center);
 }
 ```
