@@ -13,6 +13,7 @@ double os_atof_alt(const char* string);
   #define os_realloc os_realloc_alt
   #define os_atoi os_atoi_alt
   #define os_atof os_atof_alt
+  #define os_snprintf(s, n, ...) os_printf(s, __VA_ARGS__)
   #define R_FUNCTION_ATTRIBUTES __attribute__((section(".irom0.text")))
   typedef int pthread_mutex_t;
   #define pthread_mutex_lock(mutex_pointer) do {while(*(mutex_pointer)); (*(mutex_pointer))++; } while(0)

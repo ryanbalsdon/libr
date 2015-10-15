@@ -108,7 +108,7 @@ R_Data* R_FUNCTION_ATTRIBUTES R_Data_Destructor(R_Data* self) {
 R_Data* R_FUNCTION_ATTRIBUTES R_Data_New(uint8_t* bytes, size_t size) {
   R_Data* self = R_Type_New(R_Data);
   if (self == NULL) return NULL;
-  self->bytes = os_zalloc(size);
+  self->bytes = (uint8_t*)os_zalloc(size);
   R_Type_BytesAllocated += size;
   if (self->bytes == NULL) return R_Data_Destructor(self), NULL;
   if (bytes) os_memcpy(self->bytes, bytes, size);
@@ -124,7 +124,7 @@ size_t R_FUNCTION_ATTRIBUTES R_Data_size(R_Data* self) {
   return self->size;
 }
 static R_Data* R_Data_Copier(const R_Data* object_input, R_Data* object_output) {
-  object_output->bytes = os_zalloc(object_input->size);
+  object_output->bytes = (uint8_t*)os_zalloc(object_input->size);
   R_Type_BytesAllocated += object_input->size;
   if (object_output->bytes == NULL) return NULL;
   os_memcpy(object_output->bytes, object_input->bytes, object_input->size);
@@ -166,7 +166,7 @@ R_String* R_FUNCTION_ATTRIBUTES R_String_New(char* string) {
   R_String* self = R_Type_New(R_String);
   if (self == NULL) return NULL;
   size_t size = strlen(string);
-  self->string = os_zalloc(size+1);
+  self->string = (uint8_t*)os_zalloc(size+1);
   R_Type_BytesAllocated += size+1;
   os_strcpy(self->string, string);
   return self;
@@ -177,7 +177,7 @@ char* R_FUNCTION_ATTRIBUTES R_String_get(R_String* self) {
 }
 static R_String* R_String_Copier(const R_String* object_input, R_String* object_output) {
   size_t size = strlen(object_input->string);
-  object_output->string = os_zalloc(size+1);
+  object_output->string = (uint8_t*)os_zalloc(size+1);
   R_Type_BytesAllocated += size+1;
   os_strcpy(object_output->string, object_input->string);
   return object_output;

@@ -60,7 +60,7 @@ void* R_FUNCTION_ATTRIBUTES R_Type_shallowCopy(const void* object_input, void* o
 
 void R_Puts(void* object) {
   if (R_Type_hasNoMethod(object, R_Stringify)) return;
-  char* buffer = os_zalloc(2048);
+  char* buffer = (char*)os_zalloc(2048);
   if (buffer) {
     size_t bytes = R_Type_call(object, R_Stringify, object, buffer, 2048);
     os_printf("%.*s\n", (int)bytes, buffer);

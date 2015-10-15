@@ -4,8 +4,10 @@
 
 void* R_FUNCTION_ATTRIBUTES os_realloc_alt(void* old_ptr, size_t new_size) {
   void* new_ptr = (void*)os_malloc(new_size);
-  os_memcpy(new_ptr, old_ptr, new_size); //this should be old_size but we don't have access to it
-  os_free(old_ptr);
+  if (old_ptr) {
+    os_memcpy(new_ptr, old_ptr, new_size); //this should be old_size but we don't have access to it
+    os_free(old_ptr);
+  }
   return new_ptr;
 }
 

@@ -194,13 +194,13 @@ size_t R_FUNCTION_ATTRIBUTES R_List_stringify(R_List* self, char* buffer, size_t
     if (R_Type_hasMethod(item, R_Stringify)) {
       this_size = R_Stringify(item, buffer, size);
     } else {
-      this_size = snprintf(buffer, size, "Unknown Type");
+      this_size = os_snprintf(buffer, size, "Unknown Type");
     }
     if (this_size >= size) return buffer - buffer_head;
     size -= this_size;
     buffer += this_size;
 
-    this_size = snprintf(buffer, size, "\n");
+    this_size = os_snprintf(buffer, size, "\n");
     if (this_size >= size) return buffer - buffer_head;
     size -= this_size;
     buffer += this_size;
